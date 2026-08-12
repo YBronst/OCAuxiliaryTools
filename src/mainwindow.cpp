@@ -9143,9 +9143,7 @@ void MainWindow::on_myeditPassInput_returnPressed() {
 }
 
 void MainWindow::on_actionDatabase_triggered() {
-  QString url =
-      "https://github.com/5T33Z0/OC-Little-Translated/tree/main/F_Desktop_EFIs/"
-      "Config_Templates";
+  QString url = "https://github.com/YBronst/Config_Templates";
   QString txt = "<a href=\"" + url + "\"" + "> " +
                 tr(" Intel CPU configuration template ");
   QMessageBox box;
