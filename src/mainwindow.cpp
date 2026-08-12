@@ -9150,7 +9150,7 @@ void MainWindow::on_actionDatabase_triggered() {
   box.setText(txt);
   box.exec();
 
-  return;
+  #return;
 
   myDatabase->setModal(true);
   myDatabase->show();
