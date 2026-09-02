@@ -57,12 +57,11 @@ void AutoUpdateDialog::doProcessFinished() {
     this->repaint();
 
     if (mw_one->linuxOS) {
-      QProcess* p = new QProcess;
-      p->start("chmod", QStringList() << "+x" << tempDir + filename);
+      QProcess::execute("chmod", QStringList() << "+x" << tempDir + filename);
     }
 
   } else {
-    QMessageBox::critical(NULL, tr("Error"), "Failed!!!");
+    QMessageBox::critical(this, tr("Error"), tr("Failed!!!"));
   }
 }
 
@@ -148,6 +147,7 @@ void AutoUpdateDialog::startUpdate() {
 
     QString fileName = tempDir + "upocat.sh";
     TextEditToFile(txtEdit, fileName);
+    delete txtEdit;
 
     QProcess::startDetached("bash", QStringList() << fileName);
   }
@@ -172,6 +172,7 @@ void AutoUpdateDialog::startUpdate() {
 
     QString fileName = tempDir + "upocat.bat";
     TextEditToFile(txtEdit, fileName);
+    delete txtEdit;
 
     QProcess::startDetached("cmd.exe", QStringList() << "/c" << fileName);
   }
@@ -185,6 +186,7 @@ void AutoUpdateDialog::startUpdate() {
 
     QString fileName = tempDir + "upocat.sh";
     TextEditToFile(txtEdit, fileName);
+    delete txtEdit;
 
     QProcess::execute("chmod", QStringList() << "+x" << fileName);
     QProcess::startDetached("bash", QStringList() << fileName);
@@ -256,15 +258,11 @@ void AutoUpdateDialog::closeEvent(QCloseEvent* event) {
 }
 
 void AutoUpdateDialog::TextEditToFile(QTextEdit* txtEdit, QString fileName) {
-  QFile* file;
-  file = new QFile;
-  file->setFileName(fileName);
-  bool ok = file->open(QIODevice::WriteOnly);
-  if (ok) {
-    QTextStream out(file);
+  QFile file(fileName);
+  if (file.open(QIODevice::WriteOnly)) {
+    QTextStream out(&file);
     out << txtEdit->toPlainText();
-    file->close();
-    delete file;
+    file.close();
   }
 }
 
@@ -370,6 +368,11 @@ void AutoUpdateDialog::startWgetDownload() {
   strTemp = strUrlOrg;
   strUrl = strTemp.replace("https://github.com/", strSet);
 
+  if (processWget) {
+    processWget->close();
+    delete processWget;
+    processWget = nullptr;
+  }
   processWget = new QProcess(this);
 
   connect(processWget, SIGNAL(finished(int)), this, SLOT(readResult(int)));
@@ -415,24 +418,21 @@ void AutoUpdateDialog::readResult(int exitCode) {
     if (mw_one->win || mw_one->linuxOS) UpdateTextShow();
 
     if (mw_one->linuxOS) {
-      QProcess* p = new QProcess;
-      p->start("chmod", QStringList() << "+x" << tempDir + filename);
+      QProcess::execute("chmod", QStringList() << "+x" << tempDir + filename);
     }
   }
 }
 
 void AutoUpdateDialog::onReadData() {
+  if (!processWget) return;
   QString result = processWget->readAllStandardOutput();
   ui->textEdit->append(result);
   ui->textEdit->moveCursor(QTextCursor::End);
 
-  QTextEdit* editTemp = new QTextEdit;
-  editTemp->setText(ui->textEdit->toPlainText());
   QString lineText;
-  for (int i = editTemp->document()->lineCount() - 1; i > 0; i--) {
-    QTextBlock block = editTemp->document()->findBlockByNumber(i);
-    editTemp->setTextCursor(QTextCursor(block));
-    lineText = editTemp->document()->findBlockByNumber(i).text().trimmed();
+  for (int i = ui->textEdit->document()->lineCount() - 1; i >= 0; i--) {
+    QTextBlock block = ui->textEdit->document()->findBlockByNumber(i);
+    lineText = block.text().trimmed();
     if (lineText.mid(0, 2) == "[#") {
       setWindowTitle(lineText);
       break;
@@ -451,27 +451,22 @@ void AutoUpdateDialog::onReadData() {
 
 void AutoUpdateDialog::UpdateTextShow() {
   QString strInfoFile = tempDir + "info.txt";
-  if (!QFile(strInfoFile).exists()) return;
+  if (!QFile::exists(strInfoFile)) return;
 
-  QFile* file = new QFile;
-  file->setFileName(strInfoFile);
-  bool ok = file->open(QIODevice::ReadOnly);
-  if (ok) {
-    QTextStream in(file);
+  QFile file(strInfoFile);
+  if (file.open(QIODevice::ReadOnly)) {
+    QTextStream in(&file);
     QString strOrg = in.readAll().trimmed();
     QString strCur = ui->textEdit->toPlainText().trimmed();
     if (strCur != strOrg) {
       ui->textEdit->setText(strOrg);
       ui->textEdit->moveCursor(QTextCursor::End);
     }
-
-    file->close();
-    delete file;
-
+    file.close();
   } else {
     tmrUpdateShow->stop();
-    QMessageBox::information(this, "Error Message",
-                             "Open File:" + file->errorString());
+    QMessageBox::information(this, tr("Error Message"),
+                             tr("Open File:") + file.errorString());
     return;
   }
 }
