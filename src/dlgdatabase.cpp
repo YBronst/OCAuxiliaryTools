@@ -238,14 +238,14 @@ void dlgDatabase::on_btnOpenDir_clicked() {
 }
 
 void dlgDatabase::on_btnIntelOnline_clicked() {
-  QUrl url(QString("https://github.com/ic005k/" + strAppName +
+  QUrl url(QString("https://github.com/YBronst/" + strAppName +
                    "/blob/master/Database/"
                    "BaseConfigs/Instructions_Intel.md"));
   QDesktopServices::openUrl(url);
 }
 
 void dlgDatabase::on_btnAMDOnline_clicked() {
-  QUrl url(QString("https://github.com/ic005k/" + strAppName +
+  QUrl url(QString("https://github.com/YBronst/" + strAppName +
                    "/blob/master/Database/"
                    "BaseConfigs/Instructions_AMD.md"));
   QDesktopServices::openUrl(url);

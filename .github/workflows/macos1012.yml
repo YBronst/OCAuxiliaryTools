@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-15-intel]
         # qt_ver: [5.9.9,5.12.10,5.15.2]
         qt_ver: [5.9.9]
         qt_arch: [clang_64]
@@ -41,10 +41,10 @@ jobs:
           qmake
           make
           
-      # 打包
+      # Pack
       - name: package
         run: |
-          # 拷贝依赖
+          # Copy dependency
           cp -r Database bin/release/${targetName}.app/Contents/MacOS/Database        
           cp -f Database/mac/aria2c bin/release/${targetName}.app/Contents/MacOS/aria2c
           chmod +x bin/release/${targetName}.app/Contents/MacOS/aria2c
@@ -67,7 +67,7 @@ jobs:
           
           macdeployqt bin/release/${targetName}.app -qmldir=. -verbose=1 -dmg
           
-      # 上传artifacts          
+      # Upload artifacts         
       - uses: actions/upload-artifact@v4
         with:
           #name: ${{ env.targetName }}_${{ matrix.os }}_${{matrix.qt_ver}} # .zip
@@ -75,7 +75,7 @@ jobs:
           
           path: bin/release/${{ env.targetName }}.dmg
           
-      # tag 上传Release
+      # tag Upload Release
       - name: uploadRelease
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2

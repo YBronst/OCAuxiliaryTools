@@ -14,7 +14,6 @@ extern QString SaveFileName, strIniFile, strAppName, strAppExePath;
 extern QString CurVerison, ocVer, ocVerDev, ocFrom, ocFromDev, strOCFrom,
     strOCFromDev;
 extern bool blDEV;
-extern bool zh_cn;
 extern QVariantMap mapTatol;
 extern QProgressBar* progBar;
 
@@ -758,8 +757,8 @@ void Method::doProcessDownloadProgress(qint64 recv_total,
 
 void Method::getLastReleaseFromUrl(QString strUrl) {
   if (blBreak) return;
-  // https://github.com/ic005k/" + strAppName;
-  // https://api.github.com/repos/ic005k/" + strAppName + "/releases/latest
+  // https://github.com/YBronst/" + strAppName;
+  // https://api.github.com/repos/YBronst/" + strAppName + "/releases/latest
   QString strAPI =
       strUrl.replace("https://github.com/", "https://api.github.com/repos/") +
       "/releases/latest";
@@ -1009,31 +1008,15 @@ void Method::setStatusBarTip(QWidget* w) {
   QStringList strList = strStatus0.split("----");
   if (strList.count() == 2) {
     QTextEdit* tempEdit = new QTextEdit;
-    QLocale locale;
-    if (locale.language() == QLocale::Chinese) {
-      tempEdit->setText(strList.at(1));
-      for (int m = 0; m < tempEdit->document()->lineCount(); m++) {
-        QTextBlock block = tempEdit->document()->findBlockByNumber(m);
-        tempEdit->setTextCursor(QTextCursor(block));
-        QString lineText =
-            tempEdit->document()->findBlockByNumber(m).text().trimmed();
-        if (lineText.mid(0, 2) == "描述" || lineText.mid(0, 2) == "说明") {
-          strStatus1 = lineText;
-          break;
-        }
-      }
-
-    } else {
-      tempEdit->setText(strList.at(0));
-      for (int m = 0; m < tempEdit->document()->lineCount(); m++) {
-        QTextBlock block = tempEdit->document()->findBlockByNumber(m);
-        tempEdit->setTextCursor(QTextCursor(block));
-        QString lineText =
-            tempEdit->document()->findBlockByNumber(m).text().trimmed();
-        if (lineText.mid(0, 11) == "Description") {
-          strStatus1 = lineText;
-          break;
-        }
+    tempEdit->setText(strList.at(0));
+    for (int m = 0; m < tempEdit->document()->lineCount(); m++) {
+      QTextBlock block = tempEdit->document()->findBlockByNumber(m);
+      tempEdit->setTextCursor(QTextCursor(block));
+      QString lineText =
+          tempEdit->document()->findBlockByNumber(m).text().trimmed();
+      if (lineText.mid(0, 11) == "Description") {
+        strStatus1 = lineText;
+        break;
       }
     }
   } else
@@ -2446,10 +2429,7 @@ void Method::show_Tip(QString strText, QString strTip) {
   QString str = strTip;
   QStringList list = str.split("----");
   if (list.count() == 2) {
-    if (!zh_cn)
-      strTip = list.at(0);
-    else
-      strTip = list.at(1);
+    strTip = list.at(0);
   } else
     strTip = str;
   strTip = strTip.trimmed();

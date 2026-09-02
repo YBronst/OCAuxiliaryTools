@@ -1,6 +1,6 @@
 name: Windows
 on: 
-  # push代码时触发workflow
+  # Workflow is triggered when pushing code.
   push:
     paths:
       - '*.pro'
@@ -14,16 +14,16 @@ on:
 jobs:
   build:
     name: Build
-    # 运行平台， windows-latest目前是windows server 2019 
-    # 参考文档 https://github.com/actions/virtual-environments/blob/main/images/win/Windows2019-Readme.md
+    # The operating platform, currently Windows Server 2019, is Windows-latest.
+    # See the documentation at https://github.com/actions/virtual-environments/blob/main/images/win/Windows2019-Readme.md
     runs-on: windows-2022
     strategy:
-      # 矩阵配置
+      # Matrix configuration
       matrix:
         include:
          
          
-          # 5.15.2 参考 https://mirrors.cloud.tencent.com/qt/online/qtsdkrepository/windows_x86/desktop/qt5_5152/
+          # 5.15.2 reference https://mirrors.cloud.tencent.com/qt/online/qtsdkrepository/windows_x86/desktop/qt5_5152/
          
           - qt_ver: 5.15.2          
             qt_arch: win64_msvc2019_64
@@ -35,11 +35,11 @@ jobs:
       VERSION: Win64
       orgName: OCAT
       
-    # 步骤
+    # step
     steps:
-      # 安装Qt
+      # Install Qt
       - name: Install Qt
-        # 使用外部action。这个action专门用来安装Qt
+        # Use an external action. This action is specifically designed to install Qt.
         uses: jurplel/install-qt-action@v3
         with:
           # Version of Qt to install
@@ -48,18 +48,18 @@ jobs:
           # target: ${{ matrix.qt_target }}
           arch: ${{ matrix.qt_arch }}
           cached: 'false'
-      # 拉取代码
+      # Pull code
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
 
-      # 动态获取VS路径
+      # Dynamically obtain VS path
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.msvc_arch }}
 
-      # msvc编译
+      # MSVC compilation
       - name: msvc-build
         id: build
         shell: cmd
@@ -71,7 +71,7 @@ jobs:
           echo winSdkVer=%WindowsSdkVersion% >> %GITHUB_ENV%
           echo vcToolsInstallDir=%VCToolsInstallDir% >> %GITHUB_ENV%
           echo vcToolsRedistDir=%VCToolsRedistDir% >> %GITHUB_ENV%
-      # 打包 
+      # Pack 
       - name: package
         id: package      
         env:
@@ -81,17 +81,17 @@ jobs:
         shell: pwsh
         run: |
           & scripts\windows-publish.ps1 ${env:archiveName} ${env:targetName}
-          # 记录packageName给后续step
+          # Record the packageName for subsequent steps.
            $name = ${env:archiveName}
            echo "::set-output name=packageName::$name"       
-      # tag 查询github-Release
-      # 上传artifacts          
+      # tag Query github-Release
+      # Upload artifacts          
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.package.outputs.packageName }}
           path: ${{ steps.package.outputs.packageName }}.zip
           
-      # tag 上传Release
+      # tag Upload Release
       - name: uploadRelease
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2

@@ -32,24 +32,24 @@ AutoUpdateDialog::~AutoUpdateDialog() { delete ui; }
 void AutoUpdateDialog::Init() {
   //"https://raw.fastgit.org/"  //HK
   strWinUrl =
-      "https://ghproxy.com/https://raw.githubusercontent.com/ic005k/"
-      "QtOpenCoreConfigDatabase/main/win.zip";
+      "https://github.com/YBronst/"
+      "OCAuxiliaryTools/releases/latest/download/OCAT-Win64.zip";
 
   strMacUrl =
-      "https://ghproxy.com/https://raw.githubusercontent.com/ic005k/"
-      "QtOpenCoreConfigDatabase/main/Contents.zip";
+      "https://github.com/YBronst/"
+      "OCAuxiliaryTools/releases/latest/download/OCAT_Mac.dmg";
 
   strMacClassicalUrl =
-      "https://ghproxy.com/https://github.com/ic005k/QtOpenCoreConfigDatabase/"
-      "releases/download/1.0.0/Contents.zip";
+      "https://github.com/YBronst/"
+      "OCAuxiliaryTools/releases/latest/download/OCAT_Mac10.12.and.below.dmg";
 
   strLinuxUrl =
-      "https://ghproxy.com/https://github.com/ic005k/QtOpenCoreConfigDatabase/"
-      "releases/download/1.0.0/OCAuxiliaryTools-Linux-x86_64.AppImage";
+      "https://github.com/YBronst/"
+      "OCAuxiliaryTools/releases/latest/download/OCAT-Linux-x86_64.AppImage";
 
   strDatabaseUrl =
-      "https://ghproxy.com/https://raw.githubusercontent.com/ic005k/"
-      "QtOpenCoreConfigDatabase/main/Database.zip";
+      "https://github.com/YBronst/"
+      "OCAuxiliaryTools/tree/master/Database";
 
   managerDownLoad = new QNetworkAccessManager(this);
   myfile = new QFile(this);
@@ -81,7 +81,7 @@ void AutoUpdateDialog::doProcessFinished() {
 }
 
 void AutoUpdateDialog::doProcessDownloadProgress(qint64 recv_total,
-                                                 qint64 all_total)  //显示
+                                                 qint64 all_total)  //display
 {
   ui->progressBar->setMaximum(all_total);
   ui->progressBar->setValue(recv_total);
@@ -217,26 +217,23 @@ void AutoUpdateDialog::startDownload(bool Database) {
     ui->btnStartUpdate->setVisible(false);
   }
 
-  QString strTokyo, strSeoul, strOriginal;
+  QString strOriginal;
 
   strOriginal = "https://github.com/";
-  strTokyo = "https://download.fastgit.org/";
-  strSeoul = "https://ghproxy.com/https://github.com/";
-  // strUrl.replace("https://github.com/", strTokyo);
-
+      
   QNetworkRequest request;
   request.setUrl(QUrl(strUrl));
   request.setHeader(QNetworkRequest::ContentTypeHeader,
                     "application/octet-stream");
 
-  reply = managerDownLoad->get(request);  //发送请求
+  reply = managerDownLoad->get(request);  //Send Request
 
   connect(reply, &QNetworkReply::readyRead, this,
-          &AutoUpdateDialog::doProcessReadyRead);  //可读
+          &AutoUpdateDialog::doProcessReadyRead);  //Readable
   connect(reply, &QNetworkReply::finished, this,
-          &AutoUpdateDialog::doProcessFinished);  //结束
+          &AutoUpdateDialog::doProcessFinished);  //Finished
   connect(reply, &QNetworkReply::downloadProgress, this,
-          &AutoUpdateDialog::doProcessDownloadProgress);  //大小
+          &AutoUpdateDialog::doProcessDownloadProgress);  //size
 
   QStringList list = strUrl.split("/");
   filename = list.at(list.length() - 1);
@@ -247,7 +244,7 @@ void AutoUpdateDialog::startDownload(bool Database) {
 
   myfile->setFileName(file);
   bool ret =
-      myfile->open(QIODevice::WriteOnly | QIODevice::Truncate);  //创建文件
+      myfile->open(QIODevice::WriteOnly | QIODevice::Truncate);  //Create file
   if (!ret) {
     QMessageBox::warning(this, "warning", "Failed to open.");
     return;
@@ -379,13 +376,10 @@ void AutoUpdateDialog::startWgetDownload() {
   }
   QString file = tempDir + filename;
 
-  QString strTokyo, strSeoul, strOriginal, strTest, strSet, strTemp;
+  QString strOriginal, strTest, strSet, strTemp;
 
   strOriginal = "https://github.com/";
-  strTokyo = "https://download.fastgit.org/";
-  strSeoul = "https://ghproxy.com/https://github.com/";
   strTest = "https://gh.api.99988866.xyz/https://github.com/";
-  // if (mw_one->zh_cn) strUrl.replace("https://github.com/", strTokyo);
   strSet = mw_one->myDlgPreference->ui->comboBoxNet->currentText().trimmed();
   strTemp = strUrlOrg;
   strUrl = strTemp.replace("https://github.com/", strSet);
@@ -407,10 +401,11 @@ void AutoUpdateDialog::startWgetDownload() {
     QDir::setCurrent(tempDir);
     processWget->start(strExec, QStringList() << "--allow-overwrite=true"
                                               << "--file-allocation=none"
+                                              << "-s" << "1"
+                                              << "-x" << "1"
                                               << "-l"
                                               << "-"
-                                              << "--log-level=warn"
-                                              << "--log-level=info" << strUrl);
+                                              << "--log-level=warn" << strUrl);
 
   } else {
     // if (mw_one->win) strExec = strAppExePath + "/wget.exe";

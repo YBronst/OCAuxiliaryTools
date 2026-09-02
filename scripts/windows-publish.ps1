@@ -2,7 +2,7 @@
 param (
     [string] $archiveName, [string] $targetName
 )
-# 外部环境变量包括:
+# External environment variables include:
 # archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_arch }}
 # winSdkDir: ${{ steps.build.outputs.winSdkDir }}
 # winSdkVer: ${{ steps.build.outputs.winSdkVer }}
@@ -26,16 +26,16 @@ Write-Host "scriptDir" $scriptDir
 function Main() {
 
     New-Item -ItemType Directory $archiveName
-    # 拷贝exe
+    # Copy exe
     Copy-Item bin\release\$targetName $archiveName\
     
-    # 拷贝额外的文件：主要用于网络访问
+    # Copying additional files: primarily for network access.
     Copy-Item ExtBin\*.dll $archiveName\
     Copy-Item ExtBin\*.exe $archiveName\
     Copy-Item ExtBin\OCAT.bat $archiveName\OCAT.bat
     # libcrypto-1_1-x64.dll
     # cp ExtBin/libssl-1_1-x64.dll libssl-1_1-x64.dll
-    # cp ExtBin/msvcr100.dll msvcr100.dll  win7 64位使用
+    # cp ExtBin/msvcr100.dll msvcr100.dll  win7 64-bit use
     
     #$Database=Database -f
     Copy-Item Database $archiveName\Database -recurse
@@ -43,22 +43,22 @@ function Main() {
     #$devDatabase=devDatabase -f
     #Copy-Item devDatabase $archiveName\devDatabase -recurse
     
-    # 拷贝依赖
+    # Copy dependency
     windeployqt --qmldir . --plugindir $archiveName\plugins --no-translations --compiler-runtime $archiveName\$targetName
 
-    # 新添加的行 - 在这里移除 vc_redist.x64.exe
+    # Newly added row - Remove here vc_redist.x64.exe
     Remove-Item -Path (Join-Path $archiveName "vc_redist.x64.exe") -ErrorAction SilentlyContinue
 
-    # 删除不必要的文件
+    # Delete unnecessary files
     $excludeList = @("*.qmlc", "*.ilk", "*.exp", "*.lib", "*.pdb")
     Remove-Item -Path $archiveName -Include $excludeList -Recurse -Force
-    # 拷贝vcRedist dll
+    # Copy vcRedist dll
     $redistDll="{0}{1}\*.CRT\*.dll" -f $env:vcToolsRedistDir.Trim(),$env:msvcArch
     Copy-Item $redistDll $archiveName\
-    # 拷贝WinSDK dll
+    # Copy WinSDK dll
     $sdkDll="{0}Redist\{1}ucrt\DLLs\{2}\*.dll" -f $env:winSdkDir.Trim(),$env:winSdkVer.Trim(),$env:msvcArch
     Copy-Item $sdkDll $archiveName\
-    # 打包zip
+    # Package into zip
     Compress-Archive -Path $archiveName $archiveName'.zip'
 }
 

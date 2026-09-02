@@ -1,16 +1,15 @@
 #include <QApplication>
 #include <QObject>
+#include <QSettings>
 #include <QSplashScreen>
 
 #include "Method.h"
 #include "mainwindow.h"
 #include "myapp.h"
 
-void loadLocal();
 extern QVector<QString> filelist;
 QWidgetList wdlist;
 extern QString PlistFileName, CurVersion, ocVer;
-extern bool zh_cn;
 MainWindow *mw_one;
 
 int main(int argc, char *argv[]) {
@@ -28,7 +27,6 @@ int main(int argc, char *argv[]) {
 #ifdef Q_OS_MAC
   Method::init_MacVerInfo(CurVersion);
 #endif
-  loadLocal();
 
   QDir dir;
   dir.mkpath(QDir::homePath() + "/.ocat/");
@@ -146,39 +144,4 @@ int main(int argc, char *argv[]) {
   f.setPixelSize(12);
   a->setFont(f);
   return a->exec();
-}
-
-void loadLocal() {
-  static QTranslator translator;
-  static QTranslator translator1;
-  static QTranslator translator2;
-
-  QLocale locale;
-  if (locale.language() == QLocale::English) {
-    zh_cn = false;
-
-  } else if (locale.language() == QLocale::Chinese) {
-    bool tr = false;
-    tr = translator.load(":/src/cn.qm");
-    if (tr) {
-      qApp->installTranslator(&translator);
-      zh_cn = true;
-    }
-
-    bool tr1 = false;
-    tr1 = translator1.load(":/src/qt_zh_CN.qm");
-    if (tr1) {
-      qApp->installTranslator(&translator1);
-      zh_cn = true;
-    }
-
-    bool tr2 = false;
-    tr2 = translator2.load(":/src/widgets_zh_cn.qm");
-    if (tr2) {
-      qApp->installTranslator(&translator2);
-      zh_cn = true;
-    }
-
-    // ui->retranslateUi(this);
-  }
 }

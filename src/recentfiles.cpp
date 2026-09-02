@@ -11,7 +11,6 @@
 #include <QString>
 #include <QStringList>
 
-extern bool zh_cn;
 
 QString sanitizedFileName(const QString& name) {
   QString clean = name;

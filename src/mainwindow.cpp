@@ -30,7 +30,6 @@ QVector<QCheckBox*> chkDisplayLevel, chk_ScanPolicy, chk_PickerAttributes,
     chk_ExposeSensitiveData, chk_Target;
 QVariantMap mapTatol;
 bool Initialization = false;
-bool zh_cn = false;
 int red = 0;
 
 extern QString CurVersion, ocVer, ocVerDev, ocFrom, ocFromDev, strOCFrom,
@@ -5138,10 +5137,7 @@ void MainWindow::init_EditMenu() {
 
 void MainWindow::init_HelpMenu() {
   // Help
-  if (zh_cn)
-    ui->actionOpenCoreChineseDoc->setVisible(true);
-  else
-    ui->actionOpenCoreChineseDoc->setVisible(false);
+  ui->actionOpenCoreChineseDoc->setVisible(false);
 
   connect(ui->btnHelp, &QAction::triggered, this, &MainWindow::on_btnHelp);
   ui->btnHelp->setShortcut(tr("ctrl+p"));
@@ -5951,7 +5947,7 @@ void MainWindow::on_table_Booter_patch_currentCellChanged(int currentRow,
 
 void MainWindow::on_btnCheckUpdate() {
   QNetworkRequest quest;
-  quest.setUrl(QUrl("https://api.github.com/repos/ic005k/" + strAppName +
+  quest.setUrl(QUrl("https://api.github.com/repos/YBronst/" + strAppName +
                     "/releases/"
                     "latest"));
   quest.setHeader(QNetworkRequest::UserAgentHeader, "RT-Thread ART");
@@ -6021,10 +6017,7 @@ int MainWindow::parse_UpdateJSON(QString str) {
     this->setFocus();
     QStringList noteList = ReleaseNote.split("---");
     if (noteList.count() == 3) {
-      if (zh_cn)
-        ReleaseNote = noteList.at(0) + noteList.at(1);
-      else
-        ReleaseNote = noteList.at(0) + noteList.at(2);
+      ReleaseNote = noteList.at(0) + noteList.at(2);
     }
 
     if (Verison > CurVersion && Url != "") {
@@ -8721,7 +8714,7 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
 }
 
 void MainWindow::on_actionBug_Report_triggered() {
-  QUrl url(QString("https://github.com/ic005k/" + strAppName + "/issues"));
+  QUrl url(QString("https://github.com/YBronst/" + strAppName + "/issues"));
   QDesktopServices::openUrl(url);
 }
 
@@ -9143,16 +9136,12 @@ void MainWindow::on_myeditPassInput_returnPressed() {
 }
 
 void MainWindow::on_actionDatabase_triggered() {
-  QString url =
-      "https://github.com/5T33Z0/OC-Little-Translated/tree/main/F_Desktop_EFIs/"
-      "Config_Templates";
+  QString url = "https://github.com/YBronst/OCAuxiliaryTools/tree/master/Database/BaseConfigs";
   QString txt = "<a href=\"" + url + "\"" + "> " +
                 tr(" Intel CPU configuration template ");
   QMessageBox box;
   box.setText(txt);
   box.exec();
-
-  return;
 
   myDatabase->setModal(true);
   myDatabase->show();
@@ -9424,7 +9413,7 @@ void MainWindow::on_btnDown_UEFI_Drivers_clicked() {
 
 void MainWindow::on_actionLatest_Release_triggered() {
   QUrl url(
-      QString("https://github.com/ic005k/" + strAppName + "/releases/latest"));
+      QString("https://github.com/YBronst/OCAuxiliaryTools/releases/tag/20260209"));
   QDesktopServices::openUrl(url);
 }
 
@@ -9817,15 +9806,9 @@ void MainWindow::on_actionPreferences_triggered() {
 }
 
 void MainWindow::on_actionDocumentation_triggered() {
-  if (!zh_cn) {
-    QUrl url_en(QString("https://github.com/ic005k/" + strAppName +
-                        "/blob/master/READMe.md"));
-    QDesktopServices::openUrl(url_en);
-  } else {
-    QUrl url_cn(QString("https://github.com/ic005k/" + strAppName +
-                        "/blob/master/READMe.md"));
-    QDesktopServices::openUrl(url_cn);
-  }
+  QUrl url_en(QString("https://github.com/YBronst/" + strAppName +
+                      "/blob/master/READMe.md"));
+  QDesktopServices::openUrl(url_en);
 }
 
 void MainWindow::on_btnHide_clicked() {
