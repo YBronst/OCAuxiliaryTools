@@ -56,7 +56,7 @@ RecentFiles::~RecentFiles() {
   m_recentMenu = (QMenu*)NULL;
 }
 
-//在menu菜单项下插一个text名称的菜单项并关联slotname响应
+// Insert a menu item named text under menu and connect to slotname response
 void RecentFiles::attachToMenuAfterItem(
     QMenu* menu, /* menu that "Recent" sub-menu should be inserted into */
     QString
@@ -122,7 +122,7 @@ void RecentFiles::setMostRecentFile(const QString fileName) {
   QSettings settings;
   QStringList recentFileList = settings.value(recentFileListId).toStringList();
 
-  if (recentFileList.count() == MaxRecentFiles)  //防止数组越界
+  if (recentFileList.count() == MaxRecentFiles)  // Prevent array out of bounds
   {
     recentFileList.removeAt(MaxRecentFiles - 1);
   }

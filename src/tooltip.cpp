@@ -76,7 +76,7 @@ void Tooltip::setMyText(QString strHead, const QString& text) {
   this->setWindowTitle(strHead);
   edit->setText(str.trimmed());
 
-  // 文本高度
+  // Text height
   QTextDocument* document = edit->document();  // new QTextDocument(edit);
   document->setTextWidth(thisWidth);
   QTextOption op;

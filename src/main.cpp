@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
 
   QFont f;
 #ifdef Q_OS_WIN32
-  PlistFileName = QString::fromLocal8Bit(argv[1]);  //解决乱码
+  PlistFileName = QString::fromLocal8Bit(argv[1]);  // Fix encoding/garbled characters
   f.setFamily("Microsoft YaHei UI");
 
   QPixmap pixmap(":/icon.png");

@@ -186,7 +186,7 @@ void Method::getAllFiles(const QString& foldPath, QStringList& folds,
   while (it.hasNext()) {
     it.next();
     QFileInfo fileInfo = it.fileInfo();
-    if (formats.contains(fileInfo.suffix())) {  // 检测格式，按需保存
+    if (formats.contains(fileInfo.suffix())) {  // Check format, save as needed
       folds << fileInfo.absoluteFilePath();
     }
   }
@@ -449,7 +449,7 @@ void Method::startDownload(QString strUrl) {
 
   myfile->setFileName(file);
   bool ret =
-      myfile->open(QIODevice::WriteOnly | QIODevice::Truncate);  // 创建文件
+      myfile->open(QIODevice::WriteOnly | QIODevice::Truncate);  // Create file
   if (!ret) {
     mw_one->dlgSyncOC->ui->btnStop->click();
     QMessageBox::warning(this, tr("Warning"),
@@ -719,7 +719,7 @@ void Method::updateOpenCore() {
 }
 
 void Method::doProcessDownloadProgress(qint64 recv_total,
-                                       qint64 all_total)  // 显示
+                                       qint64 all_total)  // Display progress
 {
   if (blBreak) return;
 
@@ -1047,7 +1047,7 @@ void Method::set_nv_key(QString key, QString dataType) {
     mw_one->ui->table_nv_add->setItem(mw_one->ui->table_nv_add->rowCount() - 1,
                                       1, newItem1);
 
-    // 保存数据
+    // Save data
     mw_one->write_ini(mw_one->ui->table_nv_add0, mw_one->ui->table_nv_add,
                       mw_one->ui->table_nv_add0->currentRow());
   }
@@ -2505,7 +2505,7 @@ void Method::set_TableData(QTableWidget* t, QVariantList mapList) {
       }
     }
 
-    if (map.count() == 0) {  // 代表列，从0开始
+    if (map.count() == 0) {  // Represents columns, starting from 0
       QTableWidgetItem* newItem1 =
           new QTableWidgetItem(mapList.at(i).toString());
       t->setItem(i + rowTotal, 0, newItem1);
