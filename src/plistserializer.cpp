@@ -54,7 +54,7 @@ static QDomElement serializePrimitive(QDomDocument& doc,
     result = textElement(doc, "integer", QString::number(variant.toInt()));
 
   } else if (variant.type() == QVariant::LongLong) {
-    //特别注意：必须加入长整型，否在当数字太大时，会出现问题，自动将之换成real类型
+    // Note: Must use long long, otherwise when numbers are too large they automatically convert to real type
     result = textElement(doc, "integer", QString::number(variant.toLongLong()));
 
   }
@@ -115,7 +115,7 @@ QString PListSerializer::toPList(const QVariant& variant, QString FileName) {
   plist.appendChild(serializeElement(document, variant));
 
   bool useQtWriteXML = true;
-  //保存文件
+  // Save file
   if (useQtWriteXML) {
     QFile file(FileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate |

@@ -249,7 +249,7 @@ void MainWindow::openFile(QString PlistFileName) {
 
   loading = true;
 
-  // 初始化
+  // Initialization
   init_Table(-1);
   listDPAdd.clear();
   listDPDel.clear();
@@ -353,7 +353,7 @@ QString MainWindow::getMD5(QString targetFile) {
   QCryptographicHash hashTest(QCryptographicHash::Md5);
   QFile f2(targetFile);
   f2.open(QFile::ReadOnly);
-  hashTest.reset();  // 重置（很重要）
+  hashTest.reset();  // Reset (Very important)
   hashTest.addData(&f2);
   QString targetHash = hashTest.result().toHex();
   f2.close();
@@ -482,19 +482,19 @@ void MainWindow::ParserACPI(QVariantMap map) {
   map = map["ACPI"].toMap();
   if (map.isEmpty()) return;
 
-  // 分析"Add"
+  // Analyze "Add"
   QVariantList map_add = map["Add"].toList();
   Method::set_TableData(ui->table_acpi_add, map_add);
 
-  // 分析Delete
+  // Analyze Delete
   QVariantList map_del = map["Delete"].toList();
   Method::set_TableData(ui->table_acpi_del, map_del);
 
-  // 分析Patch
+  // Analyze Patch
   QVariantList map_patch = map["Patch"].toList();
   Method::set_TableData(ui->table_acpi_patch, map_patch);
 
-  // 分析Quirks
+  // Analyze Quirks
   QVariantMap map_quirks = map["Quirks"].toMap();
   getValue(map_quirks, ui->tabACPI4);
 }
@@ -617,7 +617,7 @@ void MainWindow::ParserDP(QVariantMap map) {
       ui->table_dp_add->setItem(j, 2, newItem3);
     }
 
-    // 保存子条目里面的数据，以便以后加载
+    // Save data inside sub-entries for future loading
     for (int n = 0; n < ui->table_dp_add->rowCount(); n++) {
       listDPAdd.append(strAdd0 + "*|*" +
                        ui->table_dp_add->item(n, 0)->text().trimmed() + "*|*" +
@@ -763,7 +763,7 @@ void MainWindow::initui_Misc() {
   backColor.append("#989800");
   backColor.append("#bfbfbf");
 
-  // 添加颜色下拉框,字色
+  // Add color combobox, text color
   QStringList itemList;
   for (int i = 0; i < ui->mycboxTextColor->count(); i++) {
     itemList.append(ui->mycboxTextColor->itemText(i));
@@ -778,7 +778,7 @@ void MainWindow::initui_Misc() {
     ui->mycboxTextColor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
   }
 
-  // 背景色
+  // Background color
   itemList.clear();
   for (int i = 0; i < ui->mycboxBackColor->count(); i++) {
     itemList.append(ui->mycboxBackColor->itemText(i));
@@ -881,7 +881,7 @@ void MainWindow::initui_NVRAM() {
                                                      << "Data Type"
                                                      << "Value");
 
-  // 分割窗口
+  // Split window
   // QSplitter* splitterMain = new QSplitter(Qt::Horizontal, this);
   // splitterMain->addWidget(ui->table_nv_add0);
   // splitterMain->addWidget(ui->table_nv_add);
@@ -1176,17 +1176,17 @@ void MainWindow::init_value(QVariantMap map_fun, QTableWidget* table,
       newItem1 = new QTableWidgetItem(str0);
       table->setItem(i, 0, newItem1);
 
-      // 加载子条目
+      // Load sub-entries
       QVariantList map_sub_list =
-          map_fun[map_fun.keys().at(i)].toList();   // 是个数组
-      subtable->setRowCount(map_sub_list.count());  // 子键的个数
+          map_fun[map_fun.keys().at(i)].toList();   // Array
+      subtable->setRowCount(map_sub_list.count());  // Number of sub-keys
       for (int j = 0; j < map_sub_list.count(); j++) {
-        newItem1 = new QTableWidgetItem(map_sub_list.at(j).toString());  // 键
+        newItem1 = new QTableWidgetItem(map_sub_list.at(j).toString());  // Key
         subtable->setItem(j, 0, newItem1);
         // qDebug() << subtable->item(j, 0)->text();
       }
 
-      // 保存子条目里面的数据，以便以后加载
+      // Save data inside sub-entries for future loading
       for (int n = 0; n < subtable->rowCount(); n++) {
         list.append(table->objectName() + "*|*" + str0 + "*|*" +
                     subtable->item(n, 0)->text().trimmed());
@@ -1203,16 +1203,16 @@ void MainWindow::init_value(QVariantMap map_fun, QTableWidget* table,
     newItem1 = new QTableWidgetItem(str0);
     table->setItem(table->rowCount() - 1, 0, newItem1);
 
-    // 加载子条目
+    // Load sub-entries
     QVariantList map_sub_list =
-        map_fun[map_fun.keys().at(currentRow)].toList();  // 是个数组
-    subtable->setRowCount(map_sub_list.count());          // 子键的个数
+        map_fun[map_fun.keys().at(currentRow)].toList();  // Array
+    subtable->setRowCount(map_sub_list.count());          // Number of sub-keys
     for (int j = 0; j < map_sub_list.count(); j++) {
-      newItem1 = new QTableWidgetItem(map_sub_list.at(j).toString());  // 键
+      newItem1 = new QTableWidgetItem(map_sub_list.at(j).toString());  // Key
       subtable->setItem(j, 0, newItem1);
     }
 
-    // 保存子条目里面的数据，以便以后加载
+    // Save data inside sub-entries for future loading
     //  write_value_ini(table, subtable, table->rowCount() - 1);
   }
 
@@ -1799,18 +1799,18 @@ QVariantMap MainWindow::SaveDeviceProperties() {
   int cuRowAdd = ui->table_dp_add->currentRow();
   int cuColAdd = ui->table_dp_add->currentColumn();
   for (int i = 0; i < ui->table_dp_add0->rowCount(); i++) {
-    valueList.clear();  // 先必须清理下列表，很重要
-    // 先加载表中的数据
+    valueList.clear();  // Must clear the list first, very important
+    // Load table data first
     ui->table_dp_add0->setCurrentCell(i, 0);
     on_table_dp_add0_cellClicked(i, 0);
 
     for (int k = 0; k < ui->table_dp_add->rowCount(); k++) {
-      QString dataType = ui->table_dp_add->item(k, 1)->text();  // 数据类型
+      QString dataType = ui->table_dp_add->item(k, 1)->text();  // Data type
       QString value = ui->table_dp_add->item(k, 2)->text();
       if (dataType == "String")
         valueList[ui->table_dp_add->item(k, 0)->text()] = value;
       if (dataType == "Data") {
-        // 将以字符串方式显示的16进制原样转换成QByteArray
+        // Convert hex shown as string to QByteArray
         valueList[ui->table_dp_add->item(k, 0)->text()] = HexStrToByte(value);
       }
       if (dataType == "Number")
@@ -1833,7 +1833,7 @@ QVariantMap MainWindow::SaveDeviceProperties() {
     valueList.clear();
     arrayList.clear();
 
-    // 先加载表中的数据
+    // Load table data first
     ui->table_dp_del0->setCurrentCell(i, 0);
     on_table_dp_del0_cellClicked(i, 0);
 
@@ -1976,17 +1976,17 @@ QVariantMap MainWindow::SaveNVRAM() {
   int currentColAdd = ui->table_nv_add->currentColumn();
   for (int i = 0; i < ui->table_nv_add0->rowCount(); i++) {
     valueList.clear();
-    // 先加载表中的数据
+    // Load table data first
     ui->table_nv_add0->setCurrentCell(i, 0);
     on_table_nv_add0_cellClicked(i, 0);
 
     for (int k = 0; k < ui->table_nv_add->rowCount(); k++) {
-      QString dataType = ui->table_nv_add->item(k, 1)->text();  // 数据类型
+      QString dataType = ui->table_nv_add->item(k, 1)->text();  // Data type
       QString value = ui->table_nv_add->item(k, 2)->text();
       if (dataType == "String")
         valueList[ui->table_nv_add->item(k, 0)->text()] = value;
       if (dataType == "Data") {
-        // 将以字符串方式显示的16进制原样转换成QByteArray
+        // Convert hex shown as string to QByteArray
         valueList[ui->table_nv_add->item(k, 0)->text()] = HexStrToByte(value);
       }
       if (dataType == "Number")
@@ -2007,13 +2007,13 @@ QVariantMap MainWindow::SaveNVRAM() {
   ui->table_nv_add->setFocus();
 
   // Delete
-  dictList.clear();  // 先清理之前的数据
+  dictList.clear();  // Clear previous data first
   currentRow = ui->table_nv_del0->currentRow();
   for (int i = 0; i < ui->table_nv_del0->rowCount(); i++) {
-    valueList.clear();  // 先必须清理下列表，很重要
+    valueList.clear();  // Must clear the list first, very important
     arrayList.clear();
 
-    // 先加载表中的数据
+    // Load table data first
     ui->table_nv_del0->setCurrentCell(i, 0);
     on_table_nv_del0_cellClicked(i, 0);
 
@@ -2027,13 +2027,13 @@ QVariantMap MainWindow::SaveNVRAM() {
   subMap["Delete"] = dictList;
 
   // LegacySchema
-  dictList.clear();  // 先清理之前的数据
+  dictList.clear();  // Clear previous data first
   currentRow = ui->table_nv_ls0->currentRow();
   for (int i = 0; i < ui->table_nv_ls0->rowCount(); i++) {
-    valueList.clear();  // 先必须清理下列表，很重要
+    valueList.clear();  // Must clear the list first, very important
     arrayList.clear();
 
-    // 先加载表中的数据
+    // Load table data first
     ui->table_nv_ls0->setCurrentCell(i, 0);
     on_table_nv_ls0_cellClicked(i, 0);
 
@@ -2212,9 +2212,9 @@ QByteArray MainWindow::HexStringToByteArray(QString HexString) {
       if (ok) {
         ret.append(c);
       } else {
-        // qDebug() << "非法的16进制字符：" << s;
-        // QMessageBox::warning(0, tr("错误："),
-        //                      QString("非法的16进制字符: \"%1\"").arg(s));
+        // qDebug() << "Invalid hex character:" << s;
+        // QMessageBox::warning(0, tr("Error:"),
+        //                      QString("Invalid hex character: \"%1\"").arg(s));
       }
     }
   }
@@ -2472,7 +2472,7 @@ void MainWindow::add_item(QTableWidget* table, int total_column) {
   int t = table->rowCount();
   table->setRowCount(t + 1);
 
-  // 用""初始化各项值
+  // Initialize values with ""
   for (int i = 0; i < total_column; i++) {
     table->setItem(t, i, new QTableWidgetItem(""));
   }
@@ -2501,17 +2501,17 @@ void MainWindow::del_item(QTableWidget* table) {
 
   int row = table->currentRow();
 
-  // std::vector<int> vecItemIndex; //保存选中行的索引
+  // std::vector<int> vecItemIndex; // Save selected row indexes
   QItemSelectionModel* selections =
-      table->selectionModel();  // 返回当前的选择模式
+      table->selectionModel();  // Return current selection model
   QModelIndexList selectedsList =
-      selections->selectedIndexes();  // 返回所有选定的模型项目索引列表
+      selections->selectedIndexes();  // Return list of all selected model item indexes
 
   for (int i = 0; i < selectedsList.count(); i++) {
     // vecItemIndex.push_back(selectedsList.at(i).row());
     int t = selectedsList.at(i).row();
 
-    // 删除部分的Redo/Undo
+    // Redo/Undo for delete part
     QStringList fieldList;
     for (int j = 0; j < table->columnCount(); j++) {
       fieldList.append(table->item(t, j)->text());
@@ -2635,8 +2635,8 @@ void MainWindow::on_btnBooter_Del_clicked() { del_item(ui->table_booter); }
 
 void MainWindow::on_btnDPDel_Add0_clicked() {
   add_item(ui->table_dp_del0, 1);
-  ui->table_dp_del->setRowCount(0);  // 先清除右边表中的所有条目
-  on_btnDPDel_Add_clicked();         // 同时右边增加一个新条目
+  ui->table_dp_del->setRowCount(0);  // Clear all items in right table first
+  on_btnDPDel_Add_clicked();         // Also add a new item on the right
   ui->table_dp_del0->setFocus();
 
   write_value_ini(ui->table_dp_del0, ui->table_dp_del,
@@ -2657,7 +2657,7 @@ void MainWindow::on_btnDPDel_Add_clicked() {
   add_item(ui->table_dp_del, 1);
   loading = false;
 
-  // 保存数据
+  // Save data
   write_value_ini(ui->table_dp_del0, ui->table_dp_del,
                   ui->table_dp_del0->currentRow());
 
@@ -2719,8 +2719,8 @@ void MainWindow::on_btnDPAdd_Add0_clicked() {
   loading = true;
 
   add_item(ui->table_dp_add0, 1);
-  ui->table_dp_add->setRowCount(0);  // 先清除右边表中的所有条目
-  on_btnDPAdd_Add_clicked();         // 同时右边增加一个新条目
+  ui->table_dp_add->setRowCount(0);  // Clear all items in right table first
+  on_btnDPAdd_Add_clicked();         // Also add a new item on the right
   ui->table_dp_add0->setFocus();
   mymethod->writeLeftTable(ui->table_dp_add0, ui->table_dp_add);
 
@@ -2741,7 +2741,7 @@ void MainWindow::on_btnDPAdd_Add_clicked() {
   add_item(ui->table_dp_add, 3);
   loading = false;
 
-  // 保存数据
+  // Save data
   //  write_ini(ui->table_dp_add0, ui->table_dp_add,
   //           ui->table_dp_add0->currentRow());
   mymethod->writeLeftTable(ui->table_dp_add0, ui->table_dp_add);
@@ -2810,12 +2810,12 @@ void MainWindow::addKexts(QStringList FileName) {
 
     QDir fileDir(filePath + "/" + fileInfo.fileName() + "/Contents/MacOS/");
 
-    if (fileDir.exists())  // 如果目录存在，则遍历里面的文件
+    if (fileDir.exists())  // If directory exists, traverse files inside
     {
-      fileDir.setFilter(QDir::Files);  // 只遍历本目录
+      fileDir.setFilter(QDir::Files);  // Only traverse this directory
       QFileInfoList fileList = fileDir.entryInfoList();
       int fileCount = fileList.count();
-      for (int i = 0; i < fileCount; i++)  // 一般只有一个二进制文件
+      for (int i = 0; i < fileCount; i++)  // Usually only one binary file
       {
         fileInfoList = fileList[i];
       }
@@ -2843,11 +2843,11 @@ void MainWindow::addKexts(QStringList FileName) {
       copyDirectoryFiles(FileName.at(j), strKexts + strBaseName, false);
     }
 
-    // 如果里面还有PlugIns目录，则需要继续遍历插件目录
+    // If PlugIns directory exists inside, continue traversing plugins directory
     QDir piDir(filePath + "/" + fileInfo.fileName() + "/Contents/PlugIns/");
 
     if (piDir.exists()) {
-      piDir.setFilter(QDir::Dirs);  // 过滤器：只遍历里面的目录
+      piDir.setFilter(QDir::Dirs);  // Filter: only traverse directories inside
 
       QFileInfoList fileList;
       QFileInfoList List = piDir.entryInfoList();
@@ -2862,28 +2862,28 @@ void MainWindow::addKexts(QStringList FileName) {
       int fileCount = fileList.count();
       QVector<QString> kext_file;
 
-      for (int i = 0; i < fileCount; i++)  // 找出里面的kext文件(目录）
+      for (int i = 0; i < fileCount; i++)  // Find kext files (directories) inside
       {
         QString strKext = fileList[i].fileName();
         kext_file.push_back(strKext);
       }
 
-      if (fileCount > 0)  // 里面有目录
+      if (fileCount > 0)  // Has directories inside
       {
         for (int i = 0; i < fileCount; i++) {
           QDir fileDir(filePath + "/" + fileInfo.fileName() +
                        "/Contents/PlugIns/" + kext_file[i] +
                        "/Contents/MacOS/");
           if (fileDir.exists()) {
-            fileDir.setFilter(QDir::Files);  // 只遍历本目录里面的文件
+            fileDir.setFilter(QDir::Files);  // Only traverse files inside this directory
             QFileInfoList fileList = fileDir.entryInfoList();
             int fileCount = fileList.count();
-            for (int i = 0; i < fileCount; i++)  // 一般只有一个二进制文件
+            for (int i = 0; i < fileCount; i++)  // Usually only one binary file
             {
               fileInfoList = fileList[i];
             }
 
-            // 写入到表里
+            // Write to table
             Method::add_OneLine(t);
             for (int n = 0; n < t->columnCount(); n++) {
               QString txt = t->horizontalHeaderItem(n)->text();
@@ -2900,12 +2900,12 @@ void MainWindow::addKexts(QStringList FileName) {
               }
             }
 
-          } else {  // 不存在二进制文件，只存在一个Info.plist文件的情况
+          } else {  // No binary file exists, only Info.plist exists
 
             QDir fileDir(filePath + "/" + fileInfo.fileName() +
                          "/Contents/PlugIns/" + kext_file[i] + "/Contents/");
             if (fileDir.exists()) {
-              // 写入到表里
+              // Write to table
               Method::add_OneLine(t);
               for (int n = 0; n < t->columnCount(); n++) {
                 QString txt = t->horizontalHeaderItem(n)->text();
@@ -3036,8 +3036,8 @@ void MainWindow::on_btnMiscTools_Del_clicked() { del_item(ui->tableTools); }
 
 void MainWindow::on_btnNVRAMAdd_Add0_clicked() {
   add_item(ui->table_nv_add0, 1);
-  ui->table_nv_add->setRowCount(0);  // 先清除右边表中的所有条目
-  on_btnNVRAMAdd_Add_clicked();      // 同时右边增加一个新条目
+  ui->table_nv_add->setRowCount(0);  // Clear all items in right table first
+  on_btnNVRAMAdd_Add_clicked();      // Also add a new item on the right
   ui->table_nv_add0->setFocus();
 
   mymethod->writeLeftTable(ui->table_nv_add0, ui->table_nv_add);
@@ -3053,7 +3053,7 @@ void MainWindow::on_btnNVRAMAdd_Add_clicked() {
   add_item(ui->table_nv_add, 3);
   loading = false;
 
-  // 保存数据
+  // Save data
   write_ini(ui->table_nv_add0, ui->table_nv_add,
             ui->table_nv_add0->currentRow());
 
@@ -3072,8 +3072,8 @@ void MainWindow::on_btnNVRAMAdd_Del_clicked() {
 
 void MainWindow::on_btnNVRAMDel_Add0_clicked() {
   add_item(ui->table_nv_del0, 1);
-  ui->table_nv_del->setRowCount(0);  // 先清除右边表中的所有条目
-  on_btnNVRAMDel_Add_clicked();      // 同时右边增加一个新条目
+  ui->table_nv_del->setRowCount(0);  // Clear all items in right table first
+  on_btnNVRAMDel_Add_clicked();      // Also add a new item on the right
   ui->table_nv_del0->setFocus();
 
   write_value_ini(ui->table_nv_del0, ui->table_nv_del,
@@ -3090,7 +3090,7 @@ void MainWindow::on_btnNVRAMDel_Add_clicked() {
   add_item(ui->table_nv_del, 1);
   loading = false;
 
-  // 保存数据
+  // Save data
   write_value_ini(ui->table_nv_del0, ui->table_nv_del,
                   ui->table_nv_del0->currentRow());
 
@@ -3100,8 +3100,8 @@ void MainWindow::on_btnNVRAMDel_Add_clicked() {
 
 void MainWindow::on_btnNVRAMLS_Add0_clicked() {
   add_item(ui->table_nv_ls0, 1);
-  ui->table_nv_ls->setRowCount(0);  // 先清除右边表中的所有条目
-  on_btnNVRAMLS_Add_clicked();      // 同时右边增加一个新条目
+  ui->table_nv_ls->setRowCount(0);  // Clear all items in right table first
+  on_btnNVRAMLS_Add_clicked();      // Also add a new item on the right
   ui->table_nv_ls0->setFocus();
 
   write_value_ini(ui->table_nv_ls0, ui->table_nv_ls,
@@ -3118,7 +3118,7 @@ void MainWindow::on_btnNVRAMLS_Add_clicked() {
   add_item(ui->table_nv_ls, 1);
   loading = false;
 
-  // 保存数据
+  // Save data
   write_value_ini(ui->table_nv_ls0, ui->table_nv_ls,
                   ui->table_nv_ls0->currentRow());
 
@@ -3250,12 +3250,12 @@ void MainWindow::MoveItem(QTableWidget* t, bool up) {
   }
 
   if (up) {
-    // 先将上面的内容进行备份
+    // Backup top contents first
     for (int i = 0; i < cols; i++) {
       items.append(t->item(cr - 1, i)->text());
     }
 
-    // 将下面的内容移到上面
+    // Move bottom contents to top
     for (int i = 0; i < cols; i++) {
       t->item(cr - 1, i)->setText(t->item(cr, i)->text());
     }
@@ -3267,7 +3267,7 @@ void MainWindow::MoveItem(QTableWidget* t, bool up) {
         t->item(cr - 1, enabledList.at(i))->setCheckState(Qt::Unchecked);
     }
 
-    // 最后将之前的备份恢复到下面
+    // Finally restore backup to bottom
     for (int i = 0; i < cols; i++) {
       t->item(cr, i)->setText(items.at(i));
     }
@@ -3282,12 +3282,12 @@ void MainWindow::MoveItem(QTableWidget* t, bool up) {
     t->setCurrentCell(cr - 1, t->currentColumn());
 
   } else {
-    // 先将下面的内容进行备份
+    // Backup bottom contents first
     for (int i = 0; i < cols; i++) {
       items.append(t->item(cr + 1, i)->text());
     }
 
-    // 将上面的内容移到下面
+    // Move top contents to bottom
     for (int i = 0; i < cols; i++) {
       t->item(cr + 1, i)->setText(t->item(cr, i)->text());
     }
@@ -3299,7 +3299,7 @@ void MainWindow::MoveItem(QTableWidget* t, bool up) {
         t->item(cr + 1, enabledList.at(i))->setCheckState(Qt::Unchecked);
     }
 
-    // 最后将之前的备份恢复到上面
+    // Finally restore backup to top
     for (int i = 0; i < cols; i++) {
       t->item(cr, i)->setText(items.at(i));
     }
@@ -3356,7 +3356,7 @@ void MainWindow::on_btnSaveAs() {
   QSettings settings;
   QFileInfo fInfo(PlistFileName);
   settings.setValue("currentDirectory", fInfo.absolutePath());
-  // qDebug() << settings.fileName(); //最近打开的文件所保存的位置
+  // qDebug() << settings.fileName(); // Location where recently opened files are saved
   m_recentFiles->setMostRecentFile(PlistFileName);
   initRecentFilesForToolBar();
 }
@@ -3657,7 +3657,7 @@ void MainWindow::reg_win() {
   QString appPath = qApp->applicationFilePath();
 
   QString dir = qApp->applicationDirPath();
-  // 注意路径的替换
+  // Pay attention to path replacement
   appPath.replace("/", "\\");
   QString type = "QtiASL";
   QSettings* regType =
@@ -3672,10 +3672,10 @@ void MainWindow::reg_win() {
   regType->setValue("Default", type);
 
   regIcon->remove("Default");
-  // 0 使用当前程序内置图标
+  // 0 Use application built-in icon
   regIcon->setValue("Default", appPath + ",1");
 
-  // 百分号问题
+  // Percent sign issue
   QString shell = "\"" + appPath + "\" ";
   shell = shell + "\"%1\"";
 
@@ -3686,7 +3686,7 @@ void MainWindow::reg_win() {
   delete regShell;
   delete regType;
 
-  // 通知系统刷新
+  // Notify system to refresh
 #ifdef Q_OS_WIN32
   //::SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST|SHCNF_FLUSH, 0, 0);
 #endif
@@ -3748,7 +3748,7 @@ void MainWindow::readResult() {
   textMacInfo->clear();
   QString result = gs->readAll();
   textMacInfo->append(result);
-  // 取第三行的数据，第一行留给提示用
+  // Get 3rd line data, 1st line reserved for tip
   QString str = textMacInfo->document()->findBlockByNumber(2).text().trimmed();
 
   QString str1, str2;
@@ -3782,7 +3782,7 @@ void MainWindow::on_btnSystemProductName_clicked() {
 #ifdef Q_OS_WIN32
 
     gs->start(userDataBaseDir + "win/macserial.exe",
-              QStringList() << "-m" << str);  // 阻塞为execute
+              QStringList() << "-m" << str);  // Block with execute
 
 #endif
 
@@ -3952,7 +3952,7 @@ void MainWindow::runAdmin(QString file, QString arg) {
   WCHAR exePathArray[1024] = {0};
   exePath.toWCharArray(exePathArray);
 
-  QString command = arg;  //"-mount:*";//带参数运行
+  QString command = arg;  // "-mount:*"; // Run with arguments
   WCHAR commandArr[1024] = {0};
   command.toWCharArray(commandArr);
   HINSTANCE hNewExe =
@@ -3970,12 +3970,12 @@ void MainWindow::mount_esp() {
       QCoreApplication::applicationDirPath() + "/Database/win/FindESP.exe";
 
   // runAdmin(exec, "-unmount:*");
-  runAdmin(exec, "-mount:*");  // 可选参数-Updater
+  runAdmin(exec, "-mount:*");  // Optional parameter -Updater
 
   QString exec2 =
       QCoreApplication::applicationDirPath() + "/Database/win/winfile.exe";
 
-  runAdmin(exec2, NULL);  // 此时参数为空
+  runAdmin(exec2, NULL);  // Argument is empty here
 
 #endif
 
@@ -4189,7 +4189,7 @@ void MainWindow::on_btnDevices_del_clicked() { del_item(ui->tableDevices); }
 void MainWindow::on_cboxUpdateSMBIOSMode_currentIndexChanged(
     const QString& arg1) {
   if (arg1 == "Custom")
-    ui->chkCustomSMBIOSGuid->setChecked(true);  // 联动
+    ui->chkCustomSMBIOSGuid->setChecked(true);  // Linkage
   else
     ui->chkCustomSMBIOSGuid->setChecked(false);
 }
@@ -4230,7 +4230,7 @@ void MainWindow::on_editIntExposeSensitiveData_textChanged(
 
   // 10 to 16
   QString hex =
-      QString("%1").arg(total, 2, 16, QLatin1Char('0'));  // 保留2位，不足补零
+      QString("%1").arg(total, 2, 16, QLatin1Char('0'));  // Keep 2 digits, pad with zero
   ui->lblExposeSensitiveData->setText("0x" + hex.toUpper());
 }
 
@@ -4285,7 +4285,7 @@ void MainWindow::on_editIntScanPolicy_textChanged(const QString& arg1) {
 
   // 10 to 16
   QString hex =
-      QString("%1").arg(total, 8, 16, QLatin1Char('0'));  // 保留8位，不足补零
+      QString("%1").arg(total, 8, 16, QLatin1Char('0'));  // Keep 8 digits, pad with zero
   ui->lblScanPolicy->setText("0x" + hex.toUpper());
 }
 
@@ -4357,7 +4357,7 @@ void MainWindow::on_editIntDisplayLevel_textChanged(const QString& arg1) {
   // 10 to 16
   unsigned int total = arg1.toULongLong();
   QString hex =
-      QString("%1").arg(total, 8, 16, QLatin1Char('0'));  // 保留8位，不足补零
+      QString("%1").arg(total, 8, 16, QLatin1Char('0'));  // Keep 8 digits, pad with zero
   ui->lblDisplayLevel->setText("0x" + hex.toUpper());
 
   initDisplayLevelValue();
@@ -4408,7 +4408,7 @@ void MainWindow::on_editIntPickerAttributes_textChanged(const QString& arg1) {
 
   // 10 to 16
   QString hex =
-      QString("%1").arg(total, 2, 16, QLatin1Char('0'));  // 保留2位，不足补零
+      QString("%1").arg(total, 2, 16, QLatin1Char('0'));  // Keep 2 digits, pad with zero
   ui->lblPickerAttributes->setText("0x" + hex.toUpper());
 }
 
@@ -4427,7 +4427,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
 void MainWindow::show_menu(const QPoint pos) {
   if (ui->table_nv_add0->currentIndex().data().toString() ==
       "7C436110-AB2A-4BBB-A880-FE41995C9F82") {
-    // 设置菜单选项
+    // Set menu options
     QMenu* menu = new QMenu(ui->table_nv_add);
 
     QAction* act1 = new QAction("+  boot-args", ui->table_nv_add);
@@ -4490,7 +4490,7 @@ void MainWindow::show_menu(const QPoint pos) {
     int x = pos.x();
     int y = pos.y();
     QModelIndex index = ui->table_nv_add->indexAt(QPoint(x, y));
-    int row = index.row();  // 获得QTableWidget列表点击的行数
+    int row = index.row();  // Get clicked row in QTableWidget list
     QMessageBox box;
     box.setText(QString::number(row));
     // box.exec();
@@ -4528,7 +4528,7 @@ void MainWindow::on_nv11() { mymethod->set_nv_key("prev-lang:kbd", "Data"); }
 void MainWindow::on_nv12() { mymethod->set_nv_key("security-mode", "Data"); }
 
 void MainWindow::show_menu0(const QPoint pos) {
-  // 设置菜单选项
+  // Set menu options
   QMenu* menu = new QMenu(ui->table_nv_add0);
 
   QAction* act1 =
@@ -4554,11 +4554,11 @@ void MainWindow::show_menu0(const QPoint pos) {
 
   menu->move(cursor().pos());
   menu->show();
-  // 获得鼠标点击的x，y坐标点
+  // Get mouse clicked x, y coordinates
   int x = pos.x();
   int y = pos.y();
   QModelIndex index = ui->table_nv_add0->indexAt(QPoint(x, y));
-  int row = index.row();  // 获得QTableWidget列表点击的行数
+  int row = index.row();  // Get clicked row in QTableWidget list
   QMessageBox box;
   box.setText(QString::number(row));
   // box.exec();
@@ -4857,9 +4857,9 @@ void MainWindow::init_listMainSub() {
 
   ui->listMain->setViewMode(QListView::ListMode);
   ui->listSub->setViewMode(QListView::ListMode);
-  ui->listMain->setMovement(QListView::Static);  // 禁止拖动
+  ui->listMain->setMovement(QListView::Static);  // Disable dragging
   ui->listSub->setMovement(QListView::Static);
-  ui->listMain->setFocusPolicy(Qt::NoFocus);  // 去掉选中时的虚线
+  ui->listMain->setFocusPolicy(Qt::NoFocus);  // Remove dashed line when selected
   ui->listSub->setFocusPolicy(Qt::NoFocus);
 
   setListMainIcon();
@@ -5303,7 +5303,7 @@ void MainWindow::init_SearchUI() {
 
   ui->lblCount->setAlignment(Qt::AlignRight);
   ui->mycboxFind->lineEdit()->setLayout(buttonLayout);
-  // 设置输入区，不让输入的文字被隐藏在lblCount下
+  // Set input area so typed text is sustained above lblCount
   ui->mycboxFind->lineEdit()->setTextMargins(0, 1, size.width(), 1);
   connect(btnClear, &QToolButton::clicked, [=]() {
     ui->mycboxFind->lineEdit()->clear();
@@ -5812,7 +5812,7 @@ void MainWindow::on_editIntTarget_textChanged(const QString& arg1) {
 
   method(v, total);
 
-  // 10转16
+  // Base 10 to Base 16
   QString hex = QString("%1").arg(total, 2, 16, QLatin1Char('0'));
   ui->lblTargetHex->setText("0x" + hex.toUpper());
 }
@@ -5821,7 +5821,7 @@ void MainWindow::on_editIntHaltLevel_textChanged(const QString& arg1) {
   // 10 to 16
   unsigned int dec = arg1.toULongLong();
   QString hex =
-      QString("%1").arg(dec, 8, 16, QLatin1Char('0'));  // 保留8位，不足补零
+      QString("%1").arg(dec, 8, 16, QLatin1Char('0'));  // Keep 8 digits, pad with zero
   ui->lblHaltLevel->setText("0x" + hex.toUpper());
 }
 
@@ -6113,7 +6113,7 @@ bool MainWindow::DeleteDirectory(const QString& path) {
   return dir.rmpath(dir.absolutePath());
 }
 
-// 拷贝文件：
+// Copy file:
 bool MainWindow::copyFileToPath(QString sourceDir, QString toDir,
                                 bool coverFileIfExist) {
   toDir.replace("\\", "/");
@@ -6137,13 +6137,13 @@ bool MainWindow::copyFileToPath(QString sourceDir, QString toDir,
   return true;
 }
 
-// 拷贝文件夹：
+// Copy directory:
 bool MainWindow::copyDirectoryFiles(const QString& fromDir,
                                     const QString& toDir,
                                     bool coverFileIfExist) {
   QDir sourceDir(fromDir);
   QDir targetDir(toDir);
-  if (!targetDir.exists()) { /**< 如果目标目录不存在，则进行创建 */
+  if (!targetDir.exists()) { /**< If target directory does not exist, create it */
     if (!targetDir.mkdir(targetDir.absolutePath())) return false;
   }
 
@@ -6151,17 +6151,17 @@ bool MainWindow::copyDirectoryFiles(const QString& fromDir,
   foreach (QFileInfo fileInfo, fileInfoList) {
     if (fileInfo.fileName() == "." || fileInfo.fileName() == "..") continue;
 
-    if (fileInfo.isDir()) { /**< 当为目录时，递归的进行copy */
+    if (fileInfo.isDir()) { /**< When directory, recursively copy */
       if (!copyDirectoryFiles(fileInfo.filePath(),
                               targetDir.filePath(fileInfo.fileName()),
                               coverFileIfExist))
         return false;
-    } else { /**< 当允许覆盖操作时，将旧文件进行删除操作 */
+    } else { /**< When overwrite allowed, delete old file */
       if (coverFileIfExist && targetDir.exists(fileInfo.fileName())) {
         targetDir.remove(fileInfo.fileName());
       }
 
-      /// 进行文件copy
+      /// Copy file
       if (!QFile::copy(fileInfo.filePath(),
                        targetDir.filePath(fileInfo.fileName()))) {
         return false;
@@ -6249,40 +6249,40 @@ QString MainWindow::getWMIC(const QString& cmd) {
   return result;
 }
 
-QString MainWindow::getCpuName()  // 获取cpu名称：wmic cpu get Name
+QString MainWindow::getCpuName()  // Get CPU name: wmic cpu get Name
 {
   return getWMIC("wmic cpu get name");
 }
 
-QString MainWindow::getCpuId()  // 查询cpu序列号：wmic cpu get processorid
+QString MainWindow::getCpuId()  // Query CPU serial number: wmic cpu get processorid
 {
   return getWMIC("wmic cpu get processorid");
 }
 
 QString
-MainWindow::getCpuCoresNum()  // 获取cpu核心数：wmic cpu get NumberOfCores
+MainWindow::getCpuCoresNum()  // Get CPU core count: wmic cpu get NumberOfCores
 {
   return getWMIC("wmic cpu get NumberOfCores");
 }
 
-QString MainWindow::getCpuLogicalProcessorsNum()  // 获取cpu线程数：wmic cpu get
+QString MainWindow::getCpuLogicalProcessorsNum()  // Get CPU thread count: wmic cpu get
                                                   //  NumberOfLogicalProcessors
 {
   return getWMIC("wmic cpu get NumberOfLogicalProcessors");
 }
 
-QString MainWindow::getDiskNum()  // 查看硬盘：wmic diskdrive get serialnumber
+QString MainWindow::getDiskNum()  // View disk: wmic diskdrive get serialnumber
 {
   return getWMIC("wmic diskdrive where index=0 get serialnumber");
 }
 
-QString MainWindow::getBaseBordNum()  // 查询主板序列号：wmic baseboard get
+QString MainWindow::getBaseBordNum()  // Query motherboard serial number: wmic baseboard get
                                       //  serialnumber
 {
   return getWMIC("wmic baseboard get serialnumber");
 }
 
-QString MainWindow::getBiosNum()  // 查询BIOS序列号：wmic bios get serialnumber
+QString MainWindow::getBiosNum()  // Query BIOS serial number: wmic bios get serialnumber
 {
   return getWMIC("wmic bios get serialnumber");
 }
@@ -6765,7 +6765,7 @@ QObjectList MainWindow::getAllUIControls(QObject* parent) {
   }
 
   lstTemp =
-      lstOfChildren; /*  这里要注意，如果不拷贝原先的list，直接使用，会有问题；
+      lstOfChildren; /* Note: must copy original list, direct usage has issues;
                       */
 
   foreach (QObject* obj, lstTemp) {
@@ -7119,7 +7119,7 @@ void MainWindow::findTable(QTableWidget* t, QString text) {
 
         ui->listFind->addItem(t->item(i, j)->text());
 
-        // 命名规则：当前位置+对象名称
+        // Naming rule: current position + object name
         QString name =
             QString::number(listNameResults.count() - 1) + t->objectName();
 
@@ -7127,7 +7127,7 @@ void MainWindow::findTable(QTableWidget* t, QString text) {
         // qDebug() << plistPath;
 
         QFile file(plistPath);
-        if (file.exists())  // 如果文件存在，则先删除它
+        if (file.exists())  // If file exists, delete it first
           file.remove();
 
         QSettings Reg(plistPath, QSettings::IniFormat);
@@ -8139,9 +8139,9 @@ void MainWindow::copyLine(QTableWidget* w, QAction* copyAction) {
     QString qfile = strConfigPath + name + ".ini";
 
     QItemSelectionModel* selections =
-        w->selectionModel();  // 返回当前的选择模式
+        w->selectionModel();  // Return current selection model
     QModelIndexList selectedsList =
-        selections->selectedIndexes();  // 返回所有选定的模型项目索引列表
+        selections->selectedIndexes();  // Return list of all selected model item indexes
 
     QSettings Reg(qfile, QSettings::IniFormat);
     Reg.setValue("rowCount", selectedsList.count());
@@ -8335,7 +8335,7 @@ void MainWindow::init_CopyPasteLine() {
     w->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
     w->installEventFilter(this);
 
-    // 拷贝当前列表头文本
+    // Copy current table header text
     QAction* copyTableHeaderTextAction = new QAction(tr("CopyText"));
     QMenu* popTableHeaderMenu = new QMenu(this);
     popTableHeaderMenu->addAction(copyTableHeaderTextAction);
@@ -8477,13 +8477,13 @@ void MainWindow::init_CopyPasteLine() {
     connect(showtipAction, &QAction::triggered,
             [=]() { myToolTip->popup(QCursor::pos(), "", w->toolTip()); });
 
-    // 剪切行
+    // Cut row
     cutLine(w, cutAction, copyAction);
 
-    // 复制行
+    // Copy row
     copyLine(w, copyAction);
 
-    // 粘贴行
+    // Paste row
     pasteLine(w, pasteAction);
 
     tablePopMenu(w, cutAction, copyAction, pasteAction, showtipAction, popMenu);
@@ -8632,7 +8632,7 @@ void MainWindow::clearAllTableSelection() {
 void MainWindow::paintEvent(QPaintEvent* event) {
   Q_UNUSED(event);
 
-  // 获取背景色
+  // Get background color
   QPalette pal = this->palette();
   QBrush brush = pal.window();
   int c_red = brush.color().red();
@@ -8678,7 +8678,7 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
         }
       }
 
-      return true;  // 不让事件继续传播
+      return true;  // Don't let event propagate
     } else if (event->type() == QEvent::MouseMove) {
     }
   }
@@ -8760,7 +8760,7 @@ void MainWindow::getEditValue(QVariantMap map, QWidget* tab) {
     QLineEdit* w = (QLineEdit*)listLineEdit.at(i);
 
     QString str0, name;
-    str0 = w->objectName().mid(4, w->objectName().count() - 3);  // 去edit
+    str0 = w->objectName().mid(4, w->objectName().count() - 3);  // Remove edit
 
     if (str0.mid(0, 3) == "Dat" || str0.mid(0, 3) == "Int")
       name = str0.mid(3, str0.count() - 2);
@@ -8797,7 +8797,7 @@ void MainWindow::getValue(QVariantMap map, QWidget* tab) {
 }
 
 bool MainWindow::editExclusion(QLineEdit* w, QString name) {
-  // 用name ！= “”过滤掉获取的ComBox里面的edit
+  // Filter out edit inside ComboBox using name != ""
   if (name != "" && w != ui->myeditPassInput && name != "pinbox_lineedit")
     return true;
 
@@ -8812,7 +8812,7 @@ QVariantMap MainWindow::setEditValue(QVariantMap map, QWidget* tab) {
     QLineEdit* w = (QLineEdit*)listLineEdit.at(i);
     if (!w->isHidden() && w->objectName().mid(0, 4) == "edit") {
       QString str0, name;
-      str0 = w->objectName().mid(4, w->objectName().count() - 3);  // 去edit
+      str0 = w->objectName().mid(4, w->objectName().count() - 3);  // Remove edit
 
       if (str0.mid(0, 3) == "Dat" || str0.mid(0, 3) == "Int")
         name = str0.mid(3, str0.count() - 2);
@@ -9182,7 +9182,7 @@ void MainWindow::oc_Validate(bool show) {
 
   chkdata->waitForFinished();
   QString result =
-      QString::fromLocal8Bit(chkdata->readAll());  // 与保存文件的格式一致
+      QString::fromLocal8Bit(chkdata->readAll());  // Match saved file format
   QString str;
   QString strMsg;
   ui->lblOCVTip->setFixedHeight(16);

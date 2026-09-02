@@ -40,7 +40,7 @@ dlgDatabase::dlgDatabase(QWidget *parent)
   ui->tableDatabase->horizontalHeader()->setStretchLastSection(true);
   ui->tableDatabase->horizontalHeader()->setHidden(false);
   ui->tableDatabase->setSelectionBehavior(
-      QAbstractItemView::SelectItems);  //设置选择行为时每次选择一行或单个条目
+      QAbstractItemView::SelectItems);  // Set selection behavior to select a row or single item each time
 
   for (int i = 0; i < ui->tableDatabase->columnCount(); i++) {
     ui->tableDatabase->horizontalHeader()->setSectionResizeMode(
