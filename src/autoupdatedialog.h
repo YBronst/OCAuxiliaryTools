@@ -44,9 +44,9 @@ class AutoUpdateDialog : public QDialog {
   QString strUrl;
   QString strWinUrl;
   QString strMacUrl;
+  QString strDatabaseUrl;
   QString strMacClassicalUrl;
   QString strLinuxUrl;
-  QString strDatabaseUrl;
   QString strLinuxTargetFile;
 
   void TextEditToFile(QTextEdit* txtEdit, QString fileName);
