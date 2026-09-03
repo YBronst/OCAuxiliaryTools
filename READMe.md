@@ -1,6 +1,7 @@
 # OpenCore Auxiliary Tools (OCAT)
 
-![GUI](https://user-images.githubusercontent.com/76865553/165901706-abbccb4a-89bc-4b03-b6e5-f52dcb10b53c.png)
+![GUI](https://github.com/user-attachments/assets/5f28f770-9248-4275-b18a-49708c5bd8ac)
+
 
 ## About
 OpenCore Auxiliary Tools is a GUI-based Configurator for editing `config.plist` files for Acidanthera's OpenCore Boot Manager.
