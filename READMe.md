@@ -2,7 +2,7 @@
 
 ![GUI](https://github.com/user-attachments/assets/5f28f770-9248-4275-b18a-49708c5bd8ac)
 
-This is a restored and cleaned-up edition of the **OpenCore Auxiliary Tools (OCAT)**, originally developed by **ic005k**. 
+This is a restored and cleaned-up edition of the **OpenCore Auxiliary Tools (OCAT)**, originally developed by [ic005k](https://github.com/ic005k/OCAuxiliaryTools). 
 
 Since the original repository was abandoned, this project has been **painstakingly recreated and rebuilt directly from the original source files**. To clean up the codebase and make it fully uniform for the global community, **all Chinese language localizations and related assets have been completely removed**.
 
@@ -16,6 +16,7 @@ Unlike other Configurator apps, OCAT doesn't mess up the config if the Devs of O
 ## Key Changes in this Edition
 * **Source Restoration:** Reassembled, fixed, and compiled directly from the original source code.
 * **Code Cleanup:** Completely "de-Chinesed" — all Chinese interfaces, menus, and hidden localization clutter have been removed.
+* **Dependency Fixes:** Removed all broken links and references to external components that were deleted by the original author, ensuring stable builds.
 * **Pure Performance:** Kept the original smart adaptation system without extra regional bloat.
 
 ## Features
