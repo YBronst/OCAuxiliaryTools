@@ -25,7 +25,6 @@ Besides beeing a plist Configurator it can do much more:
 * Ability to Create EFI folder Backups
 
 ## Guides
-* Intel CPU BaseConfigs plug-in package provided and maintained by 5T33Z0. [Details](https://github.com/5T33Z0/OC-Little-Translated/tree/main/F_Desktop_EFIs)
 * AMD CPU BaseConfigs plug-in package, pre-selected for AMD CPU Quirks, AMD kernel patch package, Italian description documentation provided and maintained by [fabiosun](https://github.com/fabiosun).
 * [OpenCore Auxiliary Tools User's Guide (by chriswayg)](https://chriswayg.gitbook.io/opencore-visual-beginners-guide/oc_auxiliary_tools)
 
