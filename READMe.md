@@ -52,4 +52,4 @@ Besides beeing a plist Configurator it can do much more:
 
 ---
 
-## Releases [list](https://github.com/YBronst/OCAuxiliaryTools/releases)
+## Release [list](https://github.com/YBronst/OCAuxiliaryTools/releases)
