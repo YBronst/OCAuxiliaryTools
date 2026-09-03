@@ -1,6 +1,6 @@
 # OpenCore Auxiliary Tools (OCAT)
 
-![GUI](https://github.com/user-attachments/assets/ff5430ee-bf3b-4744-b619-db019c946af8)
+![GUI](https://user-images.githubusercontent.com/76865553/165901706-abbccb4a-89bc-4b03-b6e5-f52dcb10b53c.png)
 
 ## About
 OpenCore Auxiliary Tools is a GUI-based Configurator for editing `config.plist` files for Acidanthera's OpenCore Boot Manager.
@@ -26,37 +26,18 @@ Besides beeing a plist Configurator it can do much more:
 
 ## Guides
 
-* [Updating OpenCore and Kexts with OCAT (by 5T33Z0)](https://github.com/5T33Z0/OC-Little-Translated/blob/main/Content/D_Updating_OpenCore/README.md)
-* Pre-selected plug-in content for Intel CPU Quirks is provided and maintained by 5T33Z0. [Details](https://github.com/5T33Z0/OC-Little-Translated/tree/main/Content/F_Desktop_EFIs/preset)
-* Intel CPU BaseConfigs plug-in package provided and maintained by 5T33Z0. [Details](https://github.com/5T33Z0/OC-Little-Translated/tree/main/Content/F_Desktop_EFIs)
+* [Updating OpenCore and Kexts with OCAT (by 5T33Z0)](https://github.com/5T33Z0/OC-Little-Translated/blob/main/D_Updating_OpenCore/README.md)
+* Pre-selected plug-in content for Intel CPU Quirks is provided and maintained by 5T33Z0. [Details](https://github.com/5T33Z0/OC-Little-Translated/tree/main/F_Desktop_EFIs/preset)
+* Intel CPU BaseConfigs plug-in package provided and maintained by 5T33Z0. [Details](https://github.com/5T33Z0/OC-Little-Translated/tree/main/F_Desktop_EFIs)
+* AMD CPU BaseConfigs plug-in package, pre-selected for AMD CPU Quirks, AMD kernel patch package, Italian description documentation provided and maintained by [fabiosun](https://github.com/fabiosun).
 * [OpenCore Auxiliary Tools User's Guide (by chriswayg)](https://chriswayg.gitbook.io/opencore-visual-beginners-guide/oc_auxiliary_tools)
-
-
-## About adapt OpenCore version  （Question about the OpenCore version supported by OCAT）
-[#311](https://github.com/ic005k/OCAuxiliaryTools/issues/311) [#361](https://github.com/ic005k/OCAuxiliaryTools/issues/361)
-
-OCAT automatically adapts to your OpenCore version (If you need to update OpenCore, follow the steps in the image below)
-
-First,  click this button （First, click this button）
-
-![image](https://github.com/user-attachments/assets/00e2f813-8e5c-40b9-9ad3-22d02113ef06)
-
-
-Second, select the version from the drop-down list as in the picture
-
-![image](https://github.com/user-attachments/assets/a21941ee-3961-4698-841c-cd74b9ebc890)
-
-
-Third, click to download your selected OpenCore version
-
-![image](https://github.com/user-attachments/assets/6f3143cb-bb59-4eec-9694-8c007d990836)
-
 
 
 ## Credits
 * [vit9696](https://github.com/vit9696) OCAT feature suggestions etc.
 * [5T33Z0](https://github.com/5T33Z0) Intel CPU plug-in package for OCAT, suggestions for user interaction and functionality, Write Readme, etc.
 * [LucasMucGH](https://github.com/LucasMucGH) Native UI design suggestions for Mac-based versions, etc.
+* [fabiosun](https://github.com/fabiosun) AMD related content.
 * [chriswayg](https://github.com/chriswayg) OpenCore Auxiliary Tools User's Guide.
 * APP Icon Design: Mirone (Brazil).
 * [OpenCore](https://github.com/acidanthera/OpenCorePkg)&nbsp; &nbsp; &nbsp; &nbsp;
@@ -73,4 +54,3 @@ Third, click to download your selected OpenCore version
 
 ---
 
-API: https://api.github.com/repos/ic005k/OCAuxiliaryTools/releases/latest
