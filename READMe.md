@@ -25,6 +25,7 @@ Besides beeing a plist Configurator it can do much more:
 * Ability to Create EFI folder Backups
 
 ## Guides
+* [OC-Little Translated: ACPI Hotpatch Samples and Guides for OpenCore](https://github.com/5T33Z0/OC-Little-Translated)
 * AMD CPU BaseConfigs plug-in package, pre-selected for AMD CPU Quirks, AMD kernel patch package, Italian description documentation provided and maintained by [fabiosun](https://github.com/fabiosun).
 * [OpenCore Auxiliary Tools User's Guide (by chriswayg)](https://chriswayg.gitbook.io/opencore-visual-beginners-guide/oc_auxiliary_tools)
 
