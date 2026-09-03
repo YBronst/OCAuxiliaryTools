@@ -34,7 +34,6 @@ Besides beeing a plist Configurator it can do much more:
 ## Credits
 * [vit9696](https://github.com/vit9696) OCAT feature suggestions etc.
 * [5T33Z0](https://github.com/5T33Z0) Intel CPU plug-in package for OCAT, suggestions for user interaction and functionality, Write Readme, etc.
-* [LucasMucGH](https://github.com/LucasMucGH) Native UI design suggestions for Mac-based versions, etc.
 * [fabiosun](https://github.com/fabiosun) AMD related content.
 * [chriswayg](https://github.com/chriswayg) OpenCore Auxiliary Tools User's Guide.
 * APP Icon Design: Mirone (Brazil).
