@@ -51,4 +51,4 @@ Besides beeing a plist Configurator it can do much more:
 
 ---
 
-API: https://api.github.com/YBronst/OCAuxiliaryTools/releases/
+[Releases](https://github.com/YBronst/OCAuxiliaryTools/releases)
