@@ -1,0 +1,113 @@
+name: Refactor OCAuxiliaryTools
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  refactor:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: refactor/remove-database-presets
+      - name: Apply refactor
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, shutil
+          root=Path('.')
+          def read(p): return Path(p).read_text()
+          def write(p,s): Path(p).write_text(s)
+          def remove_func(src, signature):
+              pos=src.find(signature)
+              if pos < 0: return src
+              brace=src.find('{',pos)
+              if brace < 0: return src
+              depth=0
+              for i in range(brace,len(src)):
+                  if src[i]=='{': depth+=1
+                  elif src[i]=='}':
+                      depth-=1
+                      if depth==0: return src[:pos]+src[i+1:]
+              raise RuntimeError('unbalanced function: '+signature)
+
+          for p in ['src/dlgdatabase.cpp','src/dlgdatabase.h','src/dlgdatabase.ui','src/dlgPreset.cpp','src/dlgPreset.h','src/dlgPreset.ui']:
+              Path(p).unlink(missing_ok=True)
+          shutil.rmtree('Database', ignore_errors=True)
+
+          p=Path('OCAuxiliaryTools.pro'); s=read(p)
+          s=re.sub(r'^\s*src/(?:dlgPreset|dlgdatabase)\.(?:cpp|h|ui) \\\n','',s,flags=re.M)
+          s=re.sub(r'^\s*src/(?:dlgPreset|dlgdatabase)\.(?:cpp|h|ui)\s*\n','',s,flags=re.M)
+          write(p,s)
+
+          p=Path('src/mainwindow.h'); s=read(p)
+          for inc in ['dlgPreset.h','dlgdatabase.h','ui_dlgPreset.h','ui_dlgdatabase.h']: s=s.replace(f'#include "{inc}"\n','')
+          s=re.sub(r'^\s*QString dataBaseDir, userDataBaseDir;\n','',s,flags=re.M)
+          s=re.sub(r'^\s*QString getDatabaseVer\(\);\n','',s,flags=re.M)
+          s=re.sub(r'^\s*dlgDatabase\* myDatabase;\n','',s,flags=re.M)
+          s=re.sub(r'^\s*dlgPreset\* dlgPresetValues;\n','',s,flags=re.M)
+          s=re.sub(r'^\s*void ShowAutoUpdateDlg\(bool\s+Database\);\n','',s,flags=re.M)
+          for fn in ['on_actionDatabase_triggered','on_actionGenerateEFI_triggered']: s=re.sub(r'^\s*void '+fn+r'\(\);\n','',s,flags=re.M)
+          write(p,s)
+
+          p=Path('src/mainwindow.cpp'); s=read(p)
+          s=s.replace('#include "dlgdatabase.h"\n','').replace('#include "dlgPreset.h"\n','')
+          for sig in ['void MainWindow::on_actionDatabase_triggered()','void MainWindow::on_actionGenerateEFI_triggered()','QString MainWindow::getDatabaseVer()']: s=remove_func(s,sig)
+          s=re.sub(r'^\s*dataBaseDir\s*=.*;\n','',s,flags=re.M)
+          s=re.sub(r'^\s*userDataBaseDir\s*=.*;\n','',s,flags=re.M)
+          s=s.replace('ShowAutoUpdateDlg(true);','')
+          write(p,s)
+
+          p=Path('src/mainwindow.ui'); s=read(p)
+          for obj in ['actionDatabase','actionGenerateEFI','actionPreset','actionPresets','actionGenerate_EFI']:
+              s=re.sub(r'<action>\s*<property name="objectName">\s*<cstring>'+re.escape(obj)+r'</cstring>.*?</action>\s*','',s,flags=re.S)
+              s=re.sub(r'\s*<addaction name="'+re.escape(obj)+r'"/>','',s)
+          write(p,s)
+
+          p=Path('src/syncocdialog.h'); s=read(p)
+          if 'QString efiRoot;' not in s: s=s.replace('  QString sourceResourcesDir;\n','  QString efiRoot;\n  QString sourceResourcesDir;\n')
+          write(p,s)
+
+          p=Path('src/syncocdialog.cpp'); s=read(p)
+          start=s.find('ui->comboOCVersions->addItems(QStringList()')
+          if start>=0:
+              end=s.find(');',start)
+              if end>=0: s=s[:start]+'ui->comboOCVersions->addItems(QStringList() << tr("Latest Version") << "1.0.5");'+s[end+2:]
+          s=s.replace('Reg.value("maxVer", "0.7.8")','Reg.value("maxVer", "1.0.5")').replace('QString str0 = "061";','QString str0 = "104";')
+          s=s.replace('  QString pathOldSource;\n  pathOldSource = QDir::homePath() + "/.ocat/Database/";\n','')
+          s=s.replace('DirName = fi.path().mid(0, fi.path().count() - 3);','DirName = fi.path().mid(0, fi.path().count() - 3);\n  efiRoot = DirName;')
+          s=s.replace('sourceKexts.append(pathOldSource + "EFI/OC/Kexts/" + strKextName);','sourceKexts.append(DirName + "/OC/Kexts/" + strKextName);')
+          s=s.replace('sourceResourcesDir = pathOldSource + "EFI/OC/Resources/";','sourceResourcesDir = DirName + "/OC/Resources/";')
+          s=s.replace('file1 = mw_one->pathSource + "EFI/OC/OpenCore.efi";','file1 = DirName + "/OC/OpenCore.efi";').replace('file2 = mw_one->pathSource + "EFI/BOOT/BOOTx64.efi";','file2 = DirName + "/BOOT/BOOTx64.efi";').replace('file3 = mw_one->pathSource + "EFI/OC/Drivers/OpenRuntime.efi";','file3 = DirName + "/OC/Drivers/OpenRuntime.efi";').replace('file4 = mw_one->pathSource + "EFI/OC/Drivers/OpenCanopy.efi";','file4 = DirName + "/OC/Drivers/OpenCanopy.efi";')
+          s=s.replace('str2 = mw_one->pathSource + "EFI/OC/Drivers/" + str1;','str2 = DirName + "/OC/Drivers/" + str1;').replace('sourceOpenCore.append(mw_one->pathSource + "EFI/OC/Tools/" + strName);','sourceOpenCore.append(DirName + "/OC/Tools/" + strName);')
+          write(p,s)
+
+          p=Path('src/Method.cpp'); s=read(p)
+          s=s.replace('#include "dlgdatabase.h"\n','').replace('#include "ui_dlgdatabase.h"\n','')
+          s=remove_func(s,'void Method::finishKextUpdate(bool blDatabase)')
+          s=remove_func(s,'void Method::updateOpenCore()')
+          new_finish='''void Method::finishKextUpdate(bool) {\n  QStringList downloaded;\n  QStringList roots = DirToFileList(tempDir, "*.kext");\n  for (const QString &n : roots) downloaded << tempDir + n;\n  QStringList folds; getAllFolds(tempDir, folds);\n  for (const QString &d : folds) { if (d.contains("Debug")) continue; for (const QString &n : DirToFileList(d, "*.kext")) downloaded << d + "/" + n; }\n  for (const QString &src : downloaded) {\n    QString name=getFileName(src);\n    for (int j=0;j<mw_one->dlgSyncOC->targetKexts.count();++j) {\n      QString wanted=QFileInfo(mw_one->dlgSyncOC->targetKexts.at(j)).fileName();\n      if (name==wanted && mw_one->dlgSyncOC->chkList.at(j)->isChecked()) mw_one->copyDirectoryFiles(src,mw_one->dlgSyncOC->targetKexts.at(j),true);\n    }\n  }\n  mw_one->dlgSyncOC->ui->btnCheckUpdate->setEnabled(true);\n  mw_one->dlgSyncOC->ui->labelShowDLInfo->setVisible(false);\n  mw_one->checkFiles(mw_one->ui->table_kernel_add); mw_one->repaint();\n}\n'''
+          idx=s.find('void Method::kextUpdate()'); s=s[:idx]+new_finish+'\n'+s[idx:]
+          s=s.replace('finishKextUpdate(true);','finishKextUpdate(false);')
+          new_update='''void Method::updateOpenCore() {\n  if (!mw_one->dlgSyncOC->isCheckOC) return;\n  QString extracted=tempDir+"X64/EFI/"; QString bak=tempDir;\n  if (!QDir(extracted).exists()) { QString d=filename; d.replace(".zip",""); extracted=tempDir+d+"/X64/EFI/"; if (QDir(extracted).exists()) tempDir+=d+"/"; }\n  if (!QDir(extracted).exists()) { tempDir=bak; QMessageBox::information(this,"",tr("No OpenCore EFI was found in the downloaded archive.")); return; }\n  QString target=mw_one->dlgSyncOC->efiRoot; if (target.isEmpty()) { tempDir=bak; return; }\n  const QStringList paths={"OC/OpenCore.efi","BOOT/BOOTx64.efi","OC/Drivers/OpenRuntime.efi","OC/Drivers/OpenCanopy.efi"};\n  for (const QString &rel: paths) if (QFile(extracted+rel).exists()) mw_one->copyFileToPath(extracted+rel,target+"/"+rel,true);\n  mw_one->copyDirectoryFiles(extracted+"OC/Drivers",target+"/OC/Drivers",true);\n  mw_one->copyDirectoryFiles(extracted+"OC/Tools",target+"/OC/Tools",true);\n  if (mw_one->dlgSyncOC->ui->chkIncludeResource->isChecked()) mw_one->copyDirectoryFiles(extracted+"OC/Resources",target+"/OC/Resources",true);\n  mw_one->dlgSyncOC->isCheckOC=false; mw_one->dlgSyncOC->ui->btnGetOC->setEnabled(true); mw_one->dlgSyncOC->ui->btnGetLastOC->setEnabled(true); mw_one->dlgSyncOC->init_Sync_OC_Table(); tempDir=bak;\n}\n'''
+          idx=s.find('void Method::doProcessDownloadProgress'); s=s[:idx]+new_update+'\n'+s[idx:]
+          write(p,s)
+
+          # Remove all explicit database update URL symbols/references in text sources.
+          for p in root.rglob('*'):
+              if p.is_file() and p.suffix in {'.cpp','.h','.ui','.pro','.qrc'}:
+                  try: s=read(p)
+                  except: continue
+                  s=re.sub(r'(?i)strDatabaseUrl','',s); write(p,s)
+          for p in [Path('src/dlgpreference.cpp'),Path('src/mainwindow.cpp')]:
+              s=read(p); s=re.sub(r'(Auto.?Column.?Width[^\n]{0,200}?setChecked\()true(\))',r'\1false\2',s,flags=re.I); s=re.sub(r'(Auto.?Column.?Width[^\n]{0,200}?[,=]\s*)true\b',r'\1false',s,flags=re.I); write(p,s)
+          PY
+          git rm -r --ignore-unmatch Database src/dlgPreset.cpp src/dlgPreset.h src/dlgPreset.ui src/dlgdatabase.cpp src/dlgdatabase.h src/dlgdatabase.ui || true
+          git add -A
+          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'refactor: remove database presets and update existing EFI' || true
+          git push origin HEAD:refactor/remove-database-presets
