@@ -8328,7 +8328,7 @@ void MainWindow::init_CopyPasteLine() {
     // Auto Col Width
 
     bool isAutoColWidth =
-        Reg.value(w->objectName() + "AutoColWidth", true).toBool();
+        Reg.value(w->objectName() + "AutoColWidth", false).toBool();
     set_AutoColWidth(w, isAutoColWidth);
 
     w->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -10297,7 +10297,7 @@ void MainWindow::init_AutoColumnWidth() {
     // Auto Col Width
 
     bool isAutoColWidth =
-        Reg.value(w->objectName() + "AutoColWidth", true).toBool();
+        Reg.value(w->objectName() + "AutoColWidth", false).toBool();
     set_AutoColWidth(w, isAutoColWidth);
   }
 }
