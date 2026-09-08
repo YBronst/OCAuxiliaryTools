@@ -48,8 +48,6 @@
 #include "dlgMountESP.h"
 #include "dlgOCValidate.h"
 #include "dlgParameters.h"
-#include "dlgPreset.h"
-#include "dlgdatabase.h"
 #include "dlgkernelpatch.h"
 #include "dlgmisc.h"
 #include "dlgnewkeyfield.h"
@@ -65,8 +63,6 @@
 #include "ui_dlgMountESP.h"
 #include "ui_dlgOCValidate.h"
 #include "ui_dlgParameters.h"
-#include "ui_dlgPreset.h"
-#include "ui_dlgdatabase.h"
 #include "ui_dlgkernelpatch.h"
 #include "ui_dlgnewkeyfield.h"
 #include "ui_dlgpreference.h"
@@ -98,7 +94,6 @@ class MainWindow : public QMainWindow {
   bool blOCValidateError = false;
   dlgMountESP* dlgMESP;
   QString pathSource;
-  QString dataBaseDir, userDataBaseDir;
   QLabel* lblVer;
   QToolButton* btnBak;
   bool blReadLeftTable;
@@ -152,7 +147,6 @@ class MainWindow : public QMainWindow {
   void setPalette(QWidget* w, QColor backColor, QColor textColor);
 
   void setCheckBoxWidth(QCheckBox* cbox);
-  QString getDatabaseVer();
   QIntValidator* IntValidator = new QIntValidator;
   QString getTableFieldDataType(QTableWidget* table);
   void setStatusBarText(QTableWidget* table);
@@ -166,7 +160,6 @@ class MainWindow : public QMainWindow {
   dlgParameters* dlgPar;
   AutoUpdateDialog* dlgAutoUpdate;
   SyncOCDialog* dlgSyncOC;
-  dlgPreset* dlgPresetValues;
   dlgMisc* dlgMiscBootArgs;
   Tooltip* myToolTip;
 
@@ -302,7 +295,6 @@ class MainWindow : public QMainWindow {
   QComboBox* cboxReservedMemoryType;
 
   aboutDialog* aboutDlg;
-  dlgDatabase* myDatabase;
   void addACPIItem(QStringList FileName);
 
   void addKexts(QStringList FileName);
@@ -342,8 +334,6 @@ class MainWindow : public QMainWindow {
   void MoveItem(QTableWidget* t, bool up);
   void CheckChange(QTableWidget* tw, int arg1, QToolButton* btnDel);
   void CellEnter(int row, QTableWidget* tw);
-
-  void ShowAutoUpdateDlg(bool Database);
   void setConversionWidgetVisible(bool v);
   void EnterPress();
 
@@ -395,9 +385,7 @@ class MainWindow : public QMainWindow {
   void on_btnNVRAMDel_Add0_clicked();
   void cellEnteredSlot(int row, int column);
   void on_actionOnline_Download_Updates_triggered();
-  void on_actionDatabase_triggered();
   void on_actionPreferences_triggered();
-  void on_actionGenerateEFI_triggered();
 
  protected:
   void dragEnterEvent(QDragEnterEvent* e) override;

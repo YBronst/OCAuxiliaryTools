@@ -63,8 +63,6 @@ SOURCES += \
     src/dlgMountESP.cpp \
     src/dlgOCValidate.cpp \
     src/dlgParameters.cpp \
-    src/dlgPreset.cpp \
-    src/dlgdatabase.cpp \
     src/dlgkernelpatch.cpp \
     src/dlgmisc.cpp \
     src/dlgnewkeyfield.cpp \
@@ -86,8 +84,6 @@ FORMS += \
     src/dlgMountESP.ui \
     src/dlgOCValidate.ui \
     src/dlgParameters.ui \
-    src/dlgPreset.ui \
-    src/dlgdatabase.ui \
     src/dlgkernelpatch.ui \
     src/dlgmisc.ui \
     src/dlgnewkeyfield.ui \
@@ -107,8 +103,6 @@ HEADERS += \
     src/dlgMountESP.h \
     src/dlgOCValidate.h \
     src/dlgParameters.h \
-    src/dlgPreset.h \
-    src/dlgdatabase.h \
     src/dlgkernelpatch.h \
     src/dlgmisc.h \
     src/dlgnewkeyfield.h \

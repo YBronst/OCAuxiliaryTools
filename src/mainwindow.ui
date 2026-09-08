@@ -11781,8 +11781,6 @@ Enable this option to be able to see all the boot options when having multiple d
     <addaction name="actionUpgrade_OC"/>
     <addaction name="actionOcvalidate"/>
     <addaction name="separator"/>
-    <addaction name="actionDatabase"/>
-    <addaction name="actionGenerateEFI"/>
     <addaction name="separator"/>
     <addaction name="actionInitDatabaseLinux"/>
     <addaction name="actionOpen_database_directory"/>

@@ -1,12 +1,10 @@
 #include "Method.h"
 
 #include "BalloonTip.h"
-#include "dlgdatabase.h"
 #include "filesystemwatcher.h"
 #include "mainwindow.h"
 #include "plistparser.h"
 #include "plistserializer.h"
-#include "ui_dlgdatabase.h"
 #include "ui_mainwindow.h"
 
 extern MainWindow* mw_one;
@@ -192,77 +190,15 @@ void Method::getAllFiles(const QString& foldPath, QStringList& folds,
   }
 }
 
-void Method::finishKextUpdate(bool blDatabase) {
-  QStringList kextList, tempList;
-  QStringList list0 = DirToFileList(tempDir, "*.kext");
-  for (int i = 0; i < list0.count(); i++) {
-    kextList.append(tempDir + list0.at(i));
-  }
 
-  QStringList folds;
-  getAllFolds(tempDir, folds);
-  // qDebug() << folds;
-  for (int i = 0; i < folds.count(); i++) {
-    QString strdir = folds.at(i);
-    if (!strdir.contains("Debug")) {
-      QStringList list3 = DirToFileList(strdir, "*.kext");
-      for (int n = 0; n < list3.count(); n++)
-        kextList.append(strdir + "/" + list3.at(n));
-    }
-  }
 
+void Method::finishKextUpdate(bool) {
   QStringList files;
-  QStringList fmt = QString("plist;jpg").split(';');
-  getAllFiles(tempDir, files, fmt);
-  // qDebug() << files;
-
-  tempList = kextList;
-  for (int i = 0; i < kextList.count(); i++) {
-    QString str = kextList.at(i);
-    for (int j = 0; j < tempList.count(); j++) {
-      QString strTemp = tempList.at(j);
-      if (str.length() > strTemp.length() && str.contains(strTemp)) {
-        kextList.removeAt(i);
-        i--;
-      }
-    }
-  }
-
-  if (blDatabase) {
-    for (int i = 0; i < kextList.count(); i++) {
-      QString dirSource, dirTargetDatabase;
-      dirSource = kextList.at(i);
-      QString Name = getFileName(dirSource);
-      dirTargetDatabase =
-          QDir::homePath() + "/.ocat/Database/EFI/OC/Kexts/" + Name;
-      mw_one->copyDirectoryFiles(dirSource, dirTargetDatabase, true);
-    }
-  } else {
-    QStringList list;
-    list = DirToFileList(QDir::homePath() + "/.ocat/Database/EFI/OC/Kexts/",
-                         "*.kext");
-    for (int i = 0; i < list.count(); i++) {
-      QString dirSource, dirTarget;
-      dirSource =
-          QDir::homePath() + "/.ocat/Database/EFI/OC/Kexts/" + list.at(i);
-      QString Name = getFileName(dirSource);
-      dirTarget = strKexts + Name;
-
-      for (int j = 0; j < mw_one->dlgSyncOC->sourceKexts.count(); j++) {
-        QString str_1 = mw_one->dlgSyncOC->ui->tableKexts->item(j, 3)->text();
-        if (Name == str_1 && mw_one->dlgSyncOC->chkList.at(j)->isChecked())
-          mw_one->copyDirectoryFiles(dirSource, dirTarget, true);
-
-        qDebug() << dirSource << dirTarget;
-      }
-    }
-  }
-
-  mw_one->dlgSyncOC->ui->btnCheckUpdate->setEnabled(true);
-
-  mw_one->dlgSyncOC->ui->labelShowDLInfo->setVisible(false);
-  if (!blDatabase) mw_one->checkFiles(mw_one->ui->table_kernel_add);
-  mw_one->repaint();
+  for (const QString &n : DirToFileList(tempDir, "*.kext")) files << tempDir+n;
+  QStringList dirs; getAllFolds(tempDir, dirs);
+  for (const QString &d : dirs) if (!d.contains("Debug")) for (const QString &n : DirToFileList(d,"*.kext")) files << d+"/"+n;
+  for (const QString &src : files) { QString name=getFileName(src); for (int i=0;i<mw_one->dlgSyncOC->targetKexts.count();++i) if (name==QFileInfo(mw_one->dlgSyncOC->targetKexts.at(i)).fileName() && mw_one->dlgSyncOC->chkList.at(i)->isChecked()) mw_one->copyDirectoryFiles(src,mw_one->dlgSyncOC->targetKexts.at(i),true); }
+  mw_one->dlgSyncOC->ui->btnCheckUpdate->setEnabled(true); mw_one->dlgSyncOC->ui->labelShowDLInfo->setVisible(false); mw_one->checkFiles(mw_one->ui->table_kernel_add); mw_one->repaint();
 }
 
 void Method::kextUpdate() {
@@ -343,7 +279,7 @@ void Method::kextUpdate() {
   }  // end for i=0
 
   if (blBreak) return;
-  finishKextUpdate(true);
+  finishKextUpdate(false);
 }
 
 void Method::downloadAllKexts() {
@@ -402,7 +338,7 @@ void Method::downloadAllKexts() {
   }
 
   if (blBreak) return;
-  finishKextUpdate(true);
+  finishKextUpdate(false);
 }
 
 void Method::startDownload(QString strUrl) {
@@ -539,183 +475,18 @@ void Method::doProcessFinished() {
   isReplyDL = false;
 }
 
+
+
 void Method::updateOpenCore() {
-  if (mw_one->dlgSyncOC->isCheckOC) {
-    QList<bool> Results;
-    QString tempDirBak = tempDir;
-    QString strSEFI = tempDir + "X64/EFI/";
-    QString fn = filename;
-    QString dirName = fn.replace(".zip", "");
-
-    if (!QDir(strSEFI).exists()) {
-      strSEFI = tempDir + dirName + "/X64/EFI/";
-      tempDir = tempDirBak + dirName + "/";
-    }
-
-    if (!QDir(strSEFI).exists()) {
-      tempDir = tempDirBak;
-      QMessageBox::information(
-          this, "",
-          tr("No update is currently available, or please check the update "
-             "source for the OpenCore development version."));
-      return;
-    }
-
-    QDir dir;
-    dir.mkpath(mw_one->userDataBaseDir);
-    dir.mkpath(mw_one->userDataBaseDir + "DEBUG/");
-    dir.mkpath(mw_one->userDataBaseDir + "doc/");
-    dir.mkpath(mw_one->userDataBaseDir + "BaseConfigs/");
-    mw_one->deleteDirfile(mw_one->userDataBaseDir + "mac/");
-    dir.mkpath(mw_one->userDataBaseDir + "mac/");
-    mw_one->deleteDirfile(mw_one->userDataBaseDir + "win/");
-    dir.mkpath(mw_one->userDataBaseDir + "win/");
-    mw_one->deleteDirfile(mw_one->userDataBaseDir + "linux/");
-    dir.mkpath(mw_one->userDataBaseDir + "linux/");
-
-    if (!QDir(strSEFI).exists()) strSEFI = tempDir + "EFI/";
-    QString strTEFI;
-    if (!mw_one->ui->actionDEBUG->isChecked())
-      strTEFI = mw_one->userDataBaseDir + "EFI/";
-    else
-      strTEFI = mw_one->userDataBaseDir + "DEBUG/EFI/";
-
-    if (!QDir(strSEFI).exists()) Results.append(false);
-    Results.append(mw_one->copyDirectoryFiles(strSEFI, strTEFI, true));
-
-    // ACPI
-    QString strSacpi = tempDir + "Docs/AcpiSamples/Binaries/";
-    QString strTacpi = mw_one->userDataBaseDir + "EFI/OC/ACPI/";
-    mw_one->copyDirectoryFiles(strSacpi, strTacpi, true);
-
-    // Doc
-    Results.append(mw_one->copyFileToPath(
-        tempDir + "Docs/Configuration.pdf",
-        mw_one->userDataBaseDir + "doc/Configuration.pdf", true));
-    Results.append(mw_one->copyFileToPath(
-        tempDir + "Docs/Differences.pdf",
-        mw_one->userDataBaseDir + "doc/Differences.pdf", true));
-
-    // Sample-plist
-    Results.append(mw_one->copyFileToPath(
-        tempDir + "Docs/Sample.plist",
-        mw_one->userDataBaseDir + "BaseConfigs/Sample.plist", true));
-    QString sa = tempDir + "Docs/SampleCustom.plist";
-    if (!QFile(sa).exists()) sa = tempDir + "Docs/SampleFull.plist";
-    Results.append(mw_one->copyFileToPath(
-        sa, mw_one->userDataBaseDir + "BaseConfigs/SampleCustom.plist", true));
-
-    // OC Validate
-    if (!QFile(tempDir + "Utilities/ocvalidate/ocvalidate").exists()) {
-      QMessageBox::information(this, "",
-                               tr("Note: This version or update source does "
-                                  "not contain Mac related files. This will "
-                                  "affect the use of the APP under Mac.") +
-                                   "\n\nocvalidate\nmacserial\nocpasswordgen");
-    }
-    mw_one->copyFileToPath(tempDir + "Utilities/ocvalidate/ocvalidate",
-                           mw_one->userDataBaseDir + "mac/ocvalidate", true);
-
-    if (!QFile(tempDir + "Utilities/ocvalidate/ocvalidate.exe").exists()) {
-      QMessageBox::information(
-          this, "",
-          tr("Note: This version or update source does "
-             "not contain Windows related files. This will "
-             "affect the use of the APP under Windows.") +
-              "\n\nocvalidate.exe\nmacserial.exe\nocpasswordgen.exe");
-    }
-    mw_one->copyFileToPath(tempDir + "Utilities/ocvalidate/ocvalidate.exe",
-                           mw_one->userDataBaseDir + "win/ocvalidate.exe",
-                           true);
-
-    if (!QFile(tempDir + "Utilities/ocvalidate/ocvalidate.linux").exists()) {
-      QMessageBox::information(
-          this, "",
-          tr("Note: This version or update source does "
-             "not contain Linux related files. This will "
-             "affect the use of the APP under Linux.") +
-              "\n\nocvalidate.linux\nmacserial.linux\nocpasswordgen.linux");
-    }
-
-    mw_one->copyFileToPath(tempDir + "Utilities/ocvalidate/ocvalidate.linux",
-                           mw_one->userDataBaseDir + "linux/ocvalidate", true);
-
-    // Mac Serial
-    mw_one->copyFileToPath(tempDir + "Utilities/macserial/macserial",
-                           mw_one->userDataBaseDir + "mac/macserial", true);
-    mw_one->copyFileToPath(tempDir + "Utilities/macserial/macserial.exe",
-                           mw_one->userDataBaseDir + "win/macserial.exe", true);
-
-    mw_one->copyFileToPath(tempDir + "Utilities/macserial/macserial.linux",
-                           mw_one->userDataBaseDir + "linux/macserial", true);
-
-    // OC Password Gen
-    mw_one->copyFileToPath(tempDir + "Utilities/ocpasswordgen/ocpasswordgen",
-                           mw_one->userDataBaseDir + "mac/ocpasswordgen", true);
-    mw_one->copyFileToPath(
-        tempDir + "Utilities/ocpasswordgen/ocpasswordgen.exe",
-        mw_one->userDataBaseDir + "win/ocpasswordgen.exe", true);
-    mw_one->copyFileToPath(
-        tempDir + "Utilities/ocpasswordgen/ocpasswordgen.linux",
-        mw_one->userDataBaseDir + "linux/ocpasswordgen", true);
-
-    // Create Vault
-    Results.append(mw_one->copyDirectoryFiles(
-        tempDir + "/Utilities/CreateVault/",
-        mw_one->userDataBaseDir + "mac/CreateVault/", true));
-
-    bool isDo = true;
-    for (int i = 0; i < Results.count(); i++) {
-      if (Results.at(i) == false) isDo = false;
-      qDebug() << Results.at(i) << QString::number(i + 1);
-    }
-
-    if (isDo) {
-      QString file = filename;
-      QStringList list = file.split("-");
-      QString ver;
-
-      if (list.count() == 3) {
-        ver = list.at(1);
-      }
-      if (list.count() == 4) {
-        ver = list.at(1) + " " + list.at(2);
-      }
-
-      QSettings Reg(strIniFile, QSettings::IniFormat);
-      if (!blDEV) {
-        Reg.setValue("ocVer", ver);
-        ocVer = ver;
-        if (mw_one->dlgSyncOC->ui->comboOCVersions->currentIndex() == 0) {
-          Reg.setValue("maxVer", ver);
-        }
-      } else {
-        Reg.setValue("ocVerDev", ver);
-        ocVerDev = ver;
-      }
-
-      mw_one->changeOpenCore(blDEV);
-      mw_one->dlgSyncOC->writeCheckStateINI();
-      mw_one->dlgSyncOC->init_Sync_OC_Table();
-
-      QMessageBox box;
-      if (!blDEV)
-        box.setText(tr("OpenCore Database has been successfully updated to") +
-                    "  " + ocVer);
-      else
-        box.setText(tr("OpenCore Database has been successfully updated to") +
-                    "  " + ocVerDev);
-      box.exec();
-    } else {
-      if (blDEV) {
-        QMessageBox::information(
-            this, "",
-            tr("No update is currently available, or please check the update "
-               "source for the OpenCore development version."));
-      }
-    }
-    tempDir = tempDirBak;
-  }
+  if (!mw_one->dlgSyncOC->isCheckOC) return;
+  QString root=tempDir+"X64/EFI/",bak=tempDir;
+  if (!QDir(root).exists()) { QString d=filename; d.replace(".zip",""); root=tempDir+d+"/X64/EFI/"; if (QDir(root).exists()) tempDir+=d+"/"; }
+  if (!QDir(root).exists()) { tempDir=bak; return; }
+  QString target=mw_one->dlgSyncOC->efiRoot; if (target.isEmpty()) { tempDir=bak; return; }
+  for (const QString &rel : QStringList()<<"OC/OpenCore.efi"<<"BOOT/BOOTx64.efi"<<"OC/Drivers/OpenRuntime.efi"<<"OC/Drivers/OpenCanopy.efi") if (QFile(root+rel).exists()) mw_one->copyFileToPath(root+rel,target+"/"+rel,true);
+  mw_one->copyDirectoryFiles(root+"OC/Drivers",target+"/OC/Drivers",true); mw_one->copyDirectoryFiles(root+"OC/Tools",target+"/OC/Tools",true);
+  if (mw_one->dlgSyncOC->ui->chkIncludeResource->isChecked()) mw_one->copyDirectoryFiles(root+"OC/Resources",target+"/OC/Resources",true);
+  mw_one->dlgSyncOC->isCheckOC=false; mw_one->dlgSyncOC->ui->btnGetOC->setEnabled(true); mw_one->dlgSyncOC->ui->btnGetLastOC->setEnabled(true); mw_one->dlgSyncOC->init_Sync_OC_Table(); tempDir=bak;
 }
 
 void Method::doProcessDownloadProgress(qint64 recv_total,

@@ -36,6 +36,7 @@ class SyncOCDialog : public QDialog {
   void writeCheckStateINI();
   bool isCheckOC = false;
   QStringList sourceKexts, targetKexts, sourceOpenCore, targetOpenCore;
+  QString efiRoot;
   QString sourceResourcesDir;
   QString targetResourcesDir;
   QStringList sourceFileList;

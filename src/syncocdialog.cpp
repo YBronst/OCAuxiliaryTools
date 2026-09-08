@@ -68,25 +68,7 @@ SyncOCDialog::SyncOCDialog(QWidget* parent)
         i, QHeaderView::ResizeToContents);
   }
 
-  ui->comboOCVersions->addItems(QStringList() << tr("Latest Version") << "0.7.8"
-                                              << "0.7.7"
-                                              << "0.7.6"
-                                              << "0.7.5"
-                                              << "0.7.4"
-                                              << "0.7.3"
-                                              << "0.7.2"
-                                              << "0.7.1"
-                                              << "0.7.0"
-                                              << "0.6.9"
-                                              << "0.6.8"
-                                              << "0.6.7"
-                                              << "0.6.6"
-                                              << "0.6.5"
-                                              << "0.6.4"
-                                              << "0.6.3"
-                                              << "0.6.2"
-
-  );
+  ui->comboOCVersions->addItems(QStringList() << tr("Latest Version") << "1.0.5");
   ui->comboOCVersions->clear();
   ui->editOCDevSource->lineEdit()->setText(
       Reg.value("DevSource", "https://github.com/dortania/build-repo")
@@ -539,7 +521,7 @@ void SyncOCDialog::init_Sync_OC_Table() {
     ui->editOCDevSource->setHidden(true);
     ui->btnImport->setHidden(true);
 
-    QString strDev = Reg.value("maxVer", "0.7.8").toString();
+    QString strDev = Reg.value("maxVer", "1.0.5").toString();
     if (strDev.contains(" ")) strDev = strDev.split(" ").at(0);
     if (strDev > ui->comboOCVersions->itemText(1)) {
       ui->comboOCVersions->clear();
@@ -551,7 +533,7 @@ void SyncOCDialog::init_Sync_OC_Table() {
         c0 = list.at(2);
         QStringList lver;
 
-        QString str0 = "061";
+        QString str0 = "104";
         QString str1 = a0 + b0 + c0;
         int start = str0.toInt();
         int end = str1.toInt() + 1;
@@ -597,19 +579,18 @@ void SyncOCDialog::init_Sync_OC_Table() {
 
   QFileInfo fi(SaveFileName);
   DirName = fi.path().mid(0, fi.path().count() - 3);
+  efiRoot = DirName;
 
   // if (DirName.isEmpty()) return;
 
-  QString pathOldSource;
-  pathOldSource = QDir::homePath() + "/.ocat/Database/";
 
   QString file1, file2, file3, file4;
   QString targetFile1, targetFile2, targetFile3, targetFile4;
 
-  file1 = mw_one->pathSource + "EFI/OC/OpenCore.efi";
-  file2 = mw_one->pathSource + "EFI/BOOT/BOOTx64.efi";
-  file3 = mw_one->pathSource + "EFI/OC/Drivers/OpenRuntime.efi";
-  file4 = mw_one->pathSource + "EFI/OC/Drivers/OpenCanopy.efi";
+  file1 = DirName + "/OC/OpenCore.efi";
+  file2 = DirName + "/BOOT/BOOTx64.efi";
+  file3 = DirName + "/OC/Drivers/OpenRuntime.efi";
+  file4 = DirName + "/OC/Drivers/OpenCanopy.efi";
 
   sourceOpenCore.append(file1);
   sourceOpenCore.append(file2);
@@ -630,7 +611,7 @@ void SyncOCDialog::init_Sync_OC_Table() {
   pathCol = get_PathCol(mw_one->ui->table_uefi_drivers, "Path");
   for (int i = 0; i < mw_one->ui->table_uefi_drivers->rowCount(); i++) {
     str1 = mw_one->ui->table_uefi_drivers->item(i, pathCol)->text();
-    str2 = mw_one->pathSource + "EFI/OC/Drivers/" + str1;
+    str2 = DirName + "/OC/Drivers/" + str1;
 
     bool re = false;
     for (int j = 0; j < sourceOpenCore.count(); j++) {
@@ -648,7 +629,7 @@ void SyncOCDialog::init_Sync_OC_Table() {
     QString strKextName =
         mw_one->ui->table_kernel_add->item(i, pathCol)->text().trimmed();
     if (!strKextName.contains("/Contents/PlugIns/")) {
-      sourceKexts.append(pathOldSource + "EFI/OC/Kexts/" + strKextName);
+      sourceKexts.append(DirName + "/OC/Kexts/" + strKextName);
       targetKexts.append(DirName + "/OC/Kexts/" + strKextName);
     }
   }
@@ -662,7 +643,7 @@ void SyncOCDialog::init_Sync_OC_Table() {
     QString strName =
         mw_one->ui->tableTools->item(i, pathCol)->text().trimmed();
     if (mymethod->isEqualInList(strName, dbToolsFileList)) {
-      sourceOpenCore.append(mw_one->pathSource + "EFI/OC/Tools/" + strName);
+      sourceOpenCore.append(DirName + "/OC/Tools/" + strName);
       targetOpenCore.append(DirName + "/OC/Tools/" + strName);
     }
   }
@@ -770,7 +751,7 @@ void SyncOCDialog::init_Sync_OC_Table() {
   repaint();
 
   // Resources
-  sourceResourcesDir = pathOldSource + "EFI/OC/Resources/";
+  sourceResourcesDir = DirName + "/OC/Resources/";
   targetResourcesDir = DirName + "/OC/Resources/";
 
   // Read check status

@@ -44,8 +44,6 @@ void MainWindow::changeOpenCore(bool blDEV) {
   init_FindResults();
   ui->mycboxFind->lineEdit()->clear();
   if (!blDEV) {
-    dataBaseDir = strAppExePath + "/Database/";
-    userDataBaseDir = QDir::homePath() + "/.ocat/Database/";
     if (!ui->actionDEBUG->isChecked()) {
       pathSource = userDataBaseDir;
       ocVer = ocVer.replace(" " + tr("DEBUG"), "");
@@ -73,8 +71,6 @@ void MainWindow::changeOpenCore(bool blDEV) {
     strOCFrom = str + str1.replace(" " + tr("DEBUG"), "");
 
   } else {  // blDEV
-    dataBaseDir = strAppExePath + "/Database/";
-    userDataBaseDir = QDir::homePath() + "/.ocat/devDatabase/";
     if (!QFile(userDataBaseDir + "EFI/OC/OpenCore.efi").exists()) {
       QMessageBox::critical(
           this, "",
@@ -5723,22 +5719,7 @@ void MainWindow::clearFindTexts() {
   clearTextsAction->setEnabled(false);
 }
 
-QString MainWindow::getDatabaseVer() {
-  // Read database version information
-  QFileInfo appInfo(qApp->applicationDirPath());
-  QString strLastModify =
-      QFileInfo(appInfo.filePath() + "/Database/EFI/OC/OpenCore.efi")
-          .lastModified()
-          .toString();
 
-  QString DatabaseVer;
-  if (!blDEV)
-    DatabaseVer = ocVer + "    " + strLastModify;
-  else
-    DatabaseVer = ocVerDev + "    " + strLastModify;
-
-  return DatabaseVer;
-}
 
 void MainWindow::on_line1() {
   QUrl url(QString("https://github.com/acidanthera/OpenCorePkg/releases"));
@@ -9135,32 +9116,7 @@ void MainWindow::on_myeditPassInput_returnPressed() {
   if (ui->btnGetPassHash->isEnabled()) on_btnGetPassHash_clicked();
 }
 
-void MainWindow::on_actionDatabase_triggered() {
-  QString url = "https://github.com/YBronst/OCAuxiliaryTools/tree/master/Database/BaseConfigs";
-  QString txt = "<a href=\"" + url + "\"" + "> " +
-                tr(" Intel CPU configuration template ");
-  QMessageBox box;
-  box.setText(txt);
-  box.exec();
 
-  myDatabase->setModal(true);
-  myDatabase->show();
-
-  QFileInfo appInfo(qApp->applicationDirPath());
-
-  QString dirpath = appInfo.filePath() + "/Database/BaseConfigs/";
-  QDir dir(dirpath);
-  QStringList nameFilters;
-  nameFilters << "*.plist";
-  QStringList filesTemp =
-      dir.entryList(nameFilters, QDir::Files | QDir::Readable, QDir::Name);
-  QStringList files;
-  for (int j = 0; j < filesTemp.count(); j++) {
-    if (filesTemp.at(j).mid(0, 1) != ".") files.append(filesTemp.at(j));
-  }
-
-  myDatabase->init_Database(files);
-}
 
 void MainWindow::oc_Validate(bool show) {
   chkdata = new QProcess;
@@ -9258,9 +9214,7 @@ void MainWindow::on_actionOcvalidate_triggered() { oc_Validate(true); }
 
 void MainWindow::on_actionMountEsp_triggered() { mount_esp(); }
 
-void MainWindow::on_actionGenerateEFI_triggered() {
-  mymethod->generateEFI(SaveFileName);
-}
+
 
 void MainWindow::on_btnExportMaster_triggered() {
   mymethod->on_btnExportMaster();
