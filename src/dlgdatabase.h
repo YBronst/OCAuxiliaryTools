@@ -51,8 +51,6 @@ class dlgDatabase : public QDialog {
 
   void on_btnAMDOnline_clicked();
 
-  void on_btnGenerateEFI_clicked();
-
   void on_tableDatabase_currentItemChanged(QTableWidgetItem *current,
                                            QTableWidgetItem *previous);
 

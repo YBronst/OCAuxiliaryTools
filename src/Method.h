@@ -144,7 +144,6 @@ class Method : public QMainWindow {
   static void init_UIWidget(QWidget *w, int red);
 
  public slots:
-  void generateEFI(QString file);
   void on_btnExportMaster();
   void on_btnImportMaster();
 

@@ -68,25 +68,7 @@ SyncOCDialog::SyncOCDialog(QWidget* parent)
         i, QHeaderView::ResizeToContents);
   }
 
-  ui->comboOCVersions->addItems(QStringList() << tr("Latest Version") << "0.7.8"
-                                              << "0.7.7"
-                                              << "0.7.6"
-                                              << "0.7.5"
-                                              << "0.7.4"
-                                              << "0.7.3"
-                                              << "0.7.2"
-                                              << "0.7.1"
-                                              << "0.7.0"
-                                              << "0.6.9"
-                                              << "0.6.8"
-                                              << "0.6.7"
-                                              << "0.6.6"
-                                              << "0.6.5"
-                                              << "0.6.4"
-                                              << "0.6.3"
-                                              << "0.6.2"
-
-  );
+  ui->comboOCVersions->addItems(QStringList() << tr("Latest Version") << "1.0.5");
   ui->comboOCVersions->clear();
   ui->editOCDevSource->lineEdit()->setText(
       Reg.value("DevSource", "https://github.com/dortania/build-repo")
@@ -539,7 +521,7 @@ void SyncOCDialog::init_Sync_OC_Table() {
     ui->editOCDevSource->setHidden(true);
     ui->btnImport->setHidden(true);
 
-    QString strDev = Reg.value("maxVer", "0.7.8").toString();
+    QString strDev = Reg.value("maxVer", "1.0.5").toString();
     if (strDev.contains(" ")) strDev = strDev.split(" ").at(0);
     if (strDev > ui->comboOCVersions->itemText(1)) {
       ui->comboOCVersions->clear();
@@ -551,7 +533,7 @@ void SyncOCDialog::init_Sync_OC_Table() {
         c0 = list.at(2);
         QStringList lver;
 
-        QString str0 = "061";
+        QString str0 = "104";
         QString str1 = a0 + b0 + c0;
         int start = str0.toInt();
         int end = str1.toInt() + 1;

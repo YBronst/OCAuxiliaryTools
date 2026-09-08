@@ -148,8 +148,6 @@ void dlgDatabase::get_EFI(int row, int column, QTableWidget *table) {
   mw_one->isGetEFI = false;
 
   close();
-
-  mymethod->generateEFI(file);
 }
 
 void dlgDatabase::on_btnFind_clicked() {
@@ -249,20 +247,6 @@ void dlgDatabase::on_btnAMDOnline_clicked() {
                    "/blob/master/Database/"
                    "BaseConfigs/Instructions_AMD.md"));
   QDesktopServices::openUrl(url);
-}
-
-void dlgDatabase::on_btnGenerateEFI_clicked() {
-  if (ui->tableDatabase->hasFocus()) {
-    if (!ui->tableDatabase->currentIndex().isValid()) return;
-    int row = ui->tableDatabase->currentRow();
-    on_tableDatabase_cellDoubleClicked(row, 0);
-  }
-
-  if (ui->tableDatabaseFind->hasFocus()) {
-    if (!ui->tableDatabaseFind->currentIndex().isValid()) return;
-    int row = ui->tableDatabaseFind->currentRow();
-    on_tableDatabaseFind_cellDoubleClicked(row, 0);
-  }
 }
 
 void dlgDatabase::on_tableDatabase_currentItemChanged(

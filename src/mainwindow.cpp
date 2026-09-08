@@ -4653,7 +4653,6 @@ void MainWindow::on_nv04() {
 }
 
 void MainWindow::init_hardware_info() {
-  ui->btnGenerateFromHardware->setEnabled(false);
   ui->tabTotal->removeTab(9);
 
   if (win) {
@@ -5075,9 +5074,6 @@ void MainWindow::init_EditMenu() {
   if (Reg.value("chkMountESP", 1).toBool() == true) {
     ui->toolBar->addAction(ui->actionMountEsp);
   }
-
-  // GenerateEFI
-  if (mac || osx1012) ui->actionGenerateEFI->setIconVisibleInMenu(false);
 
   // Update OC Main Program
   if (mac || osx1012) ui->actionUpgrade_OC->setIconVisibleInMenu(false);
@@ -8328,7 +8324,7 @@ void MainWindow::init_CopyPasteLine() {
     // Auto Col Width
 
     bool isAutoColWidth =
-        Reg.value(w->objectName() + "AutoColWidth", true).toBool();
+        Reg.value(w->objectName() + "AutoColWidth", false).toBool();
     set_AutoColWidth(w, isAutoColWidth);
 
     w->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -9257,10 +9253,6 @@ void MainWindow::oc_Validate(bool show) {
 void MainWindow::on_actionOcvalidate_triggered() { oc_Validate(true); }
 
 void MainWindow::on_actionMountEsp_triggered() { mount_esp(); }
-
-void MainWindow::on_actionGenerateEFI_triggered() {
-  mymethod->generateEFI(SaveFileName);
-}
 
 void MainWindow::on_btnExportMaster_triggered() {
   mymethod->on_btnExportMaster();
@@ -10297,7 +10289,7 @@ void MainWindow::init_AutoColumnWidth() {
     // Auto Col Width
 
     bool isAutoColWidth =
-        Reg.value(w->objectName() + "AutoColWidth", true).toBool();
+        Reg.value(w->objectName() + "AutoColWidth", false).toBool();
     set_AutoColWidth(w, isAutoColWidth);
   }
 }

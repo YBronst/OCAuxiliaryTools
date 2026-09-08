@@ -397,7 +397,6 @@ class MainWindow : public QMainWindow {
   void on_actionOnline_Download_Updates_triggered();
   void on_actionDatabase_triggered();
   void on_actionPreferences_triggered();
-  void on_actionGenerateEFI_triggered();
 
  protected:
   void dragEnterEvent(QDragEnterEvent* e) override;
