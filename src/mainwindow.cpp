@@ -40,107 +40,7 @@ extern QStringList boolTypeList, intTypeList, dataTypeList, listKey, listType,
     listValue;
 ;
 
-void MainWindow::changeOpenCore(bool blDEV) {
-  init_FindResults();
-  ui->mycboxFind->lineEdit()->clear();
-  if (!blDEV) {
-    if (!ui->actionDEBUG->isChecked()) {
-      pathSource = userDataBaseDir;
-      ocVer = ocVer.replace(" " + tr("DEBUG"), "");
-      lblVer->setText("  OpenCore " + ocVer);
-      aboutDlg->ui->lblVersion->setText(tr("Version") + "  " + CurVersion +
-                                        " for OpenCore " + ocVer);
 
-    } else {
-      pathSource = userDataBaseDir + "DEBUG/";
-      if (!QFile(pathSource + "EFI/OC/OpenCore.efi").exists()) {
-        QMessageBox::critical(
-            this, "",
-            tr("The debug database does not exist, please "
-               "update it in the UI of  Upgrade OC and Kexts."));
-      }
-      ocVer = ocVer.replace(" " + tr("DEBUG"), "");
-      ocVer = ocVer + " " + tr("DEBUG");
-      lblVer->setText("  OpenCore " + ocVer);
-      aboutDlg->ui->lblVersion->setText(tr("Version") + "  " + CurVersion +
-                                        " for OpenCore " + ocVer);
-    }
-
-    QString str = "https://github.com/acidanthera/OpenCorePkg/releases/tag/";
-    QString str1 = ocVer;
-    strOCFrom = str + str1.replace(" " + tr("DEBUG"), "");
-
-  } else {  // blDEV
-    if (!QFile(userDataBaseDir + "EFI/OC/OpenCore.efi").exists()) {
-      QMessageBox::critical(
-          this, "",
-          tr("The development version database does not exist, please "
-             "update it online in the  Upgrade OpenCore and Kexts UI."));
-    }
-
-    ocVerDev = ocVerDev.replace(" [" + tr("DEV") + "]", "");
-    ocVerDev = ocVerDev + " [" + tr("DEV") + "]";
-
-    if (!ui->actionDEBUG->isChecked()) {
-      pathSource = userDataBaseDir;
-      ocVerDev = ocVerDev.replace(" " + tr("DEBUG"), "");
-      lblVer->setText("  OpenCore " + ocVerDev);
-      aboutDlg->ui->lblVersion->setText(tr("Version") + "  " + CurVersion +
-                                        " for OpenCore " + ocVerDev);
-
-    } else {
-      pathSource = userDataBaseDir + "DEBUG/";
-      if (!QFile(pathSource + "EFI/OC/OpenCore.efi").exists()) {
-        QMessageBox::critical(
-            this, "",
-            tr("The debug database does not exist, please "
-               "update it in the UI of  Upgrade OC and Kexts."));
-      }
-      ocVerDev = ocVerDev.replace(" " + tr("DEBUG"), "");
-      ocVerDev = ocVerDev + " " + tr("DEBUG");
-      lblVer->setText("  OpenCore " + ocVerDev);
-      aboutDlg->ui->lblVersion->setText(tr("Version") + "  " + CurVersion +
-                                        " for OpenCore " + ocVerDev);
-    }
-  }
-
-  for (int i = 0; i < listOCATWidgetHideList.count(); i++) {
-    listOCATWidgetHideList.at(i)->setHidden(false);
-  }
-
-  for (int i = 0; i < listOCATWidgetDelList.count(); i++) {
-    QWidget* frame = listOCATWidgetDelList.at(i);
-    frame->parentWidget()->layout()->removeWidget(frame);
-    delete (frame);
-  }
-  listOCATWidgetDelList.clear();
-
-  smart_UpdateKeyField();
-  init_LineEditDataCheck();
-  for (int i = 0; i < listOCATWidgetDelList.count(); i++) {
-    QWidget* w = listOCATWidgetDelList.at(i);
-    if (w->objectName().mid(0, 5) == "frame") {
-      if (w->children().at(1)->objectName().mid(0, 3) == "lbl") {
-        QLabel* lbl = (QLabel*)w->children().at(1);
-        init_Label(lbl);
-      }
-    }
-    if (w->objectName().mid(0, 3) == "chk") {
-      QCheckBox* chk = (QCheckBox*)w;
-      init_CheckBox(chk);
-    }
-  }
-
-  if (myDlgPreference->ui->chkHideToolbar->isChecked()) {
-    title = lblVer->text() + "      ";
-    setWindowTitle(title + "[*]" + SaveFileName);
-  } else
-    title = "[*]";
-
-  if (QFile(SaveFileName).exists()) {
-    oc_Validate(false);
-  }
-}
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -10303,4 +10203,19 @@ void MainWindow::on_btnUEFIUnload_Add_clicked() {
 
 void MainWindow::on_btnUEFIUnload_Del_clicked() {
   del_item(ui->table_uefi_Unload);
+}
+
+void MainWindow::changeOpenCore(bool blDEV) {
+  init_FindResults();
+  ui->mycboxFind->lineEdit()->clear();
+  QFileInfo fi(SaveFileName);
+  QDir root(fi.absolutePath());
+  if (root.dirName().compare("OC", Qt::CaseInsensitive) == 0) root.cdUp();
+  if (root.dirName().compare("EFI", Qt::CaseInsensitive) == 0) root.cdUp();
+  pathSource = QDir::fromNativeSeparators(root.absolutePath()) + "/";
+  QString current = blDEV ? ocVerDev : ocVer;
+  current.replace(" " + tr("DEBUG"), "");
+  lblVer->setText("  OpenCore " + current);
+  aboutDlg->ui->lblVersion->setText(tr("Version") + "  " + CurVersion + " for OpenCore " + current);
+  strOCFrom = "https://github.com/acidanthera/OpenCorePkg/releases/tag/" + current;
 }
