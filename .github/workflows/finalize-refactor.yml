@@ -1,0 +1,59 @@
+name: Finalize refactor
+on:
+  pull_request:
+    types: [opened, synchronize]
+permissions:
+  contents: write
+jobs:
+  finalize:
+    if: github.event.pull_request.head.ref == 'refactor/remove-database-presets-v2' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, ref: refactor/remove-database-presets-v2}
+      - name: Remove remaining obsolete references
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          def rmfuncs(s, needle):
+            while True:
+              pos=s.find(needle)
+              if pos<0:return s
+              start=s.rfind('void MainWindow::',0,pos)
+              if start<0:start=pos
+              b=s.find('{',start); d=0; end=None
+              for i in range(b,len(s)):
+                if s[i]=='{':d+=1
+                elif s[i]=='}':
+                  d-=1
+                  if d==0:end=i+1;break
+              if end is None: raise RuntimeError(needle)
+              s=s[:start]+s[end:]
+          p=Path('src/mainwindow.cpp'); s=p.read_text()
+          # Keep the main constructor, but remove deleted dialog initialization lines from it.
+          s='\n'.join(x for x in s.splitlines() if 'myDatabase = new dlgDatabase' not in x and 'dlgPresetValues = new dlgPreset' not in x)
+          for n in ['dlgPresetValues','myDatabase']:
+            s=rmfuncs(s,n)
+          s='\n'.join(x for x in s.splitlines() if 'ui->actionDatabase' not in x and 'ui->actionGenerateEFI' not in x)
+          p.write_text(s+'\n')
+
+          p=Path('src/Method.cpp'); s=p.read_text()
+          s=s.replace('userDataBaseDir','pathSource').replace('dataBaseDir','pathSource')
+          s=rmfuncs(s,'dlgPresetValues')
+          p.write_text(s)
+
+          p=Path('src/dlgOCValidate.cpp'); s=p.read_text().replace('userDataBaseDir','pathSource'); p.write_text(s)
+
+          p=Path('src/mainwindow.ui'); s=p.read_text()
+          for obj in ['actionDatabase','actionGenerateEFI','actionPreset','actionPresets','actionGenerate_EFI']:
+            s=re.sub(r'<action[^>]*name="'+obj+r'"[^>]*>.*?</action>\s*','',s,flags=re.S)
+            s=re.sub(r'\s*<addaction name="'+obj+r'"\s*/>','',s)
+          p.write_text(s)
+          PY
+          if grep -RInE 'dlgDatabase|dlgPreset|myDatabase|dlgPresetValues|userDataBaseDir|dataBaseDir|strDatabaseUrl|actionDatabase|actionGenerateEFI' src OCAuxiliaryTools.pro; then exit 1; fi
+          git add src OCAuxiliaryTools.pro
+          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'refactor: remove remaining preset and database references' || true
+          git push origin HEAD:refactor/remove-database-presets-v2
