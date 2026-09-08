@@ -49,7 +49,6 @@
 #include "dlgOCValidate.h"
 #include "dlgParameters.h"
 #include "dlgPreset.h"
-#include "dlgdatabase.h"
 #include "dlgkernelpatch.h"
 #include "dlgmisc.h"
 #include "dlgnewkeyfield.h"
@@ -66,7 +65,6 @@
 #include "ui_dlgOCValidate.h"
 #include "ui_dlgParameters.h"
 #include "ui_dlgPreset.h"
-#include "ui_dlgdatabase.h"
 #include "ui_dlgkernelpatch.h"
 #include "ui_dlgnewkeyfield.h"
 #include "ui_dlgpreference.h"
@@ -302,7 +300,6 @@ class MainWindow : public QMainWindow {
   QComboBox* cboxReservedMemoryType;
 
   aboutDialog* aboutDlg;
-  dlgDatabase* myDatabase;
   void addACPIItem(QStringList FileName);
 
   void addKexts(QStringList FileName);
@@ -395,9 +392,7 @@ class MainWindow : public QMainWindow {
   void on_btnNVRAMDel_Add0_clicked();
   void cellEnteredSlot(int row, int column);
   void on_actionOnline_Download_Updates_triggered();
-  void on_actionDatabase_triggered();
   void on_actionPreferences_triggered();
-  void on_actionGenerateEFI_triggered();
 
  protected:
   void dragEnterEvent(QDragEnterEvent* e) override;

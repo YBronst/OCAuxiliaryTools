@@ -1,12 +1,10 @@
 #include "Method.h"
 
 #include "BalloonTip.h"
-#include "dlgdatabase.h"
 #include "filesystemwatcher.h"
 #include "mainwindow.h"
 #include "plistparser.h"
 #include "plistserializer.h"
-#include "ui_dlgdatabase.h"
 #include "ui_mainwindow.h"
 
 extern MainWindow* mw_one;
@@ -565,7 +563,6 @@ void Method::updateOpenCore() {
     dir.mkpath(mw_one->userDataBaseDir);
     dir.mkpath(mw_one->userDataBaseDir + "DEBUG/");
     dir.mkpath(mw_one->userDataBaseDir + "doc/");
-    dir.mkpath(mw_one->userDataBaseDir + "BaseConfigs/");
     mw_one->deleteDirfile(mw_one->userDataBaseDir + "mac/");
     dir.mkpath(mw_one->userDataBaseDir + "mac/");
     mw_one->deleteDirfile(mw_one->userDataBaseDir + "win/");
@@ -599,11 +596,11 @@ void Method::updateOpenCore() {
     // Sample-plist
     Results.append(mw_one->copyFileToPath(
         tempDir + "Docs/Sample.plist",
-        mw_one->userDataBaseDir + "BaseConfigs/Sample.plist", true));
+        mw_one->userDataBaseDir + "Sample.plist", true));
     QString sa = tempDir + "Docs/SampleCustom.plist";
     if (!QFile(sa).exists()) sa = tempDir + "Docs/SampleFull.plist";
     Results.append(mw_one->copyFileToPath(
-        sa, mw_one->userDataBaseDir + "BaseConfigs/SampleCustom.plist", true));
+        sa, mw_one->userDataBaseDir + "SampleCustom.plist", true));
 
     // OC Validate
     if (!QFile(tempDir + "Utilities/ocvalidate/ocvalidate").exists()) {
@@ -1309,72 +1306,6 @@ QString Method::copyTools(QString pathSource, QString pathTarget) {
   }
 
   return strDatabase;
-}
-
-void Method::generateEFI(QString file) {
-  QDir dir;
-  QString strDatabase;
-
-  QString str = QDir::homePath() + "/.ocat/Database/";
-  QString pathSource;
-  if (!mw_one->ui->actionDEBUG->isChecked())
-    pathSource = mw_one->userDataBaseDir;
-  else
-    pathSource = mw_one->userDataBaseDir + "DEBUG/";
-
-  QString pathTarget = QDir::homePath() + "/Desktop/EFI/";
-
-  mw_one->deleteDirfile(pathTarget);
-
-  if (dir.mkpath(pathTarget)) {
-  }
-
-  // BOOT
-  QString pathBoot = pathTarget + "BOOT/";
-  if (dir.mkpath(pathBoot)) {
-  }
-  QFile::copy(pathSource + "EFI/BOOT/BOOTx64.efi", pathBoot + "BOOTx64.efi");
-
-  // ACPI
-  strDatabase = copyACPI(str, pathTarget) + strDatabase;
-
-  // Drivers
-  strDatabase = copyDrivers(pathSource, pathTarget) + strDatabase;
-
-  // Kexts
-  strDatabase = copyKexts(str, pathTarget) + strDatabase;
-
-  // OC/Resources
-  QString pathOCResources = pathTarget + "OC/Resources/";
-  mw_one->copyDirectoryFiles(str + "EFI/OC/Resources/", pathOCResources, true);
-
-  // Tools
-  strDatabase = copyTools(pathSource, pathTarget) + strDatabase;
-
-  // OC/OpenCore.efi
-  QFile::copy(pathSource + "EFI/OC/OpenCore.efi",
-              pathTarget + "OC/OpenCore.efi");
-
-  // OC/config.plist
-  mw_one->SavePlist(pathTarget + "OC/config.plist");
-
-  QString strFrom = "\n\n" + tr("From") + " : " + file;
-  QMessageBox box;
-  if (strDatabase != "")
-    box.setText(tr("Finished generating the EFI folder on the desktop.") +
-                "\n" +
-                tr("The following files do not exist in the database at the "
-                   "moment, please add them yourself:") +
-                "\n" + strDatabase + strFrom);
-  else
-    box.setText(tr("Finished generating the EFI folder on the desktop.") +
-                strFrom);
-
-  mw_one->setFocus();
-  box.exec();
-  mw_one->ui->mycboxFind->setFocus();
-  mw_one->openFile(pathTarget + "OC/config.plist");
-  mw_one->ui->actionUpgrade_OC->setEnabled(true);
 }
 
 void Method::on_btnExportMaster() {

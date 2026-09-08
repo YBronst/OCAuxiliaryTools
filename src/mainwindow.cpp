@@ -4653,7 +4653,6 @@ void MainWindow::on_nv04() {
 }
 
 void MainWindow::init_hardware_info() {
-  ui->btnGenerateFromHardware->setEnabled(false);
   ui->tabTotal->removeTab(9);
 
   if (win) {
@@ -4902,7 +4901,6 @@ void MainWindow::init_ToolBarIcon() {
       ui->actionOcvalidate->setIcon(QIcon(":/icon/ov0.png"));
     ui->actionMountEsp->setIcon(QIcon(":/icon/esp0.png"));
     ui->actionUpgrade_OC->setIcon(QIcon(":/icon/um0.png"));
-    ui->actionDatabase->setIcon(QIcon(":/icon/db0.png"));
     undoAction->setIcon(QIcon(":/icon/undo0.png"));
     redoAction->setIcon(QIcon(":/icon/redo0.png"));
     ui->actionFind->setIcon(QIcon(":/icon/find0.png"));
@@ -4918,7 +4916,6 @@ void MainWindow::init_ToolBarIcon() {
 
     ui->actionMountEsp->setIcon(QIcon(":/icon/esp.png"));
     ui->actionUpgrade_OC->setIcon(QIcon(":/icon/um.png"));
-    ui->actionDatabase->setIcon(QIcon(":/icon/db.png"));
     undoAction->setIcon(QIcon(":/icon/undo.png"));
     redoAction->setIcon(QIcon(":/icon/redo.png"));
     ui->actionFind->setIcon(QIcon(":/icon/find.png"));
@@ -5076,9 +5073,6 @@ void MainWindow::init_EditMenu() {
     ui->toolBar->addAction(ui->actionMountEsp);
   }
 
-  // GenerateEFI
-  if (mac || osx1012) ui->actionGenerateEFI->setIconVisibleInMenu(false);
-
   // Update OC Main Program
   if (mac || osx1012) ui->actionUpgrade_OC->setIconVisibleInMenu(false);
 
@@ -5086,9 +5080,6 @@ void MainWindow::init_EditMenu() {
   // ui->actionUpgrade_OC->setEnabled(false);
 
   // Open DataBase
-  if (mac || osx1012) ui->actionDatabase->setIconVisibleInMenu(false);
-  ui->actionDatabase->setShortcut(tr("ctrl+d"));
-  ui->actionDatabase->setIcon(QIcon(":/icon/db.png"));
 
   // Open DataBase Dir
   if (mac || osx1012)
@@ -5131,7 +5122,6 @@ void MainWindow::init_EditMenu() {
   }
 
   if (Reg.value("chkDatabase", 1).toBool() == true) {
-    ui->toolBar->addAction(ui->actionDatabase);
   }
 }
 
@@ -5470,9 +5460,9 @@ void MainWindow::init_Widgets() {
 
   QString fileSample, fileSampleDev;
   fileSample =
-      QDir::homePath() + "/.ocat/Database/BaseConfigs/SampleCustom.plist";
+      QDir::homePath() + "/.ocat/Database/SampleCustom.plist";
   fileSampleDev =
-      QDir::homePath() + "/.ocat/devDatabase/BaseConfigs/SampleCustom.plist";
+      QDir::homePath() + "/.ocat/devDatabase/SampleCustom.plist";
   QFile file(fileSample);
   QFile fileDev(fileSampleDev);
   if (blDEV) {
@@ -5486,7 +5476,6 @@ void MainWindow::init_Widgets() {
 
   mymethod = new Method(this);
   aboutDlg = new aboutDialog(this);
-  myDatabase = new dlgDatabase(this);
   myToolTip = new Tooltip(this);
   dlgOCV = new dlgOCValidate(this);
   dlgPar = new dlgParameters(this);
@@ -8328,7 +8317,7 @@ void MainWindow::init_CopyPasteLine() {
     // Auto Col Width
 
     bool isAutoColWidth =
-        Reg.value(w->objectName() + "AutoColWidth", true).toBool();
+        Reg.value(w->objectName() + "AutoColWidth", false).toBool();
     set_AutoColWidth(w, isAutoColWidth);
 
     w->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -8644,7 +8633,6 @@ void MainWindow::paintEvent(QPaintEvent* event) {
     Method::init_UIWidget(this, red);
     Method::init_UIWidget(myDlgPreference, red);
     Method::init_UIWidget(dlgSyncOC, red);
-    Method::init_UIWidget(myDatabase, red);
     dlgSyncOC->init_ItemColor();
   }
 
@@ -9135,33 +9123,6 @@ void MainWindow::on_myeditPassInput_returnPressed() {
   if (ui->btnGetPassHash->isEnabled()) on_btnGetPassHash_clicked();
 }
 
-void MainWindow::on_actionDatabase_triggered() {
-  QString url = "https://github.com/YBronst/OCAuxiliaryTools/tree/master/Database/BaseConfigs";
-  QString txt = "<a href=\"" + url + "\"" + "> " +
-                tr(" Intel CPU configuration template ");
-  QMessageBox box;
-  box.setText(txt);
-  box.exec();
-
-  myDatabase->setModal(true);
-  myDatabase->show();
-
-  QFileInfo appInfo(qApp->applicationDirPath());
-
-  QString dirpath = appInfo.filePath() + "/Database/BaseConfigs/";
-  QDir dir(dirpath);
-  QStringList nameFilters;
-  nameFilters << "*.plist";
-  QStringList filesTemp =
-      dir.entryList(nameFilters, QDir::Files | QDir::Readable, QDir::Name);
-  QStringList files;
-  for (int j = 0; j < filesTemp.count(); j++) {
-    if (filesTemp.at(j).mid(0, 1) != ".") files.append(filesTemp.at(j));
-  }
-
-  myDatabase->init_Database(files);
-}
-
 void MainWindow::oc_Validate(bool show) {
   chkdata = new QProcess;
 
@@ -9257,10 +9218,6 @@ void MainWindow::oc_Validate(bool show) {
 void MainWindow::on_actionOcvalidate_triggered() { oc_Validate(true); }
 
 void MainWindow::on_actionMountEsp_triggered() { mount_esp(); }
-
-void MainWindow::on_actionGenerateEFI_triggered() {
-  mymethod->generateEFI(SaveFileName);
-}
 
 void MainWindow::on_btnExportMaster_triggered() {
   mymethod->on_btnExportMaster();
@@ -10122,7 +10079,7 @@ void MainWindow::smart_UpdateKeyField() {
   };
 
   QString fileSample;
-  fileSample = userDataBaseDir + "BaseConfigs/SampleCustom.plist";
+  fileSample = userDataBaseDir + "SampleCustom.plist";
   QFile file(fileSample);
   if (file.exists()) {
     mapTatol.clear();
@@ -10297,7 +10254,7 @@ void MainWindow::init_AutoColumnWidth() {
     // Auto Col Width
 
     bool isAutoColWidth =
-        Reg.value(w->objectName() + "AutoColWidth", true).toBool();
+        Reg.value(w->objectName() + "AutoColWidth", false).toBool();
     set_AutoColWidth(w, isAutoColWidth);
   }
 }

@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
   }
 
   QString fileSample =
-      QDir::homePath() + "/.ocat/Database/BaseConfigs/SampleCustom.plist";
+      QDir::homePath() + "/.ocat/Database/SampleCustom.plist";
   if (!QFile(fileSample).exists()) {
     QMessageBox::critical(
         NULL, "",
