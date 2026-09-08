@@ -10205,6 +10205,8 @@ void MainWindow::on_btnUEFIUnload_Del_clicked() {
   del_item(ui->table_uefi_Unload);
 }
 
+
+
 void MainWindow::changeOpenCore(bool blDEV) {
   init_FindResults();
   ui->mycboxFind->lineEdit()->clear();
