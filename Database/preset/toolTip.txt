@@ -1,40 +1,24 @@
-
 ***FadtEnableReset
 Type: plist boolean
 
 Description: Provide reset register and flag in FADT table to enable reboot and shutdown.
 
-Mainly required on legacy hardware and a few newer laptops. Can also fix power-button shortcuts. Not recommended unless required.
-----
-Type: plist Boolean
-
-Description: Provide reset registers and flags in the FADT to enable system reboot and shutdown.
-
-It is primarily needed for legacy hardware and some newer laptops. It can also fix power button shortcuts. Use is not recommended unless necessary; however, you might try it if shutting down results in a restart instead.
+Mainly required on legacy hardware and a few newer laptops. Can also fix power-button shortcuts. Not recommended unless required. If a shutdown turns into a reboot, you can try enabling this option.
 
 
 ***NormalizeHeaders
-Description: Cleanup ACPI header fields to workaround macOS ACPI implementation flaws that result in boot crashes. 
-
-Reference: Debugging AppleACPIPlatform on 10.13 by Alex James (also known as theracermaster). 
-
-The issue was fixed in macOS Mojave (10.14).
-----
-Description: Cleans up ACPI header fields to resolve boot crashes caused by flaws in the macOS ACPI implementation. This issue typically occurs on certain motherboards running macOS 10.13.
+Description: Cleanup ACPI header fields to workaround macOS ACPI implementation flaws that result in boot crashes. This typically occurs on certain motherboards running 10.13.
 
 Reference: Debugging AppleACPIPlatform on 10.13 by Alex James (also known as theracermaster).
 
-This issue is fixed in macOS Mojave (10.14).
+The issue was fixed in macOS Mojave (10.14).
 
 
 ***SystemProductName
 Type: plist string
 Failsafe: Empty (OEM specified or not installed)
 Description: Refer to SMBIOS SystemProductName.
-----
-Type: plist string
-Fallback: Empty (OEM-specified or not installed)
-Description: Refer to SMBIOS SystemProductName
+
 
 ***HibernateMode
 Type: plist string
@@ -45,16 +29,7 @@ Description: Hibernation detection mode. The following modes are supported:
 • RTC — Use RTC detection.
 • NVRAM — Use NVRAM detection.
 Note: If the firmware can handle hibernation itself (valid for Mac EFI firmware), then None should be specified to hand-off hibernation state as is to OpenCore.
-----
-Type: plist string
-Default: Empty (OEM-specific or not installed)
-Description: Hibernation detection mode.
-Supports the following modes:
-- None - Ignore hibernation state.
-- Auto - Use RTC and NVRAM detection.
-- RTC - Use RTC detection.
-- NVRAM - Use NVRAM detection.
-Note: If the firmware can handle hibernation itself (applicable to Mac EFI firmware), specify "None" to pass the hibernation state to OpenCore unchanged.
+
 
 // Kernel Quirks
 ***DisableRtcChecksum
@@ -62,19 +37,10 @@ Type: plist boolean
 Failsafe: false
 Requirement: 10.4
 
-Description: Disables primary checksum (0x58-0x59) writing in AppleRTC.
+Description: Disables primary checksum (0x58-0x59) writing in AppleRTC. Regarding RTC, it is recommended to use RTCMemoryFixup.kext.
 
-Note 1 : This option will not protect other areas from being overwritten, see RTCMemoryFixup kernel extension if this is desired.
-Note 2 : This option will not protect areas from being overwritten at firmware stage (e.g. macOS bootloader), see AppleRtcRam protocol description if this is desired.
-----
-Type: plist Boolean
-Fail-safe: false
-Requirement: 10.4
-
-Description: Disables writes to the primary checksum (0x58–0x59) in AppleRTC. For RTC-related matters, using RTCMemoryFixup.kext is recommended.
-
-Note 1: This option does not protect other regions from being overwritten; if such protection is required, please refer to the RTCMemoryFixup kernel extension.
-Note 2: This option does not protect regions overwritten during the firmware phase (e.g., the macOS bootloader); if such protection is required, please refer to the AppleRtcRam protocol description.
+Note 1: This option will not protect other areas from being overwritten, see RTCMemoryFixup kernel extension if this is desired.
+Note 2: This option will not protect areas from being overwritten at firmware stage (e.g. macOS bootloader), see AppleRtcRam protocol description if this is desired.
 
 
 ***ExtendBTFeatureFlags
@@ -83,16 +49,8 @@ Failsafe: false
 Requirement: 10.8-11
 
 Description: Set FeatureFlags to 0x0F for full functionality of Bluetooth, including Continuity.
-	
-Note: This option is a substitution for BT4LEContinuityFixup.kext, which does not function properly due to late patching progress.
-----
-Type: plist boolean
-failsafe: false
-Requirements: 10.8-11
 
-Description: Set FeatureFlags to 0x0F to enable full Bluetooth functionality, including Continuity.
-	
-Note: This option is a replacement for BT4LEContinuityFixup.kext, which does not work properly due to the late patching schedule.
+Note: This option is a substitution for BT4LEContinuityFixup.kext, which does not function properly due to late patching progress.
 
 
 ***ExternalDiskIcons
@@ -100,33 +58,19 @@ Type: plist boolean
 Failsafe: false
 Requirement: 10.4
 
-Description: Apply icon type patches to AppleAHCIPort.kext to force internal disk icons for all AHCI disks.
+Description: Apply icon type patches to AppleAHCIPort.kext to force internal disk icons for all AHCI disks. Typically used when macOS misidentifies an internal drive as an external disk.
 
-Note: This option should be avoided whenever possible. Modern firmware typically have compatible AHCI controllers.
-----
-Type: plist Boolean
-Fail-safe: false
-Requirement: 10.4
-
-Description: Apply icon type patch to AppleAHCIPort.kext to force all AHCI disk icons to display as internal disk icons. Generally used when macos recognizes the internal hard drive as an external hard drive.
-
-Note: This option should be avoided whenever possible. Mainstream hardware supports AHCI very well.
+Note: This option should be avoided whenever possible. Modern firmware typically have compatible AHCI controllers — mainstream hardware generally has good AHCI support.
 
 
 ***ForceSecureBootScheme
 Type: plist boolean
 Failsafe: false
 Requirement: 11
-Description: Force x86 scheme for IMG4 verification.
-	
-Note: This option is required on virtual machines when using SecureBootModel different from x86legacy.
-----
-Type: plist Boolean
-Default: false
-Requirement: 11
-Description: Forces the use of the x86 scheme for IMG4 verification. Consider enabling this when macOS is installed in a virtual machine with SecureBootModel enabled.
+Description: Force x86 scheme for IMG4 verification. Worth considering when macOS is installed in a virtual machine with SecureBootModel enabled.
 
-Note: This option is required for virtual machines when using a SecureBootModel other than x86legacy.
+Note: This option is required on virtual machines when using SecureBootModel different from x86legacy.
+
 
 ***Cpuid1Mask
 Type: plist data, 16 bytes
@@ -134,13 +78,6 @@ Failsafe: All zero
 Description: Bit mask of active bits in Cpuid1Data.
 
 When each Cpuid1Mask bit is set to 0, the original CPU bit is used, otherwise set bits take the value of Cpuid1Data.
-----
-
-Type: plist data, 16 bytes
-Fallback: All zeros
-Description: A bitmask for the active bits in Cpuid1Data.
-
-When a bit in Cpuid1Mask is set to 0, the original CPU bit is used; otherwise, the bit takes the value from Cpuid1Data.
 
 
 ***MaxKernel
@@ -150,14 +87,6 @@ Failsafe: Empty
 Description: Emulates CPUID and applies DummyPowerManagement on specified macOS version or older.
 
 Note: Refer to the Add MaxKernel description for matching logic.
-----
-Type: plist string
-Fallback: Empty
-
-Description: Emulates CPUID and applies DummyPowerManagement on the specified macOS version or later.
-
-Note: Please refer to the matching logic described for MaxKernel.
-
 
 
 ***MinKernel
@@ -167,13 +96,6 @@ Failsafe: Empty
 Description: Emulates CPUID and applies DummyPowerManagement on specified macOS version or newer.
 
 Note: Refer to the Add MaxKernel description for matching logic.
-----
-Type: plist string
-Fallback: Empty
-
-Description: Emulates CPUID and applies DummyPowerManagement on the specified macOS version or later.
-
-Note: Please refer to the matching logic described for MaxKernel.
 
 
 ***EnableVmx
@@ -181,11 +103,6 @@ Type: plist boolean
 Failsafe: false
 Description: Enable Intel virtual machine extensions.
 Note: Required to allow virtualization in Windows on some Mac hardware. VMX is enabled or disabled and locked by BIOS before OpenCore starts on most firmware. Use BIOS to enable virtualization where possible.
-----
-Type: plist Boolean
-Fail-safe: false
-Description: Enables Intel Virtualization Technology (VMX).
-Note: Required on certain Mac hardware to enable virtualization within Windows. On most firmware, VMX is enabled or disabled—and locked—by the BIOS before OpenCore boots. Use the BIOS to enable virtualization whenever possible.
 
 
 ***AudioOutMask
@@ -198,22 +115,9 @@ OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,00000000) (1 outputs)
 OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,02000000) (7 outputs)
 The first available output node is bit 0 (value 1), the second node is bit 1 (value 2), etc.
 When the debug version of AudioDxe is used, then additional information on each output channel of each codec is logged during driver binding. Further information on the available output channels may also be found from a Linux codec dump cat /proc/asound/card{n}/codec#{m}.
-Using AudioOutMask, it is possible to play sound to more than one channel (e.g. main speaker plus bass speaker;
-headphones plus speakers). For example, if the main speaker is ouput 0 and the bass speaker is output 2, then to play to both set AudioOutMask to 1 « 0 + 1 « 2 i.e. 5. This feature is supported when all chosen outputs support the sound file format in use; if any do not then no sound will play and an error will be logged.
-Note 1 : If all available output channels on the codec support the available sound file format, then a value of -1 may be used to play to all channels simultaneously.
-Note 2 : Bits in AudioOutMask do not represent internal codec node ids as found in detailed codec dumps, but rather the available output nodes as shown e.g. in the OCAU log lines above.
-----
-Type: plist integer
-Fail-safe: 0
-Description: A bitmask indicating which output channels are used for UEFI audio.
-This should typically include a single bit corresponding to the green output of the built-in analog audio controller (HDEF). The number of available output nodes (N) for each HDA codec is displayed in the debug log (marked in bold).
-OCAU: 1/3 PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x1)/VenMsg(<redacted>,00000000) (4 outputs)
-OCAU: 2/3 PciRoot(0x0)/Pci(0x3,0x0)/VenMsg(<redacted>,000000) (1 output)
-OCAU: 3/3 PciRoot(0x0)/Pci(0x1B,0x0)/VenMsg(<redacted>,020000) (7 outputs)
-The first available output node corresponds to bit 0 (value 1), the second node to bit 1 (value 2), and so on.
-When using the debug version of AudioDxe, additional information regarding each output channel of each codec is logged during driver binding. Further information on available output channels can also be found in the Linux codec dump (`cat /proc/asound/card{n}/codec#{m}`).
-AudioOutMask allows audio to be played on more than one channel (e.g., main speakers plus subwoofer, or headphones plus speakers). For example, if the main speakers are output 0 and the subwoofer is output 2, setting AudioOutMask to `1 << 0 + 1 << 2` (i.e., 5) enables playback on both channels. This feature is supported when all selected outputs support the audio file format being used; if any do not, no sound will play, and an error will be logged.
-Note 1: If all available output channels on the codec support the audio file format, a value of -1 can be used to play audio on all channels simultaneously. Note 2: The bits in AudioOutMask do not represent the internal codec node IDs found in the detailed codec dump; instead, they represent available output nodes, such as those shown in the OCAU log line above.
+Using AudioOutMask, it is possible to play sound to more than one channel (e.g. main speaker plus bass speaker; headphones plus speakers). For example, if the main speaker is output 0 and the bass speaker is output 2, then to play to both, set AudioOutMask to 1 << 0 + 1 << 2, i.e. 5. This feature is supported when all chosen outputs support the sound file format in use; if any do not then no sound will play and an error will be logged.
+Note 1: If all available output channels on the codec support the available sound file format, then a value of -1 may be used to play to all channels simultaneously.
+Note 2: Bits in AudioOutMask do not represent internal codec node ids as found in detailed codec dumps, but rather the available output nodes as shown e.g. in the OCAU log lines above.
 
 
 ***DisconnectHda
@@ -221,24 +125,14 @@ Type: plist boolean
 Failsafe: false
 Description: Disconnect HDA controller before loading drivers.
 May be required on some systems (e.g. Apple hardware, VMware Fusion guest) to allow a UEFI sound driver (such as AudioDxe) to take control of the audio hardware.
-----
-Type: plist Boolean
-Fail-safe: false
-Description: Disconnects the HDA controller before loading the driver.
-This may be necessary on certain systems (e.g., Apple hardware, VMware Fusion guests) to allow UEFI audio drivers (such as AudioDxe) to control the audio hardware.
+
 
 ***PointerPollMin
 Type: plist integer
 Failsafe: 0
 Description: Configure minimal pointer polling period in ms.
 This is the minimal period the OpenCore builtin AppleEvent driver polls pointer devices (e.g. mice, trackpads) for motion events. The current implementation defaults to 10 ms. Setting 0 leaves this default unchanged.
-Note: The OEM Apple implementation uses a polling rate of 2 ms.
-----
-Type: plist Integer
-Fail-safe: 0
-Description: Configures the minimum pointer polling interval (ms).
-This is the minimum interval at which the built-in OpenCore AppleEvent driver polls pointer devices (such as mice or trackpads) for movement events. The current implementation defaults to 10 milliseconds. Setting this to 0 retains the default value.
-Note: The OEM Apple implementation uses a polling rate of 2 milliseconds. Leaving this at the default is sufficient; simply put, this determines how often the CPU queries the mouse for position changes—by default, it checks every 10 milliseconds.
+Note: The OEM Apple implementation uses a polling rate of 2 ms. It's usually fine to just leave this at its default value — in simple terms, this is how often the CPU checks for changes in mouse position, which by default happens once every 10 ms.
 
 
 ***PointerPollMax
@@ -247,14 +141,7 @@ Failsafe: 0
 Description: Configure maximum pointer polling period in ms.
 This is the maximum period the OpenCore builtin AppleEvent driver polls pointer devices (e.g. mice, trackpads) for motion events. The period is increased up to this value as long as the devices do not respond in time. The current implementation defaults to 80 ms. Setting 0 leaves this default unchanged.
 Certain trackpad drivers often found in Dell laptops can be very slow to respond when no physical movement happens. This can affect OpenCanopy and FileVault 2 user interface responsiveness and loading times. Increasing the polling periods can reduce the impact.
-Note: The OEM Apple implementation uses a polling rate of 2 ms.
-----
-Type: plist Integer
-Fail-safe: 0
-Description: Configures the maximum pointer polling interval (in milliseconds).
-This represents the maximum time interval used by OpenCore's built-in AppleEvent driver to poll for motion events from pointing devices (such as mice or trackpads). If a device fails to respond in time, the polling interval increases up to this value. The current implementation defaults to 80ms; setting this to 0 leaves the default value unchanged.
-Certain trackpad drivers found in Dell laptops can be very slow to respond when no physical movement occurs. This can impact the responsiveness and loading times of the OpenCanopy and FileVault 2 user interfaces. Increasing the polling interval can mitigate this issue.
-Note: The OEM Apple implementation uses a polling rate of 2ms. Keeping this value at the default is generally sufficient; simply put, this determines how often the CPU queries the mouse for position changes (the default is once every 10ms).
+Note: The OEM Apple implementation uses a polling rate of 2 ms. It's usually fine to just leave this at its default value — in simple terms, this is how often the CPU checks for changes in mouse position, which by default happens once every 10 ms.
 
 
 ***PointerPollMask
@@ -266,15 +153,6 @@ Certain pointer devices can be present in the firmware even when no correspondin
 These devices usually are placeholders, aggregate devices, or proxies. Gathering information from these devices may result in inaccurate motion activity in the user interfaces and even cause performance issues. Disabling such pointer devices is recommended for laptop setups having issues of this kind.
 The amount of pointer devices available in the system can be found in the log. Refer to Found N pointer devices message for more details.
 Note: Has no effect when using the OEM Apple implementation (see AppleEvent setting).
-----
-Type: plist integer, 32-bit
-Fallback: -1
-Description: Configures the index of the pointer(s) to be polled.
-Select the pointer device(s) for which AppleEvent motion events should be polled. -1 indicates all devices. Specify particular devices by using the sum of their bit values. For example, to enable devices 0, 2, and 3, the value would be 1 + 4 + 8 (corresponding powers of 2). A total of 32 configurable devices are supported.
-Some pointer devices may appear in the firmware even without a corresponding physical device.
-These devices are typically placeholders, aggregate devices, or proxies. Collecting information from them can lead to inaccurate motion activity in the user interface or even performance issues. For laptop setups experiencing such issues, it is recommended to disable these pointer devices.
-The number of pointer devices available in the system can be found in the logs; for further details, refer to the information regarding discovered pointer devices.
-Note: This setting has no effect when using the OEM Apple implementation (see AppleEvent settings).
 
 
 ***MaximumGain
@@ -282,20 +160,9 @@ Type: plist integer
 Failsafe: -15
 Description: Maximum gain to use for UEFI audio, specified in decibels (dB) with respect to amplifier reference level of 0 dB (see note 1).
 All UEFI audio will use this gain setting when the system amplifier gain read from the SystemAudioVolumeDB NVRAM variable is higher than this. This is to avoid over-loud UEFI audio when the system volume is set very high, or the SystemAudioVolumeDB NVRAM value has been misconfigured.
-Note 1 : Decibels (dB) specify gain (postive values; increase in volume) or attenuation (negative values; decrease in volume) compared to some reference level. When you hear the sound level of a jet plane expressed as 120 decibels, say, the reference level is the sound level just audible to an average human. However generally in acoustic science and computer audio any reference level can be specified. Intel HDA and macOS natively use decibels to specify volume level. On most Intel HDA hardware the reference level of 0 dB is the loudest volume of the hardware, and all lower volumes are therefore negative numbers. The quietest volume on typical sound hardware is around -55 dB to -60 dB.
-Note 2 : Matching how macOS handles decibel values, this value is converted to a signed byte; therefore values outside e 128 dB to +127 dB (which are well beyond physically plausible volume levels) are not allowed.
-Note 3 : Digital audio output – which does not have a volume slider in-OS – ignores this and all other gain settings, only mute settings are relevant.
-----
-Type: plist Integer
-Fallback: -15
-Description: Maximum gain for UEFI audio, in decibels (dB), relative to the amplifier's 0dB reference level (see Note 1).
-When the system amplifier gain read from the SystemAudioVolumeDB NVRAM variable exceeds this value, this gain setting is used for all UEFI audio. This prevents UEFI audio from becoming excessively loud when the system volume is set high or the SystemAudioVolumeDB NVRAM value is misconfigured.
-Note 1: Decibels (dB) refer to gain (positive values; increased volume) or attenuation (negative values; decreased volume) relative to a specific reference level. For instance, when a jet engine's sound level is cited as 120 dB, the reference level is the threshold of human hearing. However, in acoustics
-and computer audio, any reference level can be specified. Intel HDA and macOS natively use decibels to specify volume levels. On most Intel HDA hardware, the 0 dB reference level corresponds to the hardware's maximum volume; consequently, all lower volume levels are negative. The quietest volume on typical audio hardware
-ranges from approximately -55 dB to -60 dB.
-Note 2: Consistent with how macOS handles decibel values, this value is converted into a signed byte; therefore, values ​​outside the range of -128 dB to +127 dB are not permitted (such values ​​far exceed physically reasonable volume levels).
-Note 3: Digital audio outputs—which lack volume sliders within the operating system—ignore this and all other gain settings; only the mute setting is relevant.
-
+Note 1: Decibels (dB) specify gain (positive values; increase in volume) or attenuation (negative values; decrease in volume) compared to some reference level. When you hear the sound level of a jet plane expressed as 120 decibels, say, the reference level is the sound level just audible to an average human. However generally in acoustic science and computer audio any reference level can be specified. Intel HDA and macOS natively use decibels to specify volume level. On most Intel HDA hardware the reference level of 0 dB is the loudest volume of the hardware, and all lower volumes are therefore negative numbers. The quietest volume on typical sound hardware is around -55 dB to -60 dB.
+Note 2: Matching how macOS handles decibel values, this value is converted to a signed byte; therefore values outside -128 dB to +127 dB (which are well beyond physically plausible volume levels) are not allowed.
+Note 3: Digital audio output – which does not have a volume slider in-OS – ignores this and all other gain settings, only mute settings are relevant.
 
 
 ***MinimumAssistGain
@@ -303,14 +170,7 @@ Type: plist integer
 Failsafe: -30
 Description: Minimum gain in decibels (dB) to use for picker audio assist.
 The screen reader will use this amplifier gain if the system amplifier gain read from the SystemAudioVolumeDB NVRAM variable is lower than this.
-Note 1 : In addition to this setting, because audio assist must be audible to serve its function, audio assist is not muted even if the OS sound is muted or the StartupMute NVRAM variable is set.
-Note 2 : See MaximumGain for an explanation of decibel volume levels.
-----
-Type: plist Integer
-Fallback: -30
-Description: The minimum gain used for audio assistance (in decibels).
-If the system amplifier gain read from the SystemAudioVolumeDB NVRAM variable is lower than this value, the screen reader will use this gain level instead.
-Note 1: Since audio assistance must be audible to function, it will not be muted even if the system sound is muted or the StartupMute NVRAM variable is set.
+Note 1: In addition to this setting, because audio assist must be audible to serve its function, audio assist is not muted even if the OS sound is muted or the StartupMute NVRAM variable is set.
 Note 2: See MaximumGain for an explanation of decibel volume levels.
 
 
@@ -319,15 +179,8 @@ Type: plist integer
 Failsafe: -128
 Description: Minimum gain in decibels (dB) at which to attempt to play any sound.
 The boot chime will not play if the system amplifier gain level in the SystemAudioVolumeDB NVRAM variable is lower than this.
-Note 1 : This setting is designed to save unecessary pauses due to audio setup at inaudible volume levels, when no sound will be heard anyway. Whether there are inaudible volume levels depends on the hardware. On some hardware (including Apple) the audio values are well enough matched to the hardware that the lowest volume levels available are very quiet but audible, whereas on some other hardware combinations, the lowest part of the volume range may not be audible at all.
-Note 2 : See MaximumGain for an explanation of decibel volume levels.
-----
-Type: plist integer
-Failsafe: -128
-Description: The minimum gain in decibels (dB) at which any sound is attempted to be played.
-If the system amplifier gain level in the SystemAudioVolumeDB NVRAM variable is lower than this value, the power-on chime will not be played.
-Note 1: This setting is to avoid unnecessary pauses caused by setting the audio at an inaudible volume level, since the sound will not be heard anyway. Whether there are inaudible volume levels depends on the hardware. On some hardware (including Apple), the lowest volume audio values ​​match the hardware well, while on some other hardware combinations, the lowest parts of the volume range may not be audible at all.
-Note 2: See MaximumGain's explanation of decibel volume levels.
+Note 1: This setting is designed to save unnecessary pauses due to audio setup at inaudible volume levels, when no sound will be heard anyway. Whether there are inaudible volume levels depends on the hardware. On some hardware (including Apple) the audio values are well enough matched to the hardware that the lowest volume levels available are very quiet but audible, whereas on some other hardware combinations, the lowest part of the volume range may not be audible at all.
+Note 2: See MaximumGain for an explanation of decibel volume levels.
 
 
 ***LogModules
@@ -338,19 +191,8 @@ This option filters logging generated by specific modules, both in the log and o
 • + — Positive filtering: Only present selected modules.
 • - — Negative filtering: Exclude selected modules.
 When multiple ones are selected, comma (,) should be used as the splitter. For instance, +OCCPU,OCA,OCB means only OCCPU, OCA, OCB being printed, while -OCCPU,OCA,OCB indicates these modules being filtered out (i.e. not logged). When no symbol is specified, positive filtering (+) will be used. * indicates all modules being logged.
-Note 1 : Acronyms of libraries can be found in the Libraries section below.
-Note 2 : Messages printed before the configuration of log protocol cannot be filtered.
-----
-Type: plist string
-Fail-safe: *
-Description: Filters log entries by module.
-This option filters logs generated by specific modules—affecting both the log file and the screen output—and supports two modes:
-1. +  Positive filtering: displays only the selected modules.
-2. -  Negative filtering: excludes the selected modules.
-Use commas (,) to separate multiple modules. For example, `+OCCPU,OCA,OCB` means only OCCPU, OCA, and OCB are printed, whereas `-OCCPU,OCA,OCB` means these modules are filtered out (i.e., not logged). If no symbol is specified, positive filtering (+) is used. `*` indicates that all modules are logged.
-Note 1: Refer to the "Libraries" section of the documentation for library acronyms.
-Note 2: Information printed before the logging protocol is configured cannot be filtered.
-
+Note 1: Acronyms of libraries can be found in the Libraries section below.
+Note 2: Messages printed before the configuration of log protocol cannot be filtered.
 
 
 ***LegacyEnable
@@ -363,19 +205,7 @@ This file must have a root plist dictionary type and contain two fields:
 Variable loading happens prior to the Delete (and Add) phases. Unless LegacyOverwrite is enabled, it will not overwrite any existing variable. Variables allowed to be set must be specified in LegacySchema.
 Third-party scripts may be used to create nvram.plist file. An example of such script can be found in Utilities.
 The use of third-party scripts may require ExposeSensitiveData set to 0x3 to provide boot-path variable with the OpenCore EFI partition UUID.
-Warning: This feature can be dangerous, as it passes unprotected data to firmware variable services. Only use
-when no hardware NVRAM implementation is provided by the firmware or when the NVRAM implementation is incompatible.
-----
-Type: plist Boolean
-Default: false
-Description: Enables loading an NVRAM variable file named `nvram.plist` from the root of the EFI volume.
-This file must have a root plist dictionary type and contain two fields:
-1. Version -- plist Integer; file version, must be set to 1.
-2. Add -- plist Dictionary; equivalent to the `Add` section in `config.plist`.
-Variable loading occurs prior to the deletion (and addition) phase. It does not overwrite any existing variables unless `LegacyOverwrite` is enabled. Variables allowed to be set must be specified in `LegacySchema`.
-Third-party scripts can be used to create the `nvram.plist` file. Examples of such scripts can be found in the `Utilities` folder.
-Using third-party scripts may require setting `ExposeSensitiveData` to `0x3` to provide boot path variables containing the OpenCore EFI partition UUID.
-Warning: This feature can be dangerous as it passes unprotected data to firmware variable services; it should only be used when the firmware does not provide a hardware NVRAM implementation or the NVRAM implementation is incompatible.
+Warning: This feature can be dangerous, as it passes unprotected data to firmware variable services. Only use when no hardware NVRAM implementation is provided by the firmware or when the NVRAM implementation is incompatible.
 
 
 ***SetApfsTrimTimeout
@@ -383,56 +213,31 @@ Type: plist integer
 Failsafe: -1
 Requirement: 10.14 (not required for older)
 Description: Set trim timeout in microseconds for APFS filesystems on SSDs.
-	
+
 The APFS filesystem is designed in a way that the space controlled via the spaceman structure is either used or free. This may be different in other filesystems where the areas can be marked as used, free, and unmapped. All free space is trimmed (unmapped/deallocated) at macOS startup. The trimming procedure for NVMe drives happens in LBA ranges due to the nature of the DSM command with up to 256 ranges per command. The more fragmented the memory on the drive is, the more commands are necessary to trim all the free space.
-	
-Depending on the SSD controller and the level of drive fragmenation, the trim procedure may take a considerable amount of time, causing noticeable boot slowdown. The APFS driver explicitly ignores previously unmapped areas and repeatedly trims them on boot. To mitigate against such boot slowdowns, the macOS driver introduced a timeout (9.999999 seconds) that stops the trim operation when not finished in time.
+
+Depending on the SSD controller and the level of drive fragmentation, the trim procedure may take a considerable amount of time, causing noticeable boot slowdown. The APFS driver explicitly ignores previously unmapped areas and repeatedly trims them on boot. To mitigate against such boot slowdowns, the macOS driver introduced a timeout (9.999999 seconds) that stops the trim operation when not finished in time.
 
 On several controllers, such as Samsung, where the deallocation process is relatively slow, this timeout can be reached very quickly. Essentially, it means that the level of fragmentation is high, thus macOS will attempt to trim the same lower blocks that have previously been deallocated, but never have enough time to deallocate higher blocks. The outcome is that trimming on such SSDs will be non-functional soon after installation, resulting in additional wear on the flash.
 
-One way to workaround the problem is to increase the timeout to an extremely high value, which at the cost of slow boot times (extra minutes) will ensure that all the blocks are trimmed. Set this option to a high value,such as 4294967295, to ensure that all blocks are trimmed. Alternatively, use over-provisioning, if supported, or create a dedicated unmapped partition where the reserve blocks can be found by the controller. Conversely, the trim operation can be disabled by setting a very low timeout value. e.g. 999. Refer to this article for details.
-	
+One way to workaround the problem is to increase the timeout to an extremely high value, which at the cost of slow boot times (extra minutes) will ensure that all the blocks are trimmed. Set this option to a high value, such as 4294967295, to ensure that all blocks are trimmed. Alternatively, use over-provisioning, if supported, or create a dedicated unmapped partition where the reserve blocks can be found by the controller. Conversely, the trim operation can be disabled by setting a very low timeout value, e.g. 999. Refer to this article for details.
+
 On macOS 12+, it is no longer possible to set trim timeout for APFS filesystems. However, trim can be disabled when the timeout value is set to 0.
-----
-Type: plist Integer
-Fallback: -1
-Requirement: 10.14 (not required for older versions)
-Description: Sets the trim timeout (in microseconds) for APFS file systems on SSDs.
 
-APFS is designed so that space managed by the "spaceman" structure is either in use or freed. This differs from other file systems, where space can be marked as used, free, or unmapped. All free space is trimmed (unmapped/deallocated) during macOS startup. Due to the nature of DSM commands, the trim process for NVMe drives operates on LBA ranges, with a limit of 256 ranges per command. The more fragmented the storage on the drive, the more commands are required to trim all free space.
-
-Depending on the SSD controller and the degree of fragmentation, the trim process can take a significant amount of time, leading to a noticeable slowdown in startup speed. The APFS driver explicitly ignores previously unmapped areas and repeatedly attempts to trim them during startup. To mitigate this impact on startup speed, the macOS driver implements a timeout (9.999999 seconds) that halts the trim operation if it is not completed in time.
-
-On some controllers—such as those from Samsung—where the deallocation process is relatively slow, this timeout can be reached quickly. Essentially, in cases of high fragmentation, macOS repeatedly attempts to trim the same lower-address blocks that have already been deallocated, never leaving enough time to deallocate the higher-address blocks. Consequently, the trim function on such SSDs effectively stops working shortly after installation, leading to increased wear on the flash memory.
-
-One solution is to increase the timeout to a very high value—such as 4,294,967,295—to ensure all blocks are trimmed, albeit at the cost of a slower startup (adding several minutes). Alternatively, if supported, you can use over-provisioning or create a dedicated unmapped partition where the controller can find reserved blocks. Conversely, the trim operation can be disabled by setting a very low timeout value, such as 999. Please refer to this article for details. On macOS 12 and later, it is no longer possible to set a trim timeout for the APFS file system. However, trim can be disabled by setting the timeout value to 0.
 
 ***Init
 Type: plist boolean
 Failsafe: false
 Description: Perform serial port initialisation.
-This option will perform serial port initialisation within OpenCore prior to enabling (any) debug logging.
+This option will perform serial port initialisation within OpenCore prior to enabling (any) debug logging. Most users won't need this — it's fine to leave it at default.
 Refer to the Debugging section for details.
-----
-Type: plist Boolean
-Fail-safe: false
-Description: Performs serial port initialization.
-This option initializes the serial port within OpenCore before enabling (any) debug logs. Most users do not need this; keeping the default setting is recommended.
-Please refer to the debugging section for details.
 
 
 ***Override
 Type: plist boolean
 Failsafe: false
-Description: Override serial port properties. When this option is set to false, no keys from Custom will be overridden.
+Description: Override serial port properties. When this option is set to false, no keys from Custom will be overridden. Most users won't need this — it's fine to leave it at default.
 This option will override serial port properties listed in the Serial Custom Properties section below.
-----
-Type: plist Boolean
-Fail-safe: false
-Description: Overrides serial port properties. When this option is set to false, no custom keys will be overridden. Most users do not need this; keeping the default setting is sufficient.
-This option overrides the serial port properties listed in the serial custom properties section.
-
-
 
 
 ***ResizeUsePciRbIo
@@ -486,7 +291,7 @@ For faster GOP operation on older firmwares (e.g. EFI-era Macs).
 ***InitialMode
 Type: plist boolean
 Failsafe: Auto
-Selects the internal ConsoleControl mode in which TextRenderer will operate. Available values are Auto, Text and Graphics. 
+Selects the internal ConsoleControl mode in which TextRenderer will operate. Available values are Auto, Text and Graphics.
 Text and Graphics specify the named mode.
 Auto uses the current mode of the system ConsoleControl protocol when one exists, defaulting to Text mode otherwise.
 
@@ -494,7 +299,7 @@ Auto uses the current mode of the system ConsoleControl protocol when one exists
 ***ConsoleFont
 Type: plist boolean
 Failsafe: Empty
-Load custom console font for OpenCore Builtin text renderer. Failsafe value is Empty (use OpenCore builtin console font). The font file must be located in \FI/OC/Resources/Font/font-name.hex and must be 8x16 resolution. There is often no need to change console font, the main use-case being to provide an extended character set for those relatively rare EFI applications which have multi-lingual support (e.g. memtest86). OCBinaryData repository includes Terminus and TerminusCore fonts.
+Load custom console font for OpenCore Builtin text renderer. Failsafe value is Empty (use OpenCore builtin console font). The font file must be located in \EFI\OC\Resources\Font\font-name.hex and must be 8x16 resolution. There is often no need to change console font, the main use-case being to provide an extended character set for those relatively rare EFI applications which have multi-lingual support (e.g. memtest86). OCBinaryData repository includes Terminus and TerminusCore fonts.
 
 
 ***DisableIoMapperMapping
@@ -502,37 +307,35 @@ Type: plist boolean
 Failsafe: false
 Requirement: 13.3+
 Fix WiFi, Thunderbolt and Ethernet issues on systems where the following conditions are present (all must be true):
-- Apple VTD is enabled (VT-d enabled in BIOS):
+- Apple VT-d is enabled (VT-d enabled in BIOS)
 - One or more Reserved Memory Regions exist in System DMAR
 - More than 16GB memory installed.
 On some systems, this quirk is only needed when iGPU is enabled.
-On Comet Lake and older Intel Core processors, this quirk is needed when all of the above conditions are true. Motherboards such as Asus Z690 and Z790 do not have Reserved Memory Regions and the iGPU on these processors is not compatible with macOS, so the are not affected by the issue. But many Z370, Z390, Z490... boards are affected.
+On Comet Lake and older Intel Core processors, this quirk is needed when all of the above conditions are true. Motherboards such as Asus Z690 and Z790 do not have Reserved Memory Regions and the iGPU on these processors is not compatible with macOS, so they are not affected by the issue. But many Z370, Z390, Z490... boards are affected.
 Not needed on AMD systems.
 
 
 ***HibernateSkipsPicker
 Type: plist boolean
 Failsafe: false
-Not to show picker if waking from macOS hibernation.
+Do not show picker if waking from macOS hibernation.
 
 
 ***AllowRelocationBlock
 Type: plist boolean
 Failsafe: false
-(support for 32-bit OpenCore): this quirk is needed to boot macOS 10.6 and older with 32-bit kernel in 32-bit OVMF. Hibernation wake is not compatible with this quirk.
+(Support for 32-bit OpenCore): this quirk is needed to boot macOS 10.6 and older with a 32-bit kernel in 32-bit OVMF. Hibernation wake is not compatible with this quirk.
 
 
 ***FixupAppleEfiImages
 Type: plist boolean
 Failsafe: false
-Note : Mac OS X boot.efi images contain WˆX permissions errors (in all versions) and in very old versions additionally contain illegal overlapping sections (affects 10.4 and 10.5 32-bit versions only). Modern, strict PE loaders will refuse to load these images unless additional mitigations are applied. Image loaders which enforce these stricter rules include the loader provided with current versions of OpenDuet, the loader in OVMF if compiled from Acidanthera and possibly the image loaders of some very recent 3rd party firmware (e.g. Microsoft).
-This quirk detects these issues and pre-processes such images in memory so that a strict loader will accept them. On a system with such a modern, stricter loader this quirk is required to load Mac OS X 10.4 to macOS 10.12, and is required for all newer macOS when SecureBootModel is set to Disabled because pre-processing in memory is incompatible with UEFI Secure Boot, as the image loaded is not the image on disk, so you cannot sign files which are loaded in this way based on their original disk image contents.
-This quirk is never applied during Apple Secure Boot for newer macOS. The Apple Secure Boot path in OpenCore includes its own separate mitigations for boot.efi WˆX issues.
+Note: Mac OS X boot.efi images contain W^X permissions errors (in all versions) and in very old versions additionally contain illegal overlapping sections (affects 10.4 and 10.5 32-bit versions only). Modern, strict PE loaders will refuse to load these images unless additional mitigations are applied. Image loaders which enforce these stricter rules include the loader provided with current versions of OpenDuet, the loader in OVMF if compiled from Acidanthera, and possibly the image loaders of some very recent 3rd party firmware (e.g. Microsoft).
+This quirk detects these issues and pre-processes such images in memory so that a strict loader will accept them. On a system with such a modern, stricter loader this quirk is required to load Mac OS X 10.4 to macOS 10.12, and is required for all newer macOS when SecureBootModel is set to Disabled, because pre-processing in memory is incompatible with UEFI Secure Boot, as the image loaded is not the image on disk, so you cannot sign files which are loaded in this way based on their original disk image contents.
+This quirk is never applied during Apple Secure Boot for newer macOS. The Apple Secure Boot path in OpenCore includes its own separate mitigations for boot.efi W^X issues.
 
 
 ***ClearTaskSwitchBit
 Type: plist boolean
 Failsafe: false
 Fix crashes when using 32-bit versions of macOS on Hyper-V Gen2 VMs.
-
-	
