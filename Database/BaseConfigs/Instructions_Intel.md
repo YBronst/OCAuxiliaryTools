@@ -138,7 +138,7 @@ To manually update the config plists, do the following:
 - For enabling Linux support, you can follow this [guide](https://github.com/5T33Z0/OC-Little-Translated/tree/main/G_Linux).
 
 ## References
-- **OpenCore Auxiliary Tools**: https://github.com/ic005k/QtOpenCoreConfig
+- **OpenCore Auxiliary Tools**: https://github.com/YBronst/OCAuxiliaryTools
 - **OpenCore Bootloader**: https://github.com/acidanthera/OpenCorePkg
 - **Base Configs Source**: https://github.com/luchina-gabriel?tab=repositories
 - **OpenCore Install Guide**: https://dortania.github.io/OpenCore-Install-Guide

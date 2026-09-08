@@ -6,14 +6,12 @@
 	<dict>
 		<key>By 5T33Z0</key>
 		<string>https://github.com/5T33Z0</string>
-		<key>Note 1</key>
-		<string>Requires UEFI BIOS</string>
-		<key>Note 2</key>
-		<string>Generate a SSDT-PM using ssdtPRGen in Post-Install to for proper CPU Power Management</string>
-		<key>SMBIOS: iMac11,1</key>
-		<string>For 1st Gen Intel Core i5/i7 CPUs. dGPU required.</string>
 		<key>macOS Support</key>
-		<string>macOS Snow Leopard to High Sierra</string>
+		<string>macOS Leopard to Mojave</string>
+		<key>SMBIOS</key>
+		<string>MacPro5,1</string>
+		<key>Notes</key>
+		<string>For HP Workstations with UEFI BIOS</string>
 	</dict>
 	<key>ACPI</key>
 	<dict>
@@ -87,7 +85,7 @@
 			<key>ProvideMaxSlide</key>
 			<integer>0</integer>
 			<key>RebuildAppleMemoryMap</key>
-			<true/>
+			<false/>
 			<key>ResizeAppleGpuBars</key>
 			<integer>-1</integer>
 			<key>SetupVirtualMap</key>
@@ -156,6 +154,24 @@
 				<true/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/WhateverGreen</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string></string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>Any</string>
+				<key>BundlePath</key>
+				<string>CpuTscSync.kext</string>
+				<key>Comment</key>
+				<string>V1.0.5 | CpuTscSync.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/CpuTscSync</string>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -244,7 +260,7 @@
 			<key>AppleXcpmCfgLock</key>
 			<false/>
 			<key>AppleXcpmExtraMsrs</key>
-			<false/>
+			<true/>
 			<key>AppleXcpmForceBoost</key>
 			<false/>
 			<key>CustomPciSerialDevice</key>
@@ -270,7 +286,7 @@
 			<key>IncreasePciBarSize</key>
 			<false/>
 			<key>LapicKernelPanic</key>
-			<false/>
+			<true/>
 			<key>LegacyCommpage</key>
 			<false/>
 			<key>PanicNoKextDump</key>
@@ -284,7 +300,7 @@
 			<key>ThirdPartyDrives</key>
 			<false/>
 			<key>XhciPortLimit</key>
-			<false/>
+			<true/>
 		</dict>
 		<key>Scheme</key>
 		<dict>
@@ -508,7 +524,7 @@
 			<key>SystemMemoryStatus</key>
 			<string>Auto</string>
 			<key>SystemProductName</key>
-			<string>iMac11,1</string>
+			<string>MacPro5,1</string>
 			<key>SystemSerialNumber</key>
 			<string></string>
 			<key>SystemUUID</key>
@@ -638,18 +654,6 @@
 			</dict>
 			<dict>
 				<key>Arguments</key>
-				<string></string>
-				<key>Comment</key>
-				<string>OpenUsbKbDxe.efi</string>
-				<key>Enabled</key>
-				<true/>
-				<key>LoadEarly</key>
-				<false/>
-				<key>Path</key>
-				<string>OpenUsbKbDxe.efi</string>
-			</dict>
-			<dict>
-				<key>Arguments</key>
 				<string>--preserve-boot</string>
 				<key>Comment</key>
 				<string>Adds NVRAM reset to Bootpicker</string>
@@ -668,7 +672,7 @@
 			<key>KeyForgetThreshold</key>
 			<integer>5</integer>
 			<key>KeySupport</key>
-			<false/>
+			<true/>
 			<key>KeySupportMode</key>
 			<string>Auto</string>
 			<key>KeySwap</key>
