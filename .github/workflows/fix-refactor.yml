@@ -1,0 +1,35 @@
+name: Fix refactor
+on:
+  pull_request:
+    types: [opened, synchronize]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.event.pull_request.head.ref == 'refactor/remove-database-presets-v2' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, ref: refactor/remove-database-presets-v2}
+      - name: Fix path handling
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('src/mainwindow.cpp'); s=p.read_text()
+          def rmfunc(src,sig):
+            pos=src.find(sig); b=src.find('{',pos); d=0
+            for i in range(b,len(src)):
+              if src[i]=='{': d+=1
+              elif src[i]=='}':
+                d-=1
+                if d==0:return src[:pos]+src[i+1:]
+            raise RuntimeError(sig)
+          s=rmfunc(s,'void MainWindow::changeOpenCore(bool blDEV)')
+          s += '''\nvoid MainWindow::changeOpenCore(bool blDEV) {\n  init_FindResults();\n  ui->mycboxFind->lineEdit()->clear();\n  QFileInfo fi(SaveFileName);\n  QDir root(fi.absolutePath());\n  if (root.dirName().compare("OC", Qt::CaseInsensitive) == 0) root.cdUp();\n  if (root.dirName().compare("EFI", Qt::CaseInsensitive) == 0) root.cdUp();\n  pathSource = QDir::fromNativeSeparators(root.absolutePath()) + "/";\n  QString current = blDEV ? ocVerDev : ocVer;\n  current.replace(" " + tr("DEBUG"), "");\n  lblVer->setText("  OpenCore " + current);\n  aboutDlg->ui->lblVersion->setText(tr("Version") + "  " + CurVersion + " for OpenCore " + current);\n  strOCFrom = "https://github.com/acidanthera/OpenCorePkg/releases/tag/" + current;\n}\n'''
+          p.write_text(s)
+          PY
+          git add src/mainwindow.cpp
+          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: remove database path dependency' || true
+          git push origin HEAD:refactor/remove-database-presets-v2
