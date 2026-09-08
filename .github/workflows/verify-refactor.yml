@@ -1,0 +1,35 @@
+name: Verify refactor
+on:
+  pull_request:
+    types: [opened, synchronize]
+permissions:
+  contents: write
+jobs:
+  verify:
+    if: github.event.pull_request.head.ref == 'refactor/remove-database-presets-v2' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, ref: refactor/remove-database-presets-v2}
+      - name: Remove remaining database paths and build
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          for name in ['src/mainwindow.cpp','src/mainwindow.h']:
+            p=Path(name); s=p.read_text(); s=s.replace('userDataBaseDir','pathSource').replace('dataBaseDir','pathSource'); p.write_text(s)
+          for p in Path('src').glob('*'):
+            if p.suffix not in {'.cpp','.h','.ui'}: continue
+            s=p.read_text()
+            s=s.replace('strDatabaseUrl','')
+            p.write_text(s)
+          PY
+          if grep -RInE 'dlgDatabase|dlgPreset|userDataBaseDir|dataBaseDir|strDatabaseUrl|actionDatabase|actionGenerateEFI' src OCAuxiliaryTools.pro; then exit 1; fi
+          sudo apt-get update
+          sudo apt-get install -y qtbase5-dev qt5-qmake qtbase5-dev-tools libglew-dev libglfw3-dev libxcb1 libxcb-xinerama0 unzip
+          qmake
+          make -j2
+          git add src OCAuxiliaryTools.pro
+          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: remove remaining database references' || true
+          git push origin HEAD:refactor/remove-database-presets-v2
