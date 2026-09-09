@@ -118,11 +118,11 @@ Depending on the combination of CPU, GPU (iGPU and/or dGPU) and SMBIOS, addition
 **`-no_compat_check`**|Disables macOS compatibility check. For example, macOS 11.0 BigSur no longer supports iMac models introduced before 2014. Enabling this allows installing and booting macOS on otherwise unsupported SMBIOS. Downside: you can't install system updates if this is enabled.
 
 ## Manual update (optional)
-Although these configs are included in OCAT now, they are maintained and updated by me, so the latest versions will always be present in my [**GitHub Repo**](https://github.com/5T33Z0/OC-Little-Translated/tree/main/F_Desktop_EFIs).
+Although these configs are included in OCAT now, they are maintained and updated by me, so the latest versions will always be present in my [**GitHub Repo**](https://github.com/YBronst/OCAuxiliaryTools/tree/master/Database).
 
 To manually update the config plists, do the following:
 
-- Download [**_BaseConfigs.zip**](https://github.com/5T33Z0/OC-Little-Translated/blob/main/F_Desktop_EFIs/_BaseConfigs.zip?raw=true) and extract it
+- Download [**_BaseConfigs.zip**](https://github.com/YBronst/OCAuxiliaryTools/tree/master/Database/BaseConfigs.zip?raw=true) and extract it 
 - Copy the Files to the Database Folder inside of the **OCAuxiliaryTools** App:
 	- right-click the app and select "Show package contents"
 	- browse to `/Contents/MacOS/Database/BaseConfigs/`
@@ -135,7 +135,7 @@ To manually update the config plists, do the following:
 - View `DeviceProperties` to check the included Framebuffer-Patches. Usually, 2 versions are included: one for using the iGPU for driving a Display and a 2nd one for using the iGPU for computational tasks only.
 - Depending on your hardware configuration (CPU, Mainboard, Peripherals) you may have to add additional SSDT Hotpatches, boot-args, DeviceProperties and/or Kexts – check before deployment!
 - Reference Dortania's OpenCore Install Guide for your CPU family if you are uncertain about certain settings
-- For enabling Linux support, you can follow this [guide](https://github.com/5T33Z0/OC-Little-Translated/tree/main/G_Linux).
+- For enabling Linux support, you can follow this [guide](https://github.com/5T33Z0/OC-Little-Translated/tree/main/Content/G_Linux).
 
 ## References
 - **OpenCore Auxiliary Tools**: https://github.com/YBronst/OCAuxiliaryTools
