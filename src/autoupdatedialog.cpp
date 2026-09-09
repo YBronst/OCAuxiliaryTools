@@ -363,7 +363,7 @@ void AutoUpdateDialog::startWgetDownload() {
   QString strOriginal, strTest, strSet, strTemp;
 
   strOriginal = "https://github.com/";
-  strTest = "https://gh.api.99988866.xyz/https://github.com/";
+  strTest = "https://github.com/";
   strSet = mw_one->myDlgPreference->ui->comboBoxNet->currentText().trimmed();
   strTemp = strUrlOrg;
   strUrl = strTemp.replace("https://github.com/", strSet);
