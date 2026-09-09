@@ -30,7 +30,6 @@ AutoUpdateDialog::AutoUpdateDialog(QWidget* parent)
 AutoUpdateDialog::~AutoUpdateDialog() { delete ui; }
 
 void AutoUpdateDialog::Init() {
-  //"https://raw.fastgit.org/"  //Exavple
     strWinUrl = "https://github.com/";
     strMacUrl = "https://github.com/";
     strMacClassicalUrl = "https://github.com/";
@@ -245,9 +244,6 @@ void AutoUpdateDialog::startDownload(bool Database) {
 
 void AutoUpdateDialog::closeEvent(QCloseEvent* event) {
   Q_UNUSED(event);
-  // myfile->close();
-  // reply->close();
-  // reply->deleteLater();
   processWget->close();
   processWget->kill();
   delete processWget;
@@ -395,7 +391,6 @@ void AutoUpdateDialog::startWgetDownload() {
                                               << "--log-level=info" << strUrl);
 
   } else {
-    // if (mw_one->win) strExec = strAppExePath + "/wget.exe";
     if (mw_one->linuxOS) strExec = "wget";
 
     processWget->start(strExec, QStringList()
