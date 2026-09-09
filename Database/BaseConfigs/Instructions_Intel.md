@@ -122,7 +122,7 @@ Although these configs are included in OCAT now, they are maintained and updated
 
 To manually update the config plists, do the following:
 
-- Download [**_BaseConfigs.zip**](https://github.com/YBronst/OCAuxiliaryTools/blob/master/Database/BaseConfigs.zip?raw=true) and extract it 
+- Download [**_BaseConfigs.zip**](https://github.com/YBronst/OCAuxiliaryTools/blob/master/BaseConfigs.zip?raw=true) and extract it 
 - Copy the Files to the Database Folder inside of the **OCAuxiliaryTools** App:
 	- right-click the app and select "Show package contents"
 	- browse to `/Contents/MacOS/Database/BaseConfigs/`
