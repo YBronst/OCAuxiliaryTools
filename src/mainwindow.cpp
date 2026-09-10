@@ -9413,7 +9413,7 @@ void MainWindow::on_btnDown_UEFI_Drivers_clicked() {
 
 void MainWindow::on_actionLatest_Release_triggered() {
   QUrl url(
-      QString("https://github.com/YBronst/OCAuxiliaryTools/releases/tag/20260909"));
+      QString("https://github.com/YBronst/OCAuxiliaryTools/releases/tag/20261009"));
   QDesktopServices::openUrl(url);
 }
 
