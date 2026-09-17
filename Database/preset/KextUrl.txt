@@ -5,6 +5,7 @@ AirportBrcmFixup.kext | https://github.com/acidanthera/AirportBrcmFixup
 AirportItlwm.kext | https://github.com/OpenIntelWireless/itlwm
 AMDRyzenCPUPowerManagement.kext | https://github.com/trulyspinach/SMCAMDProcessor
 AppleALC.kext | https://github.com/acidanthera/AppleALC
+AppleIGC.kext | https://github.com/SongXiaoXi/AppleIGC/releases
 AtherosE2200Ethernet.kext | https://github.com/Mieze/AtherosE2200Ethernet
 BlueToolFixup.kext | https://github.com/acidanthera/BrcmPatchRAM
 BrcmPatchRAM.kext | https://github.com/acidanthera/BrcmPatchRAM
@@ -22,6 +23,7 @@ FeatureUnlock.kext | https://github.com/acidanthera/FeatureUnlock
 GenericCardReaderFriend.kext | https://github.com/Baio1977/GenericCardReaderFriend
 HibernationFixup.kext | https://github.com/acidanthera/HibernationFixup
 HoRNDIS9.2.kext | https://github.com/w19996/HoRNDIS
+iBridged.kext | https://github.com/Carnations-Botanica/iBridged
 Innie.kext | https://github.com/cdf/Innie
 IntelBluetoothFirmware.kext | https://github.com/OpenIntelWireless/IntelBluetoothFirmware
 IntelBluetoothInjector.kext | https://github.com/OpenIntelWireless/IntelBluetoothFirmware
