@@ -6634,8 +6634,22 @@ void MainWindow::setTableEditTriggers() {
   listOfTableWidget.clear();
   listOfTableWidget = getAllTableWidget(getAllUIControls(ui->tabTotal));
   for (int i = 0; i < listOfTableWidget.count(); i++) {
-    QTableWidget* w = (QTableWidget*)listOfTableWidget.at(i);
+    // Safe casting using Qt's qobject_cast
+    QTableWidget* w = qobject_cast<QTableWidget*>(listOfTableWidget.at(i));
+
+    // Skip if the widget is null or not actually a QTableWidget
+    if (!w) {
+      continue;
+    }
+
     w->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    // Enable drag & drop row reordering safely
+    w->setSelectionBehavior(QAbstractItemView::SelectRows);
+    w->setDragEnabled(true);
+    w->setDragDropMode(QAbstractItemView::InternalMove);
+    w->setDropIndicatorShown(true);
+    w->setDragDropOverwriteMode(false);
   }
 }
 
