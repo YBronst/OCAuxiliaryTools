@@ -6636,6 +6636,13 @@ void MainWindow::setTableEditTriggers() {
   for (int i = 0; i < listOfTableWidget.count(); i++) {
     QTableWidget* w = (QTableWidget*)listOfTableWidget.at(i);
     w->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    // Enable drag & drop row reordering
+    w->setSelectionBehavior(QAbstractItemView::SelectRows);
+    w->setDragEnabled(true);
+    w->setDragDropMode(QAbstractItemView::InternalMove);
+    w->setDropIndicatorShown(true);
+    w->setDragDropOverwriteMode(false); // Prevents item duplication/overwrite
   }
 }
 
