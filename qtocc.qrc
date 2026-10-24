@@ -72,8 +72,5 @@
         <file>icon/c0.png</file>
         <file>icon/add_bottom.png</file>
         <file>icon/prog.png</file>
-        <file>src/cn.qm</file>
-        <file>src/qt_zh_CN.qm</file>
-        <file>src/widgets_zh_cn.qm</file>
     </qresource>
 </RCC>

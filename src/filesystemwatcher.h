@@ -14,16 +14,16 @@ public:
     static void removeWatchPath(QString path);
 
 public slots:
-    void directoryUpdated(const QString& path); // 目录更新时调用，path是监控的路径
-    void fileUpdated(const QString& path); // 文件被修改时调用，path是监控的路径
+    void directoryUpdated(const QString& path); // Called when directory updates; path is monitored path
+    void fileUpdated(const QString& path); // Called when file is modified; path is monitored path
 
 private:
     explicit FileSystemWatcher(QObject* parent = 0);
 
 private:
-    static FileSystemWatcher* m_pInstance; // 单例
-    QFileSystemWatcher* m_pSystemWatcher; // QFileSystemWatcher变量
-    QMap<QString, QStringList> m_currentContentsMap; // 当前每个监控的内容目录列表
+    static FileSystemWatcher* m_pInstance; // Singleton instance
+    QFileSystemWatcher* m_pSystemWatcher; // QFileSystemWatcher variable
+    QMap<QString, QStringList> m_currentContentsMap; // Current map of monitored directory contents
     bool msgClose = true;
 };
 

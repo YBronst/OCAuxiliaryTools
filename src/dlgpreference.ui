@@ -167,46 +167,6 @@
                  <string>https://github.com/</string>
                 </property>
                </item>
-               <item>
-                <property name="text">
-                 <string>https://gh.llkk.cc/https://github.com/</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>https://gh.flyinbug.top/gh/https://github.com/</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>https://download.fastgit.org/</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>https://ghproxy.com/https://github.com/</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>https://gh.api.99988866.xyz/https://github.com/</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>https://archive.fastgit.org/</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>https://github.moeyy.xyz/https://github.com/</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>https://mirror.ghproxy.com/https://github.com/</string>
-                </property>
-               </item>
               </widget>
              </item>
              <item row="0" column="1">
@@ -233,11 +193,6 @@
                <item>
                 <property name="text">
                  <string>https://github.com/</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>https://hub.fastgit.org/</string>
                 </property>
                </item>
               </widget>

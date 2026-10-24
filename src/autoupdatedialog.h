@@ -31,9 +31,9 @@ class AutoUpdateDialog : public QDialog {
   QString strUrlOrg;
   QString tempDir;
   QString filename;
-  QNetworkAccessManager* managerDownLoad;
-  QNetworkReply* reply;
-  QFile* myfile;
+  QNetworkAccessManager* managerDownLoad = nullptr;
+  QNetworkReply* reply = nullptr;
+  QFile* myfile = nullptr;
   void Init();
   void doProcessReadyRead();
   void doProcessFinished();
@@ -44,9 +44,9 @@ class AutoUpdateDialog : public QDialog {
   QString strUrl;
   QString strWinUrl;
   QString strMacUrl;
-  QString strDatabaseUrl;
   QString strMacClassicalUrl;
   QString strLinuxUrl;
+  QString strDatabaseUrl;
   QString strLinuxTargetFile;
 
   void TextEditToFile(QTextEdit* txtEdit, QString fileName);
@@ -75,8 +75,8 @@ class AutoUpdateDialog : public QDialog {
  private:
   QElapsedTimer downloadTimer;
   bool blCanBeUpdate = false;
-  QProcess* processWget;
-  QTimer* tmrUpdateShow;
+  QProcess* processWget = nullptr;
+  QTimer* tmrUpdateShow = nullptr;
 };
 
 #endif  // AUTOUPDATEDIALOG_H

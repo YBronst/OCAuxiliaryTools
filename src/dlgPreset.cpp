@@ -29,7 +29,7 @@ void dlgPreset::loadPreset(QString strMain, QString strSub, QString strComment,
   map = map[strMain].toMap();
   if (map.isEmpty()) return;
 
-  //分析Patch
+  // Analyze Patch
   if (strComment.length() > 0) {
     map_patch = map[strSub].toList();
     for (int i = 0; i < map_patch.count(); i++) {
@@ -81,15 +81,15 @@ void dlgPreset::on_btnAdd_clicked() {
       QTableWidgetItem* newItem1 = new QTableWidgetItem(strItem);
       mw_one->ui->table_dp_add0->setItem(table_row, 0, newItem1);
 
-      //加载子条目
+      // Load sub-items
       map_sub.clear();
       map_sub = map_add[map_add.keys().at(row)].toMap();
       mw_one->ui->table_dp_add->setRowCount(
-          map_sub.keys().count());  //子键的个数
+          map_sub.keys().count());  // Number of sub-keys
 
       for (int j = 0; j < map_sub.keys().count(); j++) {
         // QTableWidgetItem *newItem1;
-        newItem1 = new QTableWidgetItem(map_sub.keys().at(j));  //键
+        newItem1 = new QTableWidgetItem(map_sub.keys().at(j));  // Key
         mw_one->ui->table_dp_add->setItem(j, 0, newItem1);
 
         QString dtype = map_sub[map_sub.keys().at(j)].typeName();
@@ -98,7 +98,7 @@ void dlgPreset::on_btnAdd_clicked() {
         if (dtype == "QString") ztype = "String";
         if (dtype == "qlonglong") ztype = "Number";
 
-        newItem1 = new QTableWidgetItem(ztype);  //数据类型
+        newItem1 = new QTableWidgetItem(ztype);  // Data type
         newItem1->setTextAlignment(Qt::AlignCenter);
         mw_one->ui->table_dp_add->setItem(j, 1, newItem1);
 

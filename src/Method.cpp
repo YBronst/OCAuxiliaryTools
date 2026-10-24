@@ -14,7 +14,6 @@ extern QString SaveFileName, strIniFile, strAppName, strAppExePath;
 extern QString CurVerison, ocVer, ocVerDev, ocFrom, ocFromDev, strOCFrom,
     strOCFromDev;
 extern bool blDEV;
-extern bool zh_cn;
 extern QVariantMap mapTatol;
 extern QProgressBar* progBar;
 
@@ -187,7 +186,7 @@ void Method::getAllFiles(const QString& foldPath, QStringList& folds,
   while (it.hasNext()) {
     it.next();
     QFileInfo fileInfo = it.fileInfo();
-    if (formats.contains(fileInfo.suffix())) {  // 检测格式，按需保存
+    if (formats.contains(fileInfo.suffix())) {  // Check format, save as needed
       folds << fileInfo.absoluteFilePath();
     }
   }
@@ -450,7 +449,7 @@ void Method::startDownload(QString strUrl) {
 
   myfile->setFileName(file);
   bool ret =
-      myfile->open(QIODevice::WriteOnly | QIODevice::Truncate);  // 创建文件
+      myfile->open(QIODevice::WriteOnly | QIODevice::Truncate);  // Create file
   if (!ret) {
     mw_one->dlgSyncOC->ui->btnStop->click();
     QMessageBox::warning(this, tr("Warning"),
@@ -720,7 +719,7 @@ void Method::updateOpenCore() {
 }
 
 void Method::doProcessDownloadProgress(qint64 recv_total,
-                                       qint64 all_total)  // 显示
+                                       qint64 all_total)  // Display progress
 {
   if (blBreak) return;
 
@@ -758,8 +757,8 @@ void Method::doProcessDownloadProgress(qint64 recv_total,
 
 void Method::getLastReleaseFromUrl(QString strUrl) {
   if (blBreak) return;
-  // https://github.com/ic005k/" + strAppName;
-  // https://api.github.com/repos/ic005k/" + strAppName + "/releases/latest
+  // https://github.com/YBronst/" + strAppName;
+  // https://api.github.com/repos/YBronst/" + strAppName + "/releases/latest
   QString strAPI =
       strUrl.replace("https://github.com/", "https://api.github.com/repos/") +
       "/releases/latest";
@@ -1009,31 +1008,15 @@ void Method::setStatusBarTip(QWidget* w) {
   QStringList strList = strStatus0.split("----");
   if (strList.count() == 2) {
     QTextEdit* tempEdit = new QTextEdit;
-    QLocale locale;
-    if (locale.language() == QLocale::Chinese) {
-      tempEdit->setText(strList.at(1));
-      for (int m = 0; m < tempEdit->document()->lineCount(); m++) {
-        QTextBlock block = tempEdit->document()->findBlockByNumber(m);
-        tempEdit->setTextCursor(QTextCursor(block));
-        QString lineText =
-            tempEdit->document()->findBlockByNumber(m).text().trimmed();
-        if (lineText.mid(0, 2) == "描述" || lineText.mid(0, 2) == "说明") {
-          strStatus1 = lineText;
-          break;
-        }
-      }
-
-    } else {
-      tempEdit->setText(strList.at(0));
-      for (int m = 0; m < tempEdit->document()->lineCount(); m++) {
-        QTextBlock block = tempEdit->document()->findBlockByNumber(m);
-        tempEdit->setTextCursor(QTextCursor(block));
-        QString lineText =
-            tempEdit->document()->findBlockByNumber(m).text().trimmed();
-        if (lineText.mid(0, 11) == "Description") {
-          strStatus1 = lineText;
-          break;
-        }
+    tempEdit->setText(strList.at(0));
+    for (int m = 0; m < tempEdit->document()->lineCount(); m++) {
+      QTextBlock block = tempEdit->document()->findBlockByNumber(m);
+      tempEdit->setTextCursor(QTextCursor(block));
+      QString lineText =
+          tempEdit->document()->findBlockByNumber(m).text().trimmed();
+      if (lineText.mid(0, 11) == "Description") {
+        strStatus1 = lineText;
+        break;
       }
     }
   } else
@@ -1064,7 +1047,7 @@ void Method::set_nv_key(QString key, QString dataType) {
     mw_one->ui->table_nv_add->setItem(mw_one->ui->table_nv_add->rowCount() - 1,
                                       1, newItem1);
 
-    // 保存数据
+    // Save data
     mw_one->write_ini(mw_one->ui->table_nv_add0, mw_one->ui->table_nv_add,
                       mw_one->ui->table_nv_add0->currentRow());
   }
@@ -2446,10 +2429,7 @@ void Method::show_Tip(QString strText, QString strTip) {
   QString str = strTip;
   QStringList list = str.split("----");
   if (list.count() == 2) {
-    if (!zh_cn)
-      strTip = list.at(0);
-    else
-      strTip = list.at(1);
+    strTip = list.at(0);
   } else
     strTip = str;
   strTip = strTip.trimmed();
@@ -2525,7 +2505,7 @@ void Method::set_TableData(QTableWidget* t, QVariantList mapList) {
       }
     }
 
-    if (map.count() == 0) {  // 代表列，从0开始
+    if (map.count() == 0) {  // Represents columns, starting from 0
       QTableWidgetItem* newItem1 =
           new QTableWidgetItem(mapList.at(i).toString());
       t->setItem(i + rowTotal, 0, newItem1);

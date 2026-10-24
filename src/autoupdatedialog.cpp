@@ -30,26 +30,11 @@ AutoUpdateDialog::AutoUpdateDialog(QWidget* parent)
 AutoUpdateDialog::~AutoUpdateDialog() { delete ui; }
 
 void AutoUpdateDialog::Init() {
-  //"https://raw.fastgit.org/"  //HK
-  strWinUrl =
-      "https://ghproxy.com/https://raw.githubusercontent.com/ic005k/"
-      "QtOpenCoreConfigDatabase/main/win.zip";
-
-  strMacUrl =
-      "https://ghproxy.com/https://raw.githubusercontent.com/ic005k/"
-      "QtOpenCoreConfigDatabase/main/Contents.zip";
-
-  strMacClassicalUrl =
-      "https://ghproxy.com/https://github.com/ic005k/QtOpenCoreConfigDatabase/"
-      "releases/download/1.0.0/Contents.zip";
-
-  strLinuxUrl =
-      "https://ghproxy.com/https://github.com/ic005k/QtOpenCoreConfigDatabase/"
-      "releases/download/1.0.0/OCAuxiliaryTools-Linux-x86_64.AppImage";
-
-  strDatabaseUrl =
-      "https://ghproxy.com/https://raw.githubusercontent.com/ic005k/"
-      "QtOpenCoreConfigDatabase/main/Database.zip";
+    strWinUrl = "https://github.com/";
+    strMacUrl = "https://github.com/";
+    strMacClassicalUrl = "https://github.com/";
+    strLinuxUrl = "https://github.com/";
+    strDatabaseUrl = "https://github.com/";
 
   managerDownLoad = new QNetworkAccessManager(this);
   myfile = new QFile(this);
@@ -71,17 +56,16 @@ void AutoUpdateDialog::doProcessFinished() {
     this->repaint();
 
     if (mw_one->linuxOS) {
-      QProcess* p = new QProcess;
-      p->start("chmod", QStringList() << "+x" << tempDir + filename);
+      QProcess::execute("chmod", QStringList() << "+x" << tempDir + filename);
     }
 
   } else {
-    QMessageBox::critical(NULL, tr("Error"), "Failed!!!");
+    QMessageBox::critical(this, tr("Error"), tr("Failed!!!"));
   }
 }
 
 void AutoUpdateDialog::doProcessDownloadProgress(qint64 recv_total,
-                                                 qint64 all_total)  //显示
+                                                 qint64 all_total)
 {
   ui->progressBar->setMaximum(all_total);
   ui->progressBar->setValue(recv_total);
@@ -162,6 +146,7 @@ void AutoUpdateDialog::startUpdate() {
 
     QString fileName = tempDir + "upocat.sh";
     TextEditToFile(txtEdit, fileName);
+    delete txtEdit;
 
     QProcess::startDetached("bash", QStringList() << fileName);
   }
@@ -186,6 +171,7 @@ void AutoUpdateDialog::startUpdate() {
 
     QString fileName = tempDir + "upocat.bat";
     TextEditToFile(txtEdit, fileName);
+    delete txtEdit;
 
     QProcess::startDetached("cmd.exe", QStringList() << "/c" << fileName);
   }
@@ -199,6 +185,7 @@ void AutoUpdateDialog::startUpdate() {
 
     QString fileName = tempDir + "upocat.sh";
     TextEditToFile(txtEdit, fileName);
+    delete txtEdit;
 
     QProcess::execute("chmod", QStringList() << "+x" << fileName);
     QProcess::startDetached("bash", QStringList() << fileName);
@@ -217,26 +204,23 @@ void AutoUpdateDialog::startDownload(bool Database) {
     ui->btnStartUpdate->setVisible(false);
   }
 
-  QString strTokyo, strSeoul, strOriginal;
+    QString strOriginal;
 
   strOriginal = "https://github.com/";
-  strTokyo = "https://download.fastgit.org/";
-  strSeoul = "https://ghproxy.com/https://github.com/";
-  // strUrl.replace("https://github.com/", strTokyo);
 
   QNetworkRequest request;
   request.setUrl(QUrl(strUrl));
   request.setHeader(QNetworkRequest::ContentTypeHeader,
                     "application/octet-stream");
 
-  reply = managerDownLoad->get(request);  //发送请求
+  reply = managerDownLoad->get(request);
 
   connect(reply, &QNetworkReply::readyRead, this,
-          &AutoUpdateDialog::doProcessReadyRead);  //可读
+          &AutoUpdateDialog::doProcessReadyRead);
   connect(reply, &QNetworkReply::finished, this,
-          &AutoUpdateDialog::doProcessFinished);  //结束
+          &AutoUpdateDialog::doProcessFinished);
   connect(reply, &QNetworkReply::downloadProgress, this,
-          &AutoUpdateDialog::doProcessDownloadProgress);  //大小
+          &AutoUpdateDialog::doProcessDownloadProgress);
 
   QStringList list = strUrl.split("/");
   filename = list.at(list.length() - 1);
@@ -247,7 +231,7 @@ void AutoUpdateDialog::startDownload(bool Database) {
 
   myfile->setFileName(file);
   bool ret =
-      myfile->open(QIODevice::WriteOnly | QIODevice::Truncate);  //创建文件
+      myfile->open(QIODevice::WriteOnly | QIODevice::Truncate);
   if (!ret) {
     QMessageBox::warning(this, "warning", "Failed to open.");
     return;
@@ -260,9 +244,6 @@ void AutoUpdateDialog::startDownload(bool Database) {
 
 void AutoUpdateDialog::closeEvent(QCloseEvent* event) {
   Q_UNUSED(event);
-  // myfile->close();
-  // reply->close();
-  // reply->deleteLater();
   processWget->close();
   processWget->kill();
   delete processWget;
@@ -273,15 +254,11 @@ void AutoUpdateDialog::closeEvent(QCloseEvent* event) {
 }
 
 void AutoUpdateDialog::TextEditToFile(QTextEdit* txtEdit, QString fileName) {
-  QFile* file;
-  file = new QFile;
-  file->setFileName(fileName);
-  bool ok = file->open(QIODevice::WriteOnly);
-  if (ok) {
-    QTextStream out(file);
+  QFile file(fileName);
+  if (file.open(QIODevice::WriteOnly)) {
+    QTextStream out(&file);
     out << txtEdit->toPlainText();
-    file->close();
-    delete file;
+    file.close();
   }
 }
 
@@ -379,18 +356,19 @@ void AutoUpdateDialog::startWgetDownload() {
   }
   QString file = tempDir + filename;
 
-  QString strTokyo, strSeoul, strOriginal, strTest, strSet, strTemp;
+  QString strOriginal, strTest, strSet, strTemp;
 
   strOriginal = "https://github.com/";
-  strTokyo = "https://download.fastgit.org/";
-  strSeoul = "https://ghproxy.com/https://github.com/";
-  strTest = "https://gh.api.99988866.xyz/https://github.com/";
-  // if (mw_one->zh_cn) strUrl.replace("https://github.com/", strTokyo);
+  strTest = "https://github.com/";
   strSet = mw_one->myDlgPreference->ui->comboBoxNet->currentText().trimmed();
   strTemp = strUrlOrg;
   strUrl = strTemp.replace("https://github.com/", strSet);
-  // qDebug() << strUrl << strSet;
 
+  if (processWget) {
+    processWget->close();
+    delete processWget;
+    processWget = nullptr;
+  }
   processWget = new QProcess(this);
 
   connect(processWget, SIGNAL(finished(int)), this, SLOT(readResult(int)));
@@ -413,7 +391,6 @@ void AutoUpdateDialog::startWgetDownload() {
                                               << "--log-level=info" << strUrl);
 
   } else {
-    // if (mw_one->win) strExec = strAppExePath + "/wget.exe";
     if (mw_one->linuxOS) strExec = "wget";
 
     processWget->start(strExec, QStringList()
@@ -436,24 +413,21 @@ void AutoUpdateDialog::readResult(int exitCode) {
     if (mw_one->win || mw_one->linuxOS) UpdateTextShow();
 
     if (mw_one->linuxOS) {
-      QProcess* p = new QProcess;
-      p->start("chmod", QStringList() << "+x" << tempDir + filename);
+      QProcess::execute("chmod", QStringList() << "+x" << tempDir + filename);
     }
   }
 }
 
 void AutoUpdateDialog::onReadData() {
+  if (!processWget) return;
   QString result = processWget->readAllStandardOutput();
   ui->textEdit->append(result);
   ui->textEdit->moveCursor(QTextCursor::End);
 
-  QTextEdit* editTemp = new QTextEdit;
-  editTemp->setText(ui->textEdit->toPlainText());
   QString lineText;
-  for (int i = editTemp->document()->lineCount() - 1; i > 0; i--) {
-    QTextBlock block = editTemp->document()->findBlockByNumber(i);
-    editTemp->setTextCursor(QTextCursor(block));
-    lineText = editTemp->document()->findBlockByNumber(i).text().trimmed();
+  for (int i = ui->textEdit->document()->lineCount() - 1; i >= 0; i--) {
+    QTextBlock block = ui->textEdit->document()->findBlockByNumber(i);
+    lineText = block.text().trimmed();
     if (lineText.mid(0, 2) == "[#") {
       setWindowTitle(lineText);
       break;
@@ -472,27 +446,22 @@ void AutoUpdateDialog::onReadData() {
 
 void AutoUpdateDialog::UpdateTextShow() {
   QString strInfoFile = tempDir + "info.txt";
-  if (!QFile(strInfoFile).exists()) return;
+  if (!QFile::exists(strInfoFile)) return;
 
-  QFile* file = new QFile;
-  file->setFileName(strInfoFile);
-  bool ok = file->open(QIODevice::ReadOnly);
-  if (ok) {
-    QTextStream in(file);
+  QFile file(strInfoFile);
+  if (file.open(QIODevice::ReadOnly)) {
+    QTextStream in(&file);
     QString strOrg = in.readAll().trimmed();
     QString strCur = ui->textEdit->toPlainText().trimmed();
     if (strCur != strOrg) {
       ui->textEdit->setText(strOrg);
       ui->textEdit->moveCursor(QTextCursor::End);
     }
-
-    file->close();
-    delete file;
-
+    file.close();
   } else {
     tmrUpdateShow->stop();
-    QMessageBox::information(this, "Error Message",
-                             "Open File:" + file->errorString());
+    QMessageBox::information(this, tr("Error Message"),
+                             tr("Open File:") + file.errorString());
     return;
   }
 }

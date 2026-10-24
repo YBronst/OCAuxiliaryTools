@@ -1,6 +1,6 @@
 name: Linux
 
-# Qt官方没有linux平台的x86包
+# The official Qt documentation does not include an x86 package for the Linux platform.
 on: 
   push:
     paths:
@@ -58,7 +58,7 @@ jobs:
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
           chmod a+x linuxdeployqt-continuous-x86_64.AppImage            
           
-      # 打包
+      # Pack
       - name: package
         run: |
          cp icon.png bin/release/icon.png
@@ -83,7 +83,7 @@ jobs:
          
          
         
-      # 上传artifacts          
+      # Upload artifacts         
       - uses: actions/upload-artifact@v4
         with:
           
@@ -93,7 +93,7 @@ jobs:
           #name: ${{ env.orgName }}-${{ matrix.os }}-${{ matrix.qt_ver }}-${{ env.VERSION }}-x86_64.AppImage
           #path: ${{ env.targetName }}-${{ env.VERSION }}-x86_64.AppImage
           
-     # tag 上传Release
+     # tag Upload Release
       - name: uploadRelease
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2

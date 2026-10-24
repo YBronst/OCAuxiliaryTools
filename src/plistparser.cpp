@@ -46,7 +46,7 @@ QVariant PListParser::parseElement(const QDomElement& e)
 
     } else if (tagName == QLatin1String("integer")) {
         //result = e.text().toInt();
-        result = e.text().toLongLong(); //特别注意：原来的Int有点小，没法显示长数字
+        result = e.text().toLongLong(); // Note: original Int was too small to represent long numbers
     }
 
     else if (tagName == QLatin1String("real")) {

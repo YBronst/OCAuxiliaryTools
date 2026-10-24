@@ -21,7 +21,7 @@ FileSystemWatcher* FileSystemWatcher::m_pInstance = NULL;
 
 FileSystemWatcher::FileSystemWatcher(QObject* parent) : QObject(parent) {}
 
-// 监控文件或目录
+// Monitor file or directory
 void FileSystemWatcher::addWatchPath(QString path) {
   // qDebug() << QString("Add to watch: %1").arg(path);
 
@@ -29,17 +29,17 @@ void FileSystemWatcher::addWatchPath(QString path) {
     m_pInstance = new FileSystemWatcher();
     m_pInstance->m_pSystemWatcher = new QFileSystemWatcher();
 
-    // 连接QFileSystemWatcher的directoryChanged和fileChanged信号到相应的槽
+    // Connect QFileSystemWatcher's directoryChanged and fileChanged signals to corresponding slots
     connect(m_pInstance->m_pSystemWatcher, SIGNAL(directoryChanged(QString)),
             m_pInstance, SLOT(directoryUpdated(QString)));
     connect(m_pInstance->m_pSystemWatcher, SIGNAL(fileChanged(QString)),
             m_pInstance, SLOT(fileUpdated(QString)));
   }
 
-  // 添加监控路径
+  // Add monitored path
   m_pInstance->m_pSystemWatcher->addPath(path);
 
-  // 如果添加路径是一个目录，保存当前内容列表
+  // If added path is a directory, save current content list
   QFileInfo file(path);
   if (file.isDir()) {
     const QDir dirw(path);
@@ -52,11 +52,11 @@ void FileSystemWatcher::removeWatchPath(QString path) {
   m_pInstance->m_pSystemWatcher->removePath(path);
 }
 
-// 只要任何监控的目录更新（添加、删除、重命名），就会调用。
+// Called whenever any monitored directory is updated (added, deleted, renamed).
 void FileSystemWatcher::directoryUpdated(const QString& path) {
   qDebug() << QString("Directory updated: %1").arg(path);
 
-  // 比较最新的内容和保存的内容找出区别(变化)
+  // Compare latest contents with saved contents to find differences (changes)
   QStringList currEntryList = m_currentContentsMap[path];
   const QDir dir(path);
 
@@ -67,41 +67,41 @@ void FileSystemWatcher::directoryUpdated(const QString& path) {
   QSet<QString> currentDirSet;
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 9, 9))
   {
-    newDirSet = QSet<QString>::fromList(newEntryList);  //旧
+    newDirSet = QSet<QString>::fromList(newEntryList);  // old
   }
 #endif
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
   {
     newDirSet = QSet<QString>(newEntryList.begin(),
-                              newEntryList.end());  //新
+                              newEntryList.end());  // new
   }
 #endif
 
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 9, 9))
   {
-    currentDirSet = QSet<QString>::fromList(currEntryList);  //旧
+    currentDirSet = QSet<QString>::fromList(currEntryList);  // old
   }
 #endif
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
   {
     currentDirSet = QSet<QString>(currEntryList.begin(),
-                                  currEntryList.end());  //新
+                                  currEntryList.end());  // new
   }
 #endif
 
-  // 添加了文件
+  // Added files
   QSet<QString> newFiles = newDirSet - currentDirSet;
   QStringList newFile = newFiles.values();
 
-  // 文件已被移除
+  // Removed files
   QSet<QString> deletedFiles = currentDirSet - newDirSet;
   QStringList deleteFile = deletedFiles.values();
 
-  // 更新当前设置
+  // Update current settings
   m_currentContentsMap[path] = newEntryList;
 
   if (!newFile.isEmpty() && !deleteFile.isEmpty()) {
-    // 文件/目录重命名
+    // File/Directory renamed
     if ((newFile.count() == 1) && (deleteFile.count() == 1)) {
       qDebug() << QString("File Renamed from %1 to %2")
                       .arg(deleteFile.first())
@@ -171,7 +171,7 @@ void FileSystemWatcher::directoryUpdated(const QString& path) {
       }
     }
   } else {
-    // 添加新文件/目录至Dir
+    // Add new files/directories to Dir
     if (!newFile.isEmpty()) {
       qDebug() << "New Files/Dirs added: " << newFile;
 
@@ -246,11 +246,11 @@ void FileSystemWatcher::directoryUpdated(const QString& path) {
       }
 
       foreach (QString file, newFile) {
-        // 处理操作每个新文件....
+        // Process each new file....
       }
     }
 
-    // 从Dir中删除文件/目录
+    // Remove files/directories from Dir
     if (!deleteFile.isEmpty()) {
       qDebug() << "Files/Dirs deleted: " << deleteFile;
 
@@ -313,13 +313,13 @@ void FileSystemWatcher::directoryUpdated(const QString& path) {
       }
 
       foreach (QString file, deleteFile) {
-        // 处理操作每个被删除的文件....
+        // Process each deleted file....
       }
     }
   }
 }
 
-// 文件修改时调用
+// Called when file is modified
 void FileSystemWatcher::fileUpdated(const QString& path) {
   mw_one->strByModiMd5 = mw_one->getMD5(SaveFileName);
   if (mw_one->strOrgMd5 != mw_one->strByModiMd5) {

@@ -40,7 +40,7 @@ dlgDatabase::dlgDatabase(QWidget *parent)
   ui->tableDatabase->horizontalHeader()->setStretchLastSection(true);
   ui->tableDatabase->horizontalHeader()->setHidden(false);
   ui->tableDatabase->setSelectionBehavior(
-      QAbstractItemView::SelectItems);  //设置选择行为时每次选择一行或单个条目
+      QAbstractItemView::SelectItems);  // Set selection behavior to select a row or single item each time
 
   for (int i = 0; i < ui->tableDatabase->columnCount(); i++) {
     ui->tableDatabase->horizontalHeader()->setSectionResizeMode(
@@ -238,14 +238,14 @@ void dlgDatabase::on_btnOpenDir_clicked() {
 }
 
 void dlgDatabase::on_btnIntelOnline_clicked() {
-  QUrl url(QString("https://github.com/ic005k/" + strAppName +
+  QUrl url(QString("https://github.com/YBronst/" + strAppName +
                    "/blob/master/Database/"
                    "BaseConfigs/Instructions_Intel.md"));
   QDesktopServices::openUrl(url);
 }
 
 void dlgDatabase::on_btnAMDOnline_clicked() {
-  QUrl url(QString("https://github.com/ic005k/" + strAppName +
+  QUrl url(QString("https://github.com/YBronst/" + strAppName +
                    "/blob/master/Database/"
                    "BaseConfigs/Instructions_AMD.md"));
   QDesktopServices::openUrl(url);

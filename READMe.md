@@ -1,61 +1,56 @@
+# OpenCore Auxiliary Tools (OCAT) — Restored Edition
 
-# OpenCore Auxiliary Tools (OCAT)
+![GUI](https://github.com/YBronst/user-attachments/blob/main/OCAuxiliaryTools.png)
 
-![GUI](https://user-images.githubusercontent.com/76865553/165901706-abbccb4a-89bc-4b03-b6e5-f52dcb10b53c.png)
+This is a restored and cleaned-up edition of the **OpenCore Auxiliary Tools (OCAT)**, originally developed by [ic005k](https://github.com/ic005k/OCAuxiliaryTools). 
+
+Since the original repository was abandoned, this project has been **painstakingly recreated and rebuilt directly from the original source files**. To clean up the codebase and make it fully uniform for the global community, **all Chinese language localizations and related assets have been completely removed**.
+
+The defining philosophy of OCAT remains untouched: **One single OCAT application can manage almost all OpenCore versions, making it a true "All-in-One" solution.**
 
 ## About
 OpenCore Auxiliary Tools is a GUI-based Configurator for editing `config.plist` files for Acidanthera's OpenCore Boot Manager.
 
 Unlike other Configurator apps, OCAT doesn't mess up the config if the Devs of OpenCore add new features/keys to the config file structure. Instead, it adapts and integrates them in the interface automatically.
 
+## Key Changes in this Edition
+* **Source Restoration:** Reassembled, fixed, and compiled directly from the original source code.
+* **Code Cleanup:** Completely "de-Chinesed" — all Chinese interfaces, menus, and hidden localization clutter have been removed.
+* **Dependency Fixes:** Removed all broken links and references to external components that were deleted by the original author, ensuring stable builds.
+* **Pure Performance:** Kept the original smart adaptation system without extra regional bloat.
+* **Drag & Drop Row Reordering**: Reorder entries in any table-based list (Kexts, ACPI patches, Drivers, Tools, etc.) by dragging rows with the mouse – no need to rely solely on the `<` / `>` move buttons.
+
 ## Features
+Besides being a plist Configurator it can do much more:
 
-Besides beeing a plist Configurator it can do much more:
+* **Mount the EFI partition** and automatically open the `config.plist`.
+* **Update and migrate configs** to the latest specs simply by clicking on the "Save" button. No more copying of keys and manually validating the config is required (huge timesaver).
+* **Automatically performs config validation** and points to possible conflicts/configuration issues.
+* **Sync Feature:** check for and apply updates for OpenCore, Resources, and Kexts with a few clicks.
+* **Select between Official/Dev Release** and Debug builds of OpenCore.
+* **Dropdown Menus** with suggested Quirks for Intel and AMD CPUs.
+* **Preset Menus** for ACPI, Kernel, and other lists.
+* **Editable list** with URLs of Kext Repos.
+* **Integrated ASCII < > HEX Converter**.
+* **Database with complete base configs** for Intel and AMD CPUs based on Dortania's OpenCore Install Guide.
+* **Ability to generate EFI folders** from a config with a single click.
+* **Ability to create EFI folder Backups**.
+* **Update the Database**, ACPI-Quirks.txt, Booter-Quirks.txt, Kernel-Quirks.txt, UEFI-Quirks.txt and KextUrl.txt
+* **The toolTip.txt translated into English**.
 
-* Mount the EFI partion and automatically open the config.plist
-* Update and migrate configs to the latest specs simply by clicking on the "Save" button. No more copying of keys and manually validtaing the config is required (huge timesaver).
-* Automatically performs config validatation and points to possible conflicts/configuration issues.
-* Sync Feature: check for and apply updates for OpenCore, Resources and Kext with a few clicks
-* Select between Official/Dev Release and Debug builds of OpenCore
-* Dropdown Menus with suggested Quirks for Intel and AMD CPUs
-* Preset Menus for ACPI, Kernel and other lists.
-* Editable list with URLs of Kext Repos
-* Integrated ASCII < > HEX Converter 
-* Database with complete base configs for Intel and AMD CPUs based on Dortania's OpenCore Install Guide
-* Ability to generate EFI folders from a config with a single click
-* Ability to Create EFI folder Backups
 
 ## Guides
-
-* [Updating OpenCore and Kexts with OCAT (by 5T33Z0)](https://github.com/5T33Z0/OC-Little-Translated/blob/main/Content/D_Updating_OpenCore/README.md)
-* Pre-selected plug-in content for Intel CPU Quirks is provided and maintained by 5T33Z0. [Details](https://github.com/5T33Z0/OC-Little-Translated/tree/main/Content/F_Desktop_EFIs/preset)
-* Intel CPU BaseConfigs plug-in package provided and maintained by 5T33Z0. [Details](https://github.com/5T33Z0/OC-Little-Translated/tree/main/Content/F_Desktop_EFIs)
+* AMD CPU BaseConfigs plug-in package, pre-selected for AMD CPU Quirks, AMD kernel patch package, Italian description documentation provided and maintained by [fabiosun](https://github.com/fabiosun).
 * [OpenCore Auxiliary Tools User's Guide (by chriswayg)](https://chriswayg.gitbook.io/opencore-visual-beginners-guide/oc_auxiliary_tools)
 
 
-## About adapt OpenCore version  （关于OCAT支持的OpenCore版本的问题）
-[#311](https://github.com/ic005k/OCAuxiliaryTools/issues/311) [#361](https://github.com/ic005k/OCAuxiliaryTools/issues/361)
-
-OCAT is Smart adapt to openCore version,if you need update  openCore version，you can get new OpenCore like this 
-（OCAT 是智能适应OC的新版本的，如果你需要更新OC版本,你可以按照下图操作）
-
-First,  click this button （第一步，点击这个按钮）
-![image](https://github.com/ic005k/OCAuxiliaryTools/assets/7905253/b4c94679-cd8c-4243-a85f-c70c1c304665)
-
-Second, select the latest version or the other version from the drop-down list（第二步，在下拉列表里选择最新的版本或者其他的OC版本）
-
-![image](https://github.com/ic005k/OCAuxiliaryTools/assets/7905253/240a7831-fcb5-411e-842d-bffd22cc2982)
-
-Third, click to get the latest version, or get the OC version of your choice（第三步，点击获取最新版，或者获取你选择的OC版本）
-![image](https://github.com/ic005k/OCAuxiliaryTools/assets/7905253/e3331a23-4744-4075-b820-e58878c36dc8)
-
-
 ## Credits
+* [YBronst](https://github.com/YBronst/) Project restoration and reassembly, global code cleanup.
+* [ic005k](https://github.com/ic005k/OCAuxiliaryTools) Author of the original program.
 * [vit9696](https://github.com/vit9696) OCAT feature suggestions etc.
-* [5T33Z0](https://github.com/5T33Z0) Intel CPU plug-in package for OCAT, suggestions for user interaction and functionality, Write Readme, etc.
-* [LucasMucGH](https://github.com/LucasMucGH) Native UI design suggestions for Mac-based versions, etc.
+* [fabiosun](https://github.com/fabiosun) AMD related content.
 * [chriswayg](https://github.com/chriswayg) OpenCore Auxiliary Tools User's Guide.
-* APP Icon Design: Mirone (Brazil).
+* [Mirone](https://github.com/mirone)APP Icon Design.
 * [OpenCore](https://github.com/acidanthera/OpenCorePkg)&nbsp; &nbsp; &nbsp; &nbsp;
 [qtplist](https://github.com/reillywatson/qtplist)&nbsp; &nbsp; &nbsp; &nbsp;
 [FindESP](https://github.com/bluer007/FindESP)&nbsp; &nbsp; &nbsp; &nbsp;
@@ -70,4 +65,4 @@ Third, click to get the latest version, or get the OC version of your choice（�
 
 ---
 
-API: https://api.github.com/repos/ic005k/OCAuxiliaryTools/releases/latest
+## Release [list](https://github.com/YBronst/OCAuxiliaryTools/releases)

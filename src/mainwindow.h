@@ -34,11 +34,11 @@
 #include <QUndoView>
 #include <QUuid>
 
-// 网络相关头文件
+// Network-related headers
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
-// JSON相关头文件
+// JSON-related headers
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -340,6 +340,7 @@ class MainWindow : public QMainWindow {
   void currentCellChanged(QTableWidget* t, int previousRow, int previousColumn,
                           int currentRow, int currentColumn);
   void MoveItem(QTableWidget* t, bool up);
+  void performSafeRowMove(QTableWidget* t, int sourceRow, int targetRow);
   void CheckChange(QTableWidget* tw, int arg1, QToolButton* btnDel);
   void CellEnter(int row, QTableWidget* tw);
 
