@@ -11781,11 +11781,9 @@ Enable this option to be able to see all the boot options when having multiple d
     <addaction name="actionUpgrade_OC"/>
     <addaction name="actionOcvalidate"/>
     <addaction name="separator"/>
-    <addaction name="actionDatabase"/>
     <addaction name="actionGenerateEFI"/>
     <addaction name="separator"/>
     <addaction name="actionInitDatabaseLinux"/>
-    <addaction name="actionOpen_database_directory"/>
     <addaction name="actionEdit_Presets"/>
     <addaction name="separator"/>
     <addaction name="actionMountEsp"/>
@@ -11805,6 +11803,13 @@ Enable this option to be able to see all the boot options when having multiple d
     <addaction name="separator"/>
     <addaction name="actionPlist_editor"/>
     <addaction name="actionDSDT_SSDT_editor"/>
+   </widget>
+   <widget class="QMenu" name="menuBaseConfigs">
+    <property name="title">
+     <string>BaseConfigs</string>
+    </property>
+    <addaction name="actionDatabase"/>
+    <addaction name="actionOpen_database_directory"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -11833,6 +11838,7 @@ Enable this option to be able to see all the boot options when having multiple d
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
+   <addaction name="menuBaseConfigs"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
