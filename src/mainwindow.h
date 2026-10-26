@@ -1112,6 +1112,7 @@ class MainWindow : public QMainWindow {
 
   void init_ToolBarIcon();
   QToolButton* btn0;
+  QToolButton* btnPreferences;
   QToolButton* btnClear;
   void checkSystemAudioVolume();
   QObjectList getAllGridLayout(QObjectList lstUIControls);

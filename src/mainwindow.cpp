@@ -4931,6 +4931,7 @@ void MainWindow::init_ToolBarIcon() {
     ui->actionBackup_EFI->setIcon(QIcon(":/icon/be0.png"));
     btnBak->setIcon(QIcon(":/icon/be0.png"));
     btnClear->setIcon(QIcon(":/icon/c0.png"));
+    if (btnPreferences) btnPreferences->setIcon(QIcon(":/icon/prefs0.svg"));
   } else {
     btn0->setIcon(QIcon(":/icon/rp.png"));
     ui->actionOpen_Directory->setIcon(QIcon(":/icon/opendir.png"));
@@ -4947,6 +4948,7 @@ void MainWindow::init_ToolBarIcon() {
     ui->actionBackup_EFI->setIcon(QIcon(":/icon/be.png"));
     btnBak->setIcon(QIcon(":/icon/be.png"));
     btnClear->setIcon(QIcon(":/icon/c.png"));
+    if (btnPreferences) btnPreferences->setIcon(QIcon(":/icon/prefs.svg"));
   }
 
   QString listStyleMain, listStyle;
@@ -5004,6 +5006,13 @@ void MainWindow::init_FileMenu() {
   lblVer->setFont(font);
   ui->toolBar->addWidget(lblVer);
 
+  btnPreferences = new QToolButton(this);
+  btnPreferences->setToolTip(tr("Preferences"));
+  btnPreferences->setIcon(QIcon(":/icon/prefs.svg"));
+  connect(btnPreferences, &QToolButton::clicked, this,
+          &MainWindow::on_actionPreferences_triggered);
+  ui->toolBar->addWidget(btnPreferences);
+
   QWidget* spacer = new QWidget(this);
   spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   ui->toolBar->addWidget(spacer);
@@ -5057,7 +5066,7 @@ void MainWindow::init_FileMenu() {
   ui->actionSave_As->setShortcut(tr("ctrl+shift+s"));
 
   // Preferences
-  // ui->actionPreferences->setMenuRole(QAction::PreferencesRole);
+  ui->actionPreferences->setMenuRole(QAction::PreferencesRole);
 
   // Quit
   ui->actionQuit->setMenuRole(QAction::QuitRole);
@@ -5109,6 +5118,7 @@ void MainWindow::init_EditMenu() {
 
   // Open DataBase
   if (mac || osx1012) ui->actionDatabase->setIconVisibleInMenu(false);
+  ui->actionDatabase->setMenuRole(QAction::NoRole);
   ui->actionDatabase->setShortcut(tr("ctrl+d"));
   ui->actionDatabase->setIcon(QIcon(":/icon/db.png"));
 
