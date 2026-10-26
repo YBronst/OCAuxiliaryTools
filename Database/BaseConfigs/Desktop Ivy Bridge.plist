@@ -4,8 +4,12 @@
 <dict>
 	<key>#By YBronst</key>
 	<string>https://github.com/YBronst</string>
+	<key>#Initial macOS Support</key>
+	<string>OS X 10.7, Lion</string>
+	<key>#Last Supported OS</key>
+	<string>macOS 12 Monterey</string>
 	<key>#macOS Compatibility</key>
-	<string>macOS Monterey. Adjust csr-config-accordingly!</string>
+	<string>Adjust csr-config-accordingly!</string>
 	<key>ACPI</key>
 	<dict>
 		<key>Add</key>
@@ -1652,7 +1656,7 @@
 			<key>SystemMemoryStatus</key>
 			<string>Auto</string>
 			<key>SystemProductName</key>
-			<string>MacPro7,1</string>
+			<string></string>
 			<key>SystemSerialNumber</key>
 			<string></string>
 			<key>SystemUUID</key>
