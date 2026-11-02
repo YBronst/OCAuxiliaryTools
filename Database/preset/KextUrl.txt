@@ -5,7 +5,7 @@ AirportBrcmFixup.kext | https://github.com/acidanthera/AirportBrcmFixup
 AirportItlwm.kext | https://github.com/OpenIntelWireless/itlwm
 AMDRyzenCPUPowerManagement.kext | https://github.com/trulyspinach/SMCAMDProcessor
 AppleALC.kext | https://github.com/acidanthera/AppleALC
-AppleIGC.kext | https://github.com/SongXiaoXi/AppleIGC/releases
+AppleIGC.kext | https://github.com/SongXiaoXi/AppleIGC
 AtherosE2200Ethernet.kext | https://github.com/Mieze/AtherosE2200Ethernet
 BroadcomVTD.kext | https://github.com/YBronst/BroadcomVTD-Tahoe
 BlueToolFixup.kext | https://github.com/acidanthera/BrcmPatchRAM
@@ -16,7 +16,7 @@ CpuTopologyRebuild.kext | https://github.com/b00t0x/CpuTopologyRebuild
 CpuTscSync.kext | https://github.com/acidanthera/CpuTscSync
 CryptexFixup.kext | https://github.com/acidanthera/CryptexFixup
 DebugEnhancer.kext | https://github.com/acidanthera/DebugEnhancer
-ECEnabler.kext | https://github.com/1Revenger1/ECEnabler
+ECEnabler.kext | https://github.com/averycblack/ECEnabler
 EFICheckDisabler.kext | https://github.com/w19996/EFICheckDisabler
 EmeraldSDHC.kext | https://github.com/acidanthera/EmeraldSDHC
 FakeSMC.kext | https://github.com/CloverHackyColor/FakeSMC3_with_plugins
