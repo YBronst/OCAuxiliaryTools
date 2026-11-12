@@ -7,7 +7,7 @@
 
 extern MainWindow* mw_one;
 extern QString strAppName, strIniFile;
-QString CurVersion = "20261102";
+QString CurVersion = "20261112";
 QString ocVer = "1.0.5";
 QString ocVerDev = "1.0.6";
 QString ocFrom, ocFromDev, strOCFrom, strOCFromDev;
