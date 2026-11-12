@@ -2008,7 +2008,29 @@ QStringList Method::getDiskList() {
 }
 
 void Method::backupEFI() {
-  if (!mw_one->ui->actionUpgrade_OC->isEnabled()) {
+  QString strEFI;
+
+  if (!SaveFileName.isEmpty()) {
+    if (!mw_one->ui->actionUpgrade_OC->isEnabled()) {
+      QMessageBox box;
+      box.setText(
+          tr("The EFI directory is incomplete and the backup cannot be "
+             "completed. Please check if the [EFI/OC] and [EFI/OC/Drivers] "
+             "directories exist?"));
+      box.exec();
+      return;
+    }
+    strEFI = QDir::fromNativeSeparators(SaveFileName);
+    strEFI.replace("/OC/" + QFileInfo(SaveFileName).fileName(), "");
+  } else if (!strMountedEFI.isEmpty()) {
+    strEFI = QDir::fromNativeSeparators(strMountedEFI);
+    if (strEFI.endsWith("/")) {
+      strEFI.chop(1);
+    }
+  }
+
+  if (strEFI.isEmpty() || !QDir(strEFI + "/OC").exists() ||
+      !QDir(strEFI + "/OC/Drivers").exists()) {
     QMessageBox box;
     box.setText(
         tr("The EFI directory is incomplete and the backup cannot be "
@@ -2017,15 +2039,15 @@ void Method::backupEFI() {
     box.exec();
     return;
   }
-  QString strEFI = QDir::fromNativeSeparators(SaveFileName);
+
   QString strZipName, strBakTargetDir, str;
-  strEFI.replace("/OC/" + QFileInfo(SaveFileName).fileName(), "");
   QStringList list = strEFI.split("/");
   strZipName = list.at(list.count() - 1);
   for (int i = 0; i < list.count() - 1; i++) {
     str = str + list.at(i) + "/";
   }
   strEFI = str;
+
   strBakTargetDir = QDir::homePath() + "/Desktop/Backup EFI/";
   QString strDate, strTime;
   QDate date = QDate::currentDate();
@@ -2044,10 +2066,10 @@ void Method::backupEFI() {
   QString strTargetName =
       strBakTargetDir + strDate + "-" + strTime + "-" + strZipName + ".zip";
   strTargetName = "\"" + strTargetName + "\"";
+
   QDir::setCurrent(strEFI);
   QDir dir;
-  if (dir.mkpath(strBakTargetDir)) {
-  }
+  dir.mkpath(strBakTargetDir);
 
   if (mw_one->win) {
     QString strZipExe = strAppExePath + "/zip.exe";
@@ -2061,7 +2083,8 @@ void Method::backupEFI() {
     QProcess::execute("zip", QStringList() << "-q"
                                            << "-r"
                                            << strBakTargetDir + strDate + "-" +
-                                                  strTime + "-" + strZipName
+                                                  strTime + "-" + strZipName +
+                                                  ".zip"
                                            << strZipName);
   }
 }

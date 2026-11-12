@@ -28,6 +28,7 @@ class Method : public QMainWindow {
   bool dlEnd = false;
   QString tempDir;
   QString filename;
+  QString strMountedEFI;
   QNetworkAccessManager *manager;
   QNetworkAccessManager *managerDownLoad;
   QNetworkReply *reply, *replyDL;

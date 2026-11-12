@@ -37,6 +37,7 @@ void dlgMountESP::mountESP(bool openConfig) {
   QString str1 = str0.toLatin1();
   QString str2 = str1.replace("?", "");
   QString dirpath = "/Volumes/" + str2.trimmed() + "/EFI/";
+  mymethod->strMountedEFI = dirpath;
   qDebug() << dirpath;
   QString dir = "file:" + dirpath;
 
