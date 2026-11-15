@@ -6031,6 +6031,38 @@ QString MainWindow::getUrl(QVariantList list) {
   return Url;
 }
 
+static QString markdownToHtml(QString md) {
+  md.replace("\r\n", "\n");
+  md = md.toHtmlEscaped();
+
+  // Headlines (###, ##, #)
+  md.replace(QRegularExpression("(?m)^###\\s+(.+)$"), "<h4>\\1</h4>");
+  md.replace(QRegularExpression("(?m)^##\\s+(.+)$"), "<h3>\\1</h3>");
+  md.replace(QRegularExpression("(?m)^#\\s+(.+)$"), "<h2>\\1</h2>");
+
+  // Bold text (**text** или __text__)
+  md.replace(QRegularExpression("\\*\\*(.+?)\\*\\*"), "<b>\\1</b>");
+  md.replace(QRegularExpression("__(.+?)__"), "<b>\\1</b>");
+
+  // Italics (*text*)
+  md.replace(QRegularExpression("(?<!\\*)\\*(?!\\*)(.+?)(?<!\\*)\\*(?!\\*)"), "<i>\\1</i>");
+
+  // Inline code (`code`)
+  md.replace(QRegularExpression("`([^`]+)`"), "<code>\\1</code>");
+
+  // Links [текст](url)
+  md.replace(QRegularExpression("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "<a href=\"\\2\">\\1</a>");
+
+  // Bulleted списки (- item или * item)
+  md.replace(QRegularExpression("(?m)^[\\-\\*]\\s+(.+)$"), "&bull; \\1");
+
+  // Line breaks after headings and regular line breaks
+  md.replace(QRegularExpression("(</h[234]>)\\n+"), "\\1");
+  md.replace("\n", "<br>");
+
+  return md;
+}
+
 int MainWindow::parse_UpdateJSON(QString str) {
   QJsonParseError err_rpt;
   QJsonDocument root_Doc = QJsonDocument::fromJson(str.toUtf8(), &err_rpt);
@@ -6061,37 +6093,45 @@ int MainWindow::parse_UpdateJSON(QString str) {
       ReleaseNote = noteList.at(0) + noteList.at(2);
     }
 
-    if (Verison > CurVersion && Url != "") {
-      QString warningStr = tr("New version detected!") + "\n" +
-                           tr("Version: ") + "V" + Verison + "\n" +
-                           tr("Published at: ") + UpdateTime + "\n" +
-                           tr("Release Notes: ") + "\n" + ReleaseNote;
+      if (Verison > CurVersion && Url != "") {
+        QString htmlNotes = markdownToHtml(ReleaseNote.trimmed());
+        QString warningStr =
+            "<b>" + tr("New version detected!") + "</b><br>" +
+            tr("Version: ") + "<b>V" + Verison.toHtmlEscaped() + "</b><br>" +
+            tr("Published at: ") + UpdateTime.toHtmlEscaped() + "<br><br>" +
+            "<b>" + tr("Release Notes: ") + "</b><br>" + htmlNotes;
 
-      if (ui->actionAutoChkUpdate->isChecked()) {
-        ui->btnCheckUpdate->setIcon(QIcon(":/icon/newver.png"));
-        ui->btnCheckUpdate->setToolTip(tr("There is a new version"));
-
-        int ret = QMessageBox::warning(this, "", warningStr, tr("Download"),
-                                       tr("Cancel"));
-        if (ret == 0) {
-          on_actionOnline_Download_Updates_triggered();
-        }
-      } else {
-        if (!autoCheckUpdate) {
-          int ret = QMessageBox::warning(this, "", warningStr, tr("Download"),
-                                         tr("Cancel"));
-          if (ret == 0) {
+        auto showUpdateDialog = [&]() {
+          QMessageBox msgBox(this);
+          msgBox.setIcon(QMessageBox::Warning);
+          msgBox.setWindowTitle(strAppName);
+          msgBox.setTextFormat(Qt::RichText);
+          msgBox.setText(warningStr);
+          QPushButton* btnDownload =
+              msgBox.addButton(tr("Download"), QMessageBox::AcceptRole);
+          msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
+          msgBox.exec();
+          if (msgBox.clickedButton() == btnDownload) {
             on_actionOnline_Download_Updates_triggered();
           }
+        };
+
+        if (ui->actionAutoChkUpdate->isChecked()) {
+          ui->btnCheckUpdate->setIcon(QIcon(":/icon/newver.png"));
+          ui->btnCheckUpdate->setToolTip(tr("There is a new version"));
+          showUpdateDialog();
+        } else {
+          if (!autoCheckUpdate) {
+            showUpdateDialog();
+          }
+        }
+
+      } else {
+        if (!autoCheckUpdate) {
+          QMessageBox::information(
+              this, "", tr("You are currently using the latest version!"));
         }
       }
-
-    } else {
-      if (!autoCheckUpdate) {
-        QMessageBox::information(
-            this, "", tr("You are currently using the latest version!"));
-      }
-    }
 
     ui->mycboxFind->setFocus();
   }
