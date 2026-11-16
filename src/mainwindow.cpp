@@ -6035,45 +6035,33 @@ static QString markdownToHtml(QString md) {
   md.replace("\r\n", "\n");
   md = md.toHtmlEscaped();
 
-  // Headlines (###, ##, #)
+  // 1. Links [текст](url) -> удаляем до форматирования текста
+  md.replace(QRegularExpression("\\[[^\\]]+\\]\\([^\\)]+\\)"), "");
+
+  // 2. Headlines (###, ##, #)
   md.replace(QRegularExpression("(?m)^###\\s+(.+)$"), "<h4>\\1</h4>");
   md.replace(QRegularExpression("(?m)^##\\s+(.+)$"), "<h3>\\1</h3>");
   md.replace(QRegularExpression("(?m)^#\\s+(.+)$"), "<h2>\\1</h2>");
 
-  // Bold text (**text** или __text__)
+  // 3. Bulleted списки (- item или * item) -> ДО курсива!
+  md.replace(QRegularExpression("(?m)^[\\-\\*]\\s+(.+)$"), "&bull; \\1");
+
+  // 4. Bold text (**text** или __text__)
   md.replace(QRegularExpression("\\*\\*(.+?)\\*\\*"), "<b>\\1</b>");
   md.replace(QRegularExpression("__(.+?)__"), "<b>\\1</b>");
 
-  // Italics (*text*)
+  // 5. Italics (*text*)
   md.replace(QRegularExpression("(?<!\\*)\\*(?!\\*)(.+?)(?<!\\*)\\*(?!\\*)"), "<i>\\1</i>");
 
-  // Inline code (`code`)
+  // 6. Inline code (`code`)
   md.replace(QRegularExpression("`([^`]+)`"), "<code>\\1</code>");
 
-  // Links [текст](url)
-  md.replace(QRegularExpression("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "<a href=\"\\2\">\\1</a>");
-
-  // Bulleted списки (- item или * item)
-  md.replace(QRegularExpression("(?m)^[\\-\\*]\\s+(.+)$"), "&bull; \\1");
-
-  // Line breaks after headings and regular line breaks
+  // 7. Line breaks
   md.replace(QRegularExpression("(</h[234]>)\\n+"), "\\1");
   md.replace("\n", "<br>");
 
   return md;
 }
-
-int MainWindow::parse_UpdateJSON(QString str) {
-  QJsonParseError err_rpt;
-  QJsonDocument root_Doc = QJsonDocument::fromJson(str.toUtf8(), &err_rpt);
-
-  if (err_rpt.error != QJsonParseError::NoError) {
-    if (!autoCheckUpdate) {
-      QMessageBox::critical(this, "", tr("Network error!"));
-    }
-    autoCheckUpdate = false;
-    return -1;
-  }
 
   if (root_Doc.isObject()) {
     QJsonObject root_Obj = root_Doc.object();
