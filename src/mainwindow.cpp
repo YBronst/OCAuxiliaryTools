@@ -6063,6 +6063,10 @@ static QString markdownToHtml(QString md) {
   return md;
 }
 
+int MainWindow::parse_UpdateJSON(QString str) {
+  QJsonParseError err_rpt;
+  QJsonDocument root_Doc = QJsonDocument::fromJson(str.toUtf8(), &err_rpt);
+
   if (root_Doc.isObject()) {
     QJsonObject root_Obj = root_Doc.object();
 
