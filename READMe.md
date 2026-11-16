@@ -15,9 +15,9 @@ Unlike other Configurator apps, OCAT doesn't mess up the config if the Devs of O
 
 ## Key Changes in this Edition
 * **Source Restoration:** Reassembled, fixed, and compiled directly from the original source code.
-* **Code Cleanup:** Completely "de-Chinesed" — all Chinese interfaces, menus, and hidden localization clutter have been removed.
+* **Localization & UI Cleanup:** Streamlined to an English-only interface by removing legacy Chinese localization assets and unmaintained translation files to simplify maintenance.
 * **Dependency Fixes:** Removed all broken links and references to external components that were deleted by the original author, ensuring stable builds.
-* **Pure Performance:** Kept the original smart adaptation system without extra regional bloat.
+* **Smart Adaptation:** Preserved the original smart configuration adaptation system for seamless OpenCore version upgrades.
 * **Drag & Drop Row Reordering**: Reorder entries in any table-based list (Kexts, ACPI patches, Drivers, Tools, etc.) by dragging rows with the mouse – no need to rely solely on the `<` / `>` move buttons.
 
 ## Features
@@ -50,7 +50,7 @@ Besides being a plist Configurator it can do much more:
 * [vit9696](https://github.com/vit9696) OCAT feature suggestions etc.
 * [fabiosun](https://github.com/fabiosun) AMD related content.
 * [chriswayg](https://github.com/chriswayg) OpenCore Auxiliary Tools User's Guide.
-* [Mirone](https://github.com/mirone)APP Icon Design.
+* [Mirone](https://github.com/mirone) APP Icon Design.
 * [OpenCore](https://github.com/acidanthera/OpenCorePkg)&nbsp; &nbsp; &nbsp; &nbsp;
 [qtplist](https://github.com/reillywatson/qtplist)&nbsp; &nbsp; &nbsp; &nbsp;
 [FindESP](https://github.com/bluer007/FindESP)&nbsp; &nbsp; &nbsp; &nbsp;
