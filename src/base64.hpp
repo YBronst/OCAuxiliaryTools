@@ -1,362 +1,388 @@
-//  base64.hpp
+
+
+//  base64.hpp 
 //  Autor Konstantin Pilipchuk
 //  mailto:lostd@ukr.net
+//
+//
 
-#ifndef BASE64_HPP_INCLUDED
-#define BASE64_HPP_INCLUDED
+#if !defined(__BASE64_HPP_INCLUDED__)
+#define __BASE64_HPP_INCLUDED__ 1
 
 #pragma once
 
 #include <iterator>
-#include <ios>
-#include <string>
 
-template<class E = char, class Tr = std::char_traits<E>>
+static
+int _base64Chars[]= {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+				     'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+			         '0','1','2','3','4','5','6','7','8','9',
+			         '+','/' };
+
+
+#define _0000_0011 0x03
+#define _1111_1100 0xFC
+#define _1111_0000 0xF0
+#define _0011_0000 0x30
+#define _0011_1100 0x3C
+#define _0000_1111 0x0F
+#define _1100_0000 0xC0
+#define _0011_1111 0x3F
+
+#define _EQUAL_CHAR   (-1)
+#define _UNKNOWN_CHAR (-2)
+
+#define _IOS_FAILBIT   std::ios_base::failbit
+#define _IOS_EOFBIT    std::ios_base::eofbit
+#define _IOS_BADBIT    std::ios_base::badbit
+#define _IOS_GOODBIT   std::ios_base::goodbit
+
+// TEMPLATE CLASS base64_put
+template<class _E = char, class _Tr = std::char_traits<_E> >
 class base64
 {
 public:
-    typedef unsigned char byte_t;
-    typedef E             char_type;
-    typedef Tr            traits_type;
 
-    // base64 requires max line length <= 72 characters
-    // you can fill end of line
-    // it may be crlf, crlfsp, noline or other class like it
+	typedef unsigned char byte_t;
+	typedef _E            char_type;
+	typedef _Tr           traits_type; 
 
-    struct lf
-    {
-        template<class OI>
-        OI operator()(OI to) const
-        {
-            *to = Tr::to_char_type('\n'); ++to;
-            return to;
-        }
-    };
+	// base64 requires max line length <= 72 characters
+	// you can fill end of line
+	// it may be crlf, crlfsp, noline or other class like it
 
-    struct crlf
-    {
-        template<class OI>
-        OI operator()(OI to) const
-        {
-            *to = Tr::to_char_type('\r'); ++to;
-            *to = Tr::to_char_type('\n'); ++to;
-            return to;
-        }
-    };
+	struct lf
+	{
+		template<class _OI>
+			_OI operator()(_OI _To) const{
+			*_To = _Tr::to_char_type('\n'); ++_To;
 
-    struct crlfsp
-    {
-        template<class OI>
-        OI operator()(OI to) const
-        {
-            *to = Tr::to_char_type('\r'); ++to;
-            *to = Tr::to_char_type('\n'); ++to;
-            *to = Tr::to_char_type(' ');  ++to;
-            return to;
-        }
-    };
+			return (_To);
+			}
+	};
 
-    struct noline
-    {
-        template<class OI>
-        OI operator()(OI to) const
-        {
-            return to;
-        }
-    };
+	struct crlf
+	{
+		template<class _OI>
+			_OI operator()(_OI _To) const{
+			*_To = _Tr::to_char_type('\r'); ++_To;
+			*_To = _Tr::to_char_type('\n'); ++_To;
 
-    struct three2four
-    {
-        void zero()
-        {
-            data_[0] = 0;
-            data_[1] = 0;
-            data_[2] = 0;
-        }
+			return (_To);
+		}
+	};
 
-        byte_t get_0() const { return data_[0]; }
-        byte_t get_1() const { return data_[1]; }
-        byte_t get_2() const { return data_[2]; }
 
-        void set_0(byte_t ch) { data_[0] = ch; }
-        void set_1(byte_t ch) { data_[1] = ch; }
-        void set_2(byte_t ch) { data_[2] = ch; }
+	struct crlfsp
+	{
+		template<class _OI>
+			_OI operator()(_OI _To) const{
+			*_To = _Tr::to_char_type('\r'); ++_To;
+			*_To = _Tr::to_char_type('\n'); ++_To;
+			*_To = _Tr::to_char_type(' '); ++_To;
 
-        // 0000 0000  1111 1111  2222 2222
-        // xxxx xxxx  xxxx xxxx  xxxx xxxx
-        // 0000 0011  1111 2222  2233 3333
+			return (_To);
+		}
+	};
 
-        int b64_0() const { return (data_[0] & mask_1111_1100) >> 2; }
-        int b64_1() const { return ((data_[0] & mask_0000_0011) << 4) + ((data_[1] & mask_1111_0000) >> 4); }
-        int b64_2() const { return ((data_[1] & mask_0000_1111) << 2) + ((data_[2] & mask_1100_0000) >> 6); }
-        int b64_3() const { return (data_[2] & mask_0011_1111); }
+	struct noline
+	{
+		template<class _OI>
+			_OI operator()(_OI _To) const{
+			return (_To);
+		}
+	};
 
-        void b64_0(int ch)
-        {
-            data_[0] = static_cast<byte_t>(((ch & mask_0011_1111) << 2) | (mask_0000_0011 & data_[0]));
-        }
+	struct three2four
+	{
+		void zero()
+		{
+			_data[0] = 0;
+			_data[1] = 0;
+			_data[2] = 0;
+		}
 
-        void b64_1(int ch)
-        {
-            data_[0] = static_cast<byte_t>(((ch & mask_0011_0000) >> 4) | (mask_1111_1100 & data_[0]));
-            data_[1] = static_cast<byte_t>(((ch & mask_0000_1111) << 4) | (mask_0000_1111 & data_[1]));
-        }
+		byte_t get_0()	const
+		{
+			return _data[0];
+		}
+		byte_t get_1()	const
+		{
+			return _data[1];
+		}
+		byte_t get_2()	const
+		{
+			return _data[2];
+		}
 
-        void b64_2(int ch)
-        {
-            data_[1] = static_cast<byte_t>(((ch & mask_0011_1100) >> 2) | (mask_1111_0000 & data_[1]));
-            data_[2] = static_cast<byte_t>(((ch & mask_0000_0011) << 6) | (mask_0011_1111 & data_[2]));
-        }
+		void set_0(byte_t _ch)
+		{
+			_data[0] = _ch;
+		}
 
-        void b64_3(int ch)
-        {
-            data_[2] = static_cast<byte_t>((ch & mask_0011_1111) | (mask_1100_0000 & data_[2]));
-        }
+		void set_1(byte_t _ch)
+		{
+			_data[1] = _ch;
+		}
 
-    private:
-        byte_t data_[3] = { 0, 0, 0 };
-    };
+		void set_2(byte_t _ch)
+		{
+			_data[2] = _ch;
+		}
 
-    template<class II, class OI, class State, class Endline>
-    II put(II first, II last, OI to, State&, Endline endl_fn) const
-    {
-        three2four _3to4;
-        int line_octets = 0;
+		// 0000 0000  1111 1111  2222 2222
+		// xxxx xxxx  xxxx xxxx  xxxx xxxx
+		// 0000 0011  1111 2222  2233 3333
 
-        while (first != last)
-        {
-            _3to4.zero();
+		int b64_0()	const	{return (_data[0] & _1111_1100) >> 2;}
+		int b64_1()	const	{return ((_data[0] & _0000_0011) << 4) + ((_data[1] & _1111_0000)>>4);}
+		int b64_2()	const	{return ((_data[1] & _0000_1111) << 2) + ((_data[2] & _1100_0000)>>6);}
+		int b64_3()	const	{return (_data[2] & _0011_1111);}
 
-            // We take 3 characters at a time
-            _3to4.set_0(static_cast<byte_t>(*first));
-            ++first;
+		void b64_0(int _ch)	{_data[0] = ((_ch & _0011_1111) << 2) | (_0000_0011 & _data[0]);}
 
-            if (first == last)
-            {
-                *to = Tr::to_char_type(base64_chars[_3to4.b64_0()]); ++to;
-                *to = Tr::to_char_type(base64_chars[_3to4.b64_1()]); ++to;
-                *to = Tr::to_char_type('='); ++to;
-                *to = Tr::to_char_type('='); ++to;
-                break;
-            }
+		void b64_1(int _ch)	{
+			_data[0] = ((_ch & _0011_0000) >> 4) | (_1111_1100 & _data[0]);
+			_data[1] = ((_ch & _0000_1111) << 4) | (_0000_1111 & _data[1]);	}
 
-            _3to4.set_1(static_cast<byte_t>(*first));
-            ++first;
+		void b64_2(int _ch)	{
+			_data[1] = ((_ch & _0011_1100) >> 2) | (_1111_0000 & _data[1]);
+			_data[2] = ((_ch & _0000_0011) << 6) | (_0011_1111 & _data[2]);	}
 
-            if (first == last)
-            {
-                *to = Tr::to_char_type(base64_chars[_3to4.b64_0()]); ++to;
-                *to = Tr::to_char_type(base64_chars[_3to4.b64_1()]); ++to;
-                *to = Tr::to_char_type(base64_chars[_3to4.b64_2()]); ++to;
-                *to = Tr::to_char_type('='); ++to;
-                break;
-            }
+		void b64_3(int _ch){
+			_data[2] = (_ch & _0011_1111) | (_1100_0000 & _data[2]);}
 
-            _3to4.set_2(static_cast<byte_t>(*first));
-            ++first;
+	private:
+		byte_t _data[3];
 
-            *to = Tr::to_char_type(base64_chars[_3to4.b64_0()]); ++to;
-            *to = Tr::to_char_type(base64_chars[_3to4.b64_1()]); ++to;
-            *to = Tr::to_char_type(base64_chars[_3to4.b64_2()]); ++to;
-            *to = Tr::to_char_type(base64_chars[_3to4.b64_3()]); ++to;
+	};
 
-            if (line_octets == 17) // base64 limits the line length to a maximum of 72 characters
-            {
-                to = endl_fn(to);
-                line_octets = 0;
-            }
-            else
-            {
-                ++line_octets;
-            }
-        }
 
-        return first;
-    }
 
-    template<class II, class OI, class State>
-    II get(II first, II last, OI to, State& st) const
-    {
-        three2four _3to4;
-        int ch;
 
-        while (first != last)
-        {
-            // Take octet
-            _3to4.zero();
+	template<class _II, class _OI, class _State, class _Endline>
+		_II put(_II _First, _II _Last, _OI _To, _State& _St, _Endline _Endl)  const
+	{
+		three2four _3to4;
+		int line_octets = 0;
 
-            // -- 0 --
-            // Search next valid char...
-            while ((ch = get_char_type(*first)) == unknown_char)
-            {
-                if (++first == last)
-                {
-                    st |= std::ios_base::failbit | std::ios_base::eofbit;
-                    return first; // unexpected EOF
-                }
-            }
+		while(_First != _Last)
+		{
+			_3to4.zero();
 
-            if (ch == equal_char)
-            {
-                // Error! First character in octet can't be '='
-                st |= std::ios_base::failbit;
-                return first;
-            }
-            else
-            {
-                _3to4.b64_0(ch);
-            }
+			// берём по 3 символа
+			_3to4.set_0(*_First);
+			_First++;
 
-            // -- 1 --
-            // Search next valid char...
-            while (++first != last)
-            {
-                if ((ch = get_char_type(*first)) != unknown_char)
-                    break;
-            }
+			if(_First == _Last)
+			{
+				*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_0()]); ++_To;
+				*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_1()]); ++_To;
+				*_To = _Tr::to_char_type('='); ++_To;
+				*_To = _Tr::to_char_type('='); ++_To;
+				goto __end;
+			}
 
-            if (first == last)
-            {
-                st |= std::ios_base::failbit | std::ios_base::eofbit; // unexpected EOF
-                return first;
-            }
+			_3to4.set_1(*_First);
+			_First++;
 
-            if (ch == equal_char)
-            {
-                // Error! Second character in octet can't be '='
-                st |= std::ios_base::failbit;
-                return first;
-            }
-            else
-            {
-                _3to4.b64_1(ch);
-            }
+			if(_First == _Last)
+			{
+				*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_0()]); ++_To;
+				*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_1()]); ++_To;
+				*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_2()]); ++_To;
+				*_To = _Tr::to_char_type('='); ++_To;
+				goto __end;
+			}
 
-            // -- 2 --
-            // Search next valid char...
-            while (++first != last)
-            {
-                if ((ch = get_char_type(*first)) != unknown_char)
-                    break;
-            }
+			_3to4.set_2(*_First);
+			_First++;
 
-            if (first == last)
-            {
-                // Error! Unexpected EOF. Must be '=' or base64 character
-                st |= std::ios_base::failbit | std::ios_base::eofbit;
-                return first;
-            }
+			*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_0()]); ++_To;
+			*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_1()]); ++_To;
+			*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_2()]); ++_To;
+			*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_3()]); ++_To;
 
-            if (ch == equal_char)
-            {
-                // OK!
-                _3to4.b64_2(0);
-                _3to4.b64_3(0);
+			if(line_octets == 17) // base64 позволяет длину строки не более 72 символов
+			{
+				_To = _Endl(_To);
 
-                // check for EOF
-                if (++first == last)
-                {
-                    st |= std::ios_base::eofbit;
-                }
-                else if (get_char_type(*first) == equal_char)
-                {
-                    ++first; // Skip second '='
-                }
+				line_octets = 0;
+			}
+			else
+				++line_octets;
+		}
 
-                // write 1 byte to output
-                *to = static_cast<byte_t>(_3to4.get_0()); ++to;
-                return first;
-            }
-            else
-            {
-                _3to4.b64_2(ch);
-            }
+		__end: ;
 
-            // -- 3 --
-            // Search next valid char...
-            while (++first != last)
-            {
-                if ((ch = get_char_type(*first)) != unknown_char)
-                    break;
-            }
+		return (_First);
 
-            if (first == last)
-            {
-                // Unexpected EOF. Ignore it.
-                st |= std::ios_base::eofbit;
-                return first;
-            }
+	}
 
-            if (ch == equal_char)
-            {
-                // OK!
-                _3to4.b64_3(0);
 
-                // write to output 2 bytes
-                *to = static_cast<byte_t>(_3to4.get_0()); ++to;
-                *to = static_cast<byte_t>(_3to4.get_1()); ++to;
+	template<class _II, class _OI, class _State>
+		_II get(_II _First, _II _Last, _OI _To, _State& _St) const
+	{
+		three2four _3to4;
+		int _Char;
 
-                ++first; // set position to next character
-                return first;
-            }
-            else
-            {
-                _3to4.b64_3(ch);
-            }
+		while(_First != _Last)
+		{
 
-            // write to output 3 bytes
-            *to = static_cast<byte_t>(_3to4.get_0()); ++to;
-            *to = static_cast<byte_t>(_3to4.get_1()); ++to;
-            *to = static_cast<byte_t>(_3to4.get_2()); ++to;
+			// Take octet
+			_3to4.zero();
 
-            ++first;
-        }
+			// -- 0 --
+			// Search next valid char... 
+			while((_Char =  _getCharType(*_First)) < 0 && _Char == _UNKNOWN_CHAR)
+			{
+				if(++_First == _Last)
+				{
+					_St |= _IOS_FAILBIT|_IOS_EOFBIT; return _First; // unexpected EOF
+				}
+			}
 
-        return first;
-    }
+			if(_Char == _EQUAL_CHAR){
+				// Error! First character in octet can't be '='
+				_St |= _IOS_FAILBIT; 
+				return _First; 
+			}
+			else
+				_3to4.b64_0(_Char);
+
+
+			// -- 1 --
+			// Search next valid char... 
+			while(++_First != _Last)
+				if((_Char = _getCharType(*_First)) != _UNKNOWN_CHAR)
+					break;
+
+			if(_First == _Last)	{
+				_St |= _IOS_FAILBIT|_IOS_EOFBIT; // unexpected EOF 
+				return _First;
+			}
+
+			if(_Char == _EQUAL_CHAR){
+				// Error! Second character in octet can't be '='
+				_St |= _IOS_FAILBIT; 
+				return _First; 
+			}
+			else
+				_3to4.b64_1(_Char);
+
+
+			// -- 2 --
+			// Search next valid char... 
+			while(++_First != _Last)
+				if((_Char = _getCharType(*_First)) != _UNKNOWN_CHAR)
+					break;
+
+			if(_First == _Last)	{
+				// Error! Unexpected EOF. Must be '=' or base64 character
+				_St |= _IOS_FAILBIT|_IOS_EOFBIT; 
+				return _First; 
+			}
+
+			if(_Char == _EQUAL_CHAR){
+				// OK!
+				_3to4.b64_2(0); 
+				_3to4.b64_3(0); 
+
+				// chek for EOF
+				if(++_First == _Last)
+				{
+					// Error! Unexpected EOF. Must be '='. Ignore it.
+					//_St |= _IOS_BADBIT|_IOS_EOFBIT;
+					_St |= _IOS_EOFBIT;
+				}
+				else 
+					if(_getCharType(*_First) != _EQUAL_CHAR)
+					{
+						// Error! Must be '='. Ignore it.
+						//_St |= _IOS_BADBIT;
+					}
+				else
+					++_First; // Skip '='
+
+				// write 1 byte to output
+				*_To = (byte_t) _3to4.get_0();
+				return _First;
+			}
+			else
+				_3to4.b64_2(_Char);
+
+
+			// -- 3 --
+			// Search next valid char... 
+			while(++_First != _Last)
+				if((_Char = _getCharType(*_First)) != _UNKNOWN_CHAR)
+					break;
+
+			if(_First == _Last)	{
+				// Unexpected EOF. It's error. But ignore it.
+				//_St |= _IOS_FAILBIT|_IOS_EOFBIT; 
+					_St |= _IOS_EOFBIT; 
+				
+				return _First; 
+			}
+
+			if(_Char == _EQUAL_CHAR)
+			{
+				// OK!
+				_3to4.b64_3(0); 
+
+				// write to output 2 bytes
+				*_To = (byte_t) _3to4.get_0();
+				*_To = (byte_t) _3to4.get_1();
+
+				++_First; // set position to next character
+
+				return _First;
+			}
+			else
+				_3to4.b64_3(_Char);
+
+
+			// write to output 3 bytes
+			*_To = (byte_t) _3to4.get_0();
+			*_To = (byte_t) _3to4.get_1();
+			*_To = (byte_t) _3to4.get_2();
+
+			++_First;
+			
+
+		} // while(_First != _Last)
+
+		return (_First);
+	}
 
 protected:
-    static constexpr byte_t mask_0000_0011 = 0x03;
-    static constexpr byte_t mask_1111_1100 = 0xFC;
-    static constexpr byte_t mask_1111_0000 = 0xF0;
-    static constexpr byte_t mask_0011_0000 = 0x30;
-    static constexpr byte_t mask_0011_1100 = 0x3C;
-    static constexpr byte_t mask_0000_1111 = 0x0F;
-    static constexpr byte_t mask_1100_0000 = 0xC0;
-    static constexpr byte_t mask_0011_1111 = 0x3F;
 
-    static constexpr int equal_char   = -1;
-    static constexpr int unknown_char = -2;
+	int _getCharType(int C) const
+	{
+		if(_base64Chars[62] == C)
+			return 62;
 
-    static constexpr char base64_chars[64] = {
-        'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-        'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-        '0','1','2','3','4','5','6','7','8','9',
-        '+','/'
-    };
+		if(_base64Chars[63] == C)
+			return 63;
 
-    int get_char_type(int c) const
-    {
-        if (base64_chars[62] == c)
-            return 62;
+		if((_base64Chars[0] <= C) && (_base64Chars[25] >= C))
+			return C - _base64Chars[0];
 
-        if (base64_chars[63] == c)
-            return 63;
+		if((_base64Chars[26] <= C) && (_base64Chars[51] >= C))
+			return C - _base64Chars[26] + 26;
 
-        if ((base64_chars[0] <= c) && (base64_chars[25] >= c))
-            return c - base64_chars[0];
+		if((_base64Chars[52] <= C) && (_base64Chars[61] >= C))
+			return C - _base64Chars[52] + 52;
 
-        if ((base64_chars[26] <= c) && (base64_chars[51] >= c))
-            return c - base64_chars[26] + 26;
+		if(C == _Tr::to_int_type('='))
+			return _EQUAL_CHAR;
 
-        if ((base64_chars[52] <= c) && (base64_chars[61] >= c))
-            return c - base64_chars[52] + 52;
+		return _UNKNOWN_CHAR;
+	}
 
-        if (c == Tr::to_int_type('='))
-            return equal_char;
 
-        return unknown_char;
-    }
 };
 
-#endif // BASE64_HPP_INCLUDED
+
+#endif
