@@ -170,7 +170,7 @@ public:
 		{
 			_3to4.zero();
 
-			// берём по 3 символа
+			// We take 3 symbols each
 			_3to4.set_0(*_First);
 			_First++;
 
@@ -203,7 +203,7 @@ public:
 			*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_2()]); ++_To;
 			*_To = _Tr::to_char_type(_base64Chars[_3to4.b64_3()]); ++_To;
 
-			if(line_octets == 17) // base64 позволяет длину строки не более 72 символов
+			if(line_octets == 17) // base64 allows a string length of no more than 72 characters
 			{
 				_To = _Endl(_To);
 
