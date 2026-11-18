@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [macos-15-intel]
         # qt_ver: [5.9.9,5.12.10,5.15.2]
-        qt_ver: [5.9.9]
+        qt_ver:
         qt_arch: [clang_64]
         
     env:
@@ -65,7 +65,14 @@ jobs:
           #chmod +x bin/release/${targetName}.app/Contents/MacOS/devDatabase/mac/CreateVault/RsaTool
           #chmod +x bin/release/${targetName}.app/Contents/MacOS/devDatabase/mac/CreateVault/sign.command
           
-          macdeployqt bin/release/${targetName}.app -qmldir=. -verbose=1 -dmg
+          macdeployqt bin/release/${targetName}.app -qmldir=. -verbose=1
+          
+          rm -rf dmg_temp
+          mkdir -p dmg_temp
+          cp -R -p bin/release/${targetName}.app dmg_temp/
+          ln -s /Applications dmg_temp/Applications
+          hdiutil create -volname "${targetName}" -srcfolder dmg_temp -ov -format UDZO bin/release/${targetName}.dmg
+          rm -rf dmg_temp
           
       # Upload artifacts         
       - uses: actions/upload-artifact@v4
