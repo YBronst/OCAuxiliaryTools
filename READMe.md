@@ -2,13 +2,12 @@
 
 ![GUI](https://github.com/YBronst/user-attachments/blob/main/OCAuxiliaryTools.png)
 
-This is a restored and cleaned-up edition of the **OpenCore Auxiliary Tools (OCAT)**, originally developed by [ic005k](https://github.com/ic005k/OCAuxiliaryTools). 
+This project is based on **OpenCore Auxiliary Tools (OCAT), originally developed by [ic005k](https://github.com/ic005k/OCAuxiliaryTools)**. 
 
-Since the original repository was abandoned, this project has been **painstakingly recreated and rebuilt directly from the original source files**.
-All Chinese-language localizations and related resources have been completely removed due to **technical necessity**.
+* Converted into a standalone repository after the **original project was abandoned**.
+* Removed Chinese localization and related resources **due to technical limitations**.
 
-The defining philosophy of OCAT remains untouched: **One single OCAT application can manage almost all OpenCore versions, making it a true "All-in-One" solution.**
-
+The defining philosophy of OCAT remains unchanged: a single application can manage almost all OpenCore versions, making it a true "All-in-One" solution.
 ## About
 OpenCore Auxiliary Tools is a GUI-based Configurator for editing `config.plist` files for Acidanthera's OpenCore Boot Manager.
 
