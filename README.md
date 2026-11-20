@@ -30,7 +30,6 @@ Besides being a plist Configurator it can do much more:
 * **Preset Menus** for ACPI, Kernel, and other lists.
 * **Editable list** with URLs of Kext Repos.
 * **Integrated ASCII < > HEX Converter**.
-* **Database with complete base configs** for Intel and AMD CPUs based on Dortania's OpenCore Install Guide.
 * **Ability to generate EFI folders** from a config with a single click.
 * **Ability to create EFI folder Backups**.
 
