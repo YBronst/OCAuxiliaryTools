@@ -4,7 +4,8 @@
 
 This is a restored and cleaned-up edition of the **OpenCore Auxiliary Tools (OCAT)**, originally developed by [ic005k](https://github.com/ic005k/OCAuxiliaryTools). 
 
-Since the original repository was abandoned, this project has been **painstakingly recreated and rebuilt directly from the original source files**. To clean up the codebase and make it fully uniform for the global community, **all Chinese language localizations and related assets have been completely removed**.
+Since the original repository was abandoned, this project has been **painstakingly recreated and rebuilt directly from the original source files**.
+All Chinese-language localizations and related resources have been completely removed due to **technical necessity**.
 
 The defining philosophy of OCAT remains untouched: **One single OCAT application can manage almost all OpenCore versions, making it a true "All-in-One" solution.**
 
