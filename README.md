@@ -9,16 +9,14 @@ This project is based on **OpenCore Auxiliary Tools (OCAT), originally developed
 
 The defining philosophy of OCAT remains unchanged: a single application can manage almost all OpenCore versions, making it a true "All-in-One" solution.
 ## About
-OpenCore Auxiliary Tools is a GUI-based Configurator for editing `config.plist` files for Acidanthera's OpenCore Boot Manager.
+OpenCore Auxiliary Tools is a GUI configurator for editing `config.plist` files for Acidanthera's OpenCore Boot Manager.
 
 Unlike other Configurator apps, OCAT doesn't mess up the config if the Devs of OpenCore add new features/keys to the config file structure. Instead, it adapts and integrates them in the interface automatically.
 
 ## Key Changes in this Edition
-* **Source Restoration:** Reassembled, fixed, and compiled directly from the original source code.
-* **Localization & UI Cleanup:** Streamlined to an English-only interface by removing legacy Chinese localization assets and unmaintained translation files to simplify maintenance.
 * **Dependency Fixes:** Removed all broken links and references to external components that were deleted by the original author, ensuring stable builds.
 * **Smart Adaptation:** Preserved the original smart configuration adaptation system for seamless OpenCore version upgrades.
-* **Drag & Drop Row Reordering**: Reorder entries in any table-based list (Kexts, ACPI patches, Drivers, Tools, etc.) by dragging rows with the mouse – no need to rely solely on the `<` / `>` move buttons.
+* **Drag & Drop Row Reordering:** Reorder entries in any table-based list (Kexts, ACPI patches, Drivers, Tools, etc.) by dragging rows with the mouse – no need to rely solely on the `<` / `>` move buttons.
 
 ## Features
 Besides being a plist Configurator it can do much more:
@@ -35,9 +33,6 @@ Besides being a plist Configurator it can do much more:
 * **Database with complete base configs** for Intel and AMD CPUs based on Dortania's OpenCore Install Guide.
 * **Ability to generate EFI folders** from a config with a single click.
 * **Ability to create EFI folder Backups**.
-* **Update the Database**, ACPI-Quirks.txt, Booter-Quirks.txt, Kernel-Quirks.txt, UEFI-Quirks.txt and KextUrl.txt
-* **The toolTip.txt translated into English**.
-
 
 ## Guides
 * AMD CPU BaseConfigs plug-in package, pre-selected for AMD CPU Quirks, AMD kernel patch package, Italian description documentation provided and maintained by [fabiosun](https://github.com/fabiosun).
