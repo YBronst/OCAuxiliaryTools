@@ -39,7 +39,7 @@ Besides being a plist Configurator it can do much more:
 
 
 ## Credits
-* [YBronst](https://github.com/YBronst/) Project restoration and reassembly, global code cleanup.
+* [YBronst](https://github.com/YBronst/) Code overhaul and UI/UX enhancements.
 * [ic005k](https://github.com/ic005k/OCAuxiliaryTools) Author of the original program.
 * [vit9696](https://github.com/vit9696) OCAT feature suggestions etc.
 * [fabiosun](https://github.com/fabiosun) AMD related content.
