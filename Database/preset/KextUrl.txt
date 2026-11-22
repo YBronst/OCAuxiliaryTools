@@ -52,7 +52,7 @@ USBInjectAll.kext | https://github.com/daliansky/OS-X-USB-Inject-All
 USBToolBox.kext | https://github.com/USBToolBox/kext
 VirtualSMC.kext | https://github.com/acidanthera/VirtualSMC
 VoodooI2C.kext | https://github.com/VoodooI2C/VoodooI2C
-VoodooInput.kext | https://github.com/VoodooSMBus/VoodooRMI
+VoodooInput.kext | https://github.com/acidanthera/VoodooInput
 VoodooPS2Controller.kext | https://github.com/acidanthera/VoodooPS2
 VoodooRMI.kext | https://github.com/VoodooSMBus/VoodooRMI
 VoodooSMBus.kext | https://github.com/VoodooSMBus/VoodooRMI
