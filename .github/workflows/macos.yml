@@ -79,7 +79,7 @@ jobs:
           hdiutil create -volname "${targetName}" -srcfolder dmg_temp -ov -format UDZO bin/release/${targetName}.dmg
           rm -rf dmg_temp
           
-      # Upload artifacts          
+      # Upload  artifacts          
       - uses: actions/upload-artifact@v7
         with:
           #name: ${{ env.targetName }}_${{ matrix.os }}_${{matrix.qt_ver}} # .zip
